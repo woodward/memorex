@@ -33,6 +33,7 @@ defmodule Memorex.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:dart_sass, "~> 0.3", runtime: Mix.env() == :dev},
       {:ecto_sql, "~> 3.6"},
       {:esbuild, "~> 0.4", runtime: Mix.env() == :dev},
       {:floki, ">= 0.30.0", only: :test},
@@ -64,7 +65,7 @@ defmodule Memorex.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.deploy": ["esbuild default --minify", "phx.digest"]
+      "assets.deploy": ["esbuild default --minify", "sass default --no-source-map --style=compressed", "phx.digest"]
     ]
   end
 end
