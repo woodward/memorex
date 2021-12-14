@@ -34,6 +34,7 @@ defmodule Memorex.MixProject do
   defp deps do
     [
       {:dart_sass, "~> 0.3", runtime: Mix.env() == :dev},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ecto_sql, "~> 3.6"},
       {:esbuild, "~> 0.4", runtime: Mix.env() == :dev},
       {:floki, ">= 0.30.0", only: :test},
