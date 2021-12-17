@@ -4,7 +4,7 @@ defmodule Memorex.Repo.Migrations.CreateNotes do
 
   def change do
     create table("notes") do
-      add :contents, {:array, :binary}
+      add :content, {:array, :binary}
 
       timestamps()
     end
