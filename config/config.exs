@@ -10,6 +10,10 @@ import Config
 config :memorex,
   ecto_repos: [Memorex.Repo]
 
+config :memorex, Memorex.Repo,
+  migration_primary_key: [name: :uuid, type: :binary_id],
+  migration_foreign_key: [column: :uuid, type: :binary_id]
+
 # Configures the endpoint
 config :memorex, MemorexWeb.Endpoint,
   url: [host: "localhost"],
