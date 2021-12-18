@@ -4,6 +4,8 @@ defmodule Memorex.Note do
   use Memorex.Schema
   import Ecto.Changeset
 
+  alias Memorex.Repo
+
   schema "notes" do
     field :content, {:array, :binary}
 
@@ -14,6 +16,16 @@ defmodule Memorex.Note do
     note
     |> cast(params, [:content])
     |> create_uuid_from_content()
+  end
+
+  def parse_file_contents(contents) do
+    contents
+    |> String.split("\n")
+    |> Enum.each(fn line ->
+      if String.match?(line, ~r/#{bidirectional_note_delimitter()}/) do
+        line |> parse_line() |> Repo.insert!()
+      end
+    end)
   end
 
   def create_uuid_from_content(changeset) do

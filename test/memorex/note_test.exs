@@ -61,4 +61,24 @@ defmodule Memorex.NoteTest do
     changeset = Note.parse_line(line)
     assert changeset.changes == %{content: ["one", "two"], id: "b6db891e-d142-51fa-9e0a-7100b0843d78"}
   end
+
+  test "parse_file_contents/1" do
+    assert Repo.all(Note) |> length() == 0
+
+    file_contents = """
+    one ⮂   two
+
+    three ⮂   four
+
+    something else
+
+    five ⮂   six
+
+    """
+
+    Note.parse_file_contents(file_contents)
+
+    all_notes = Repo.all(Note)
+    assert length(all_notes) == 3
+  end
 end
