@@ -7,7 +7,7 @@ defmodule Memorex.NoteTest do
   # From: https://stackoverflow.com/questions/136505/searching-for-uuids-in-text-with-regex
   @uuid_regex ~r/\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/
 
-  test "has UUID primary keys and an array of content" do
+  test "has a UUID primary key and an array of content" do
     Repo.insert(%Note{content: ["zero", "one"]})
     note = Repo.all(Note) |> List.first()
 
@@ -36,15 +36,15 @@ defmodule Memorex.NoteTest do
     assert content1 == "one"
   end
 
-  test "content to uuid" do
-    content_1 = ["zero", "one", "two"]
-    uid_1 = Note.content_to_uuid(content_1)
-    assert uid_1 == "cd04855f-1ef3-54e0-9d1c-1e8ea24563c2"
+  test "content_to_uuid/1" do
+    content1 = ["zero", "one", "two"]
+    uid1 = Note.content_to_uuid(content1)
+    assert uid1 == "cd04855f-1ef3-54e0-9d1c-1e8ea24563c2"
 
-    content_2 = ["0", "one", "two"]
-    uid_2 = Note.content_to_uuid(content_2)
-    assert uid_2 == "e4bdc36d-f397-5cc2-a60a-87003946c04a"
-    assert uid_1 != uid_2
+    content2 = ["0", "one", "two"]
+    uid2 = Note.content_to_uuid(content2)
+    assert uid2 == "e4bdc36d-f397-5cc2-a60a-87003946c04a"
+    assert uid1 != uid2
   end
 
   test "sha1 of some content" do
@@ -54,5 +54,11 @@ defmodule Memorex.NoteTest do
   test "sha1_to_uuid/1" do
     sha = "94e66df8cd09d410c62d9e0dc59d3a884e458e05"
     assert Note.sha1_to_uuid(sha) == "950db789-4f02-593f-a046-5fdc94d0cdaf"
+  end
+
+  test "parse_line/1" do
+    line = " one ⮂   two  "
+    changeset = Note.parse_line(line)
+    assert changeset.changes == %{content: ["one", "two"], id: "b6db891e-d142-51fa-9e0a-7100b0843d78"}
   end
 end

@@ -31,4 +31,11 @@ defmodule Memorex.Note do
   def sha1(string), do: :crypto.hash(:sha, string) |> Base.encode16() |> String.downcase()
 
   def sha1_to_uuid(sha), do: UUID.uuid5(nil, sha)
+
+  def parse_line(line) do
+    content = line |> String.split(bidirectional_note_delimitter()) |> Enum.map(&String.trim(&1))
+    %__MODULE__{} |> changeset(%{content: content})
+  end
+
+  def bidirectional_note_delimitter, do: Application.get_env(:memorex, Memorex.Note)[:bidirectional_note_delimitter]
 end

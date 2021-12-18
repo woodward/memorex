@@ -12,6 +12,10 @@ if System.get_env("PHX_SERVER") && System.get_env("RELEASE_NAME") do
   config :memorex, MemorexWeb.Endpoint, server: true
 end
 
+if config_env() != :test do
+  config :memorex, Memorex.Note, bidirectional_note_delimitter: System.get_env("BIDIRECTIONAL_NOTE_DELIMITTER")
+end
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||
