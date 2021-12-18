@@ -26,7 +26,7 @@ defmodule Memorex.NoteTest do
   end
 
   test "the note's UUID is based on its content" do
-    Note.changeset(%Note{}, %{"content" => ["zero", "one"]}) |> Repo.insert()
+    Note.new(content: ["zero", "one"]) |> Repo.insert()
     note = Repo.all(Note) |> List.first()
 
     assert note.id == "78e531f9-e629-5e9a-b474-3272beaf39bf"
@@ -58,27 +58,71 @@ defmodule Memorex.NoteTest do
 
   test "parse_line/1" do
     line = " one ⮂   two  "
-    changeset = Note.parse_line(line)
-    assert changeset.changes == %{content: ["one", "two"], id: "b6db891e-d142-51fa-9e0a-7100b0843d78"}
+    note = Note.parse_line(line)
+    assert note == %Note{content: ["one", "two"], id: "b6db891e-d142-51fa-9e0a-7100b0843d78", in_latest_parse?: true}
   end
 
-  test "parse_file_contents/1" do
-    assert Repo.all(Note) |> length() == 0
+  describe "parse_file_contents/1" do
+    test "reads in the note contents" do
+      assert Repo.all(Note) |> length() == 0
 
-    file_contents = """
-    one ⮂   two
+      file_contents = """
+      one ⮂   two
 
-    three ⮂   four
+      three ⮂   four
 
-    something else
+      something else
 
-    five ⮂   six
+      five ⮂   six
 
-    """
+      """
 
-    Note.parse_file_contents(file_contents)
+      Note.parse_file_contents(file_contents)
 
-    all_notes = Repo.all(Note)
-    assert length(all_notes) == 3
+      all_notes = Repo.all(Note)
+      assert length(all_notes) == 3
+    end
+
+    test "can read in existing notes" do
+      assert Repo.all(Note) |> length() == 0
+
+      file_contents = """
+      one ⮂  one
+      """
+
+      Note.parse_file_contents(file_contents)
+
+      all_notes = Repo.all(Note)
+      assert length(all_notes) == 1
+
+      Note.parse_file_contents(file_contents)
+
+      all_notes = Repo.all(Note)
+      assert length(all_notes) == 1
+    end
+
+    test "deletes notes that are no longer present and leaves existing notes" do
+      assert Repo.all(Note) |> length() == 0
+
+      file_contents = """
+      one ⮂ one
+      two ⮂ two
+      """
+
+      Note.parse_file_contents(file_contents)
+
+      all_notes = Repo.all(Note)
+      assert length(all_notes) == 2
+
+      new_file_contents = """
+      one ⮂ one
+      2 ⮂ 2
+      """
+
+      Note.parse_file_contents(new_file_contents)
+
+      all_notes = Repo.all(Note)
+      assert length(all_notes) == 2
+    end
   end
 end

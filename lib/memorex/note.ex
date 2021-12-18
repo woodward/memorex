@@ -3,29 +3,42 @@ defmodule Memorex.Note do
 
   use Memorex.Schema
   import Ecto.Changeset
+  require Ecto.Query
 
-  alias Memorex.Repo
+  alias Memorex.{Note, Repo}
 
   schema "notes" do
     field :content, {:array, :binary}
+    field :in_latest_parse?, :boolean
 
     timestamps()
   end
 
-  def changeset(note, params \\ %{}) do
-    note
-    |> cast(params, [:content])
-    |> create_uuid_from_content()
+  def new(opts \\ []) do
+    content = Keyword.get(opts, :content)
+    in_latest_parse? = Keyword.get(opts, :in_latest_parse?, true)
+    %__MODULE__{id: content_to_uuid(content), content: content, in_latest_parse?: in_latest_parse?}
   end
 
   def parse_file_contents(contents) do
+    Repo.update_all(Note, set: [in_latest_parse?: false])
+
     contents
     |> String.split("\n")
     |> Enum.each(fn line ->
       if String.match?(line, ~r/#{bidirectional_note_delimitter()}/) do
-        line |> parse_line() |> Repo.insert!()
+        note = line |> parse_line()
+        note_from_db = Repo.get(Note, note.id)
+
+        if note_from_db do
+          note_from_db |> Ecto.Changeset.change(in_latest_parse?: true) |> Repo.update!()
+        else
+          Repo.insert!(note, on_conflict: :nothing)
+        end
       end
     end)
+
+    Ecto.Query.from(n in Note, where: n.in_latest_parse? == false) |> Repo.delete_all()
   end
 
   def create_uuid_from_content(changeset) do
@@ -46,7 +59,7 @@ defmodule Memorex.Note do
 
   def parse_line(line) do
     content = line |> String.split(bidirectional_note_delimitter()) |> Enum.map(&String.trim(&1))
-    %__MODULE__{} |> changeset(%{content: content})
+    new(content: content)
   end
 
   def bidirectional_note_delimitter, do: Application.get_env(:memorex, Memorex.Note)[:bidirectional_note_delimitter]
