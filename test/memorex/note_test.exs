@@ -2,7 +2,7 @@ defmodule Memorex.NoteTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.{Note, Repo}
+  alias Memorex.{Card, CardLog, Note, Repo}
 
   # From: https://stackoverflow.com/questions/136505/searching-for-uuids-in-text-with-regex
   @uuid_regex ~r/\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/
@@ -124,5 +124,16 @@ defmodule Memorex.NoteTest do
       all_notes = Repo.all(Note)
       assert length(all_notes) == 2
     end
+  end
+
+  test "deletes notes, cards, and card logs when deleted" do
+    note = Repo.insert!(%Note{})
+    card = Repo.insert!(%Card{note: note})
+    card_log = Repo.insert!(%CardLog{card: card})
+
+    Repo.delete!(note)
+
+    assert Repo.get(Card, card.id) == nil
+    assert Repo.get(CardLog, card_log.id) == nil
   end
 end

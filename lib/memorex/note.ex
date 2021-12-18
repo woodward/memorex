@@ -5,11 +5,14 @@ defmodule Memorex.Note do
   import Ecto.Changeset
   require Ecto.Query
 
-  alias Memorex.{Note, Repo}
+  alias Memorex.{Card, Deck, Note, Repo}
 
   schema "notes" do
     field :content, {:array, :binary}
     field :in_latest_parse?, :boolean
+
+    has_many :cards, Card
+    belongs_to :deck, Deck
 
     timestamps()
   end
