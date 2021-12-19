@@ -23,7 +23,7 @@ defmodule Memorex.Note do
     %__MODULE__{id: content_to_uuid(content), content: content, in_latest_parse?: in_latest_parse?}
   end
 
-  def parse_file_contents(contents) do
+  def parse_file_contents(contents, deck \\ nil) do
     Repo.update_all(Note, set: [in_latest_parse?: false])
 
     contents
@@ -36,7 +36,7 @@ defmodule Memorex.Note do
         if note_from_db do
           note_from_db |> set_parse_flag()
         else
-          note
+          %{note | deck: deck}
           |> Repo.insert!(on_conflict: :nothing)
           |> Card.create_bidirectional_from_note()
         end

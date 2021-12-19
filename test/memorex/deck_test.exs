@@ -26,4 +26,16 @@ defmodule Memorex.DeckTest do
     [card_from_deck] = deck.cards
     assert card_from_deck.id == card.id
   end
+
+  describe "read" do
+    test "a file gets converted into notes" do
+      Deck.read_file("test/fixtures/deck1.md")
+
+      deck = Repo.all(Deck) |> Repo.preload(:notes) |> Repo.preload(:cards) |> List.first()
+
+      assert deck.name == "deck1"
+      assert deck.notes |> length() == 3
+      assert deck.cards |> length() == 6
+    end
+  end
 end
