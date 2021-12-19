@@ -27,15 +27,38 @@ defmodule Memorex.DeckTest do
     assert card_from_deck.id == card.id
   end
 
-  describe "read" do
+  describe "read_file" do
     test "a file gets converted into notes" do
       Deck.read_file("test/fixtures/deck1.md")
 
+      assert Repo.all(Note) |> length() == 3
+      assert Repo.all(Card) |> length() == 6
+    end
+
+    test "can take an optional deck" do
+      deck = Repo.insert!(%Deck{name: "My Deck"})
+      Deck.read_file("test/fixtures/deck1.md", deck)
+
       deck = Repo.all(Deck) |> Repo.preload(:notes) |> Repo.preload(:cards) |> List.first()
 
-      assert deck.name == "deck1"
+      assert deck.name == "My Deck"
       assert deck.notes |> length() == 3
       assert deck.cards |> length() == 6
+    end
+  end
+
+  describe "read_dir" do
+    test "all of the files in a directory get incorporated into the deck" do
+      Deck.read_dir("test/fixtures/deck")
+
+      deck = Repo.all(Deck) |> List.first()
+      assert deck.name == "deck"
+
+      [note1, note2] = Repo.all(Note, order_by: :id) |> Repo.preload(:deck)
+      assert note1.deck.name == "deck"
+      assert note2.deck.name == "deck"
+
+      assert Repo.all(Card) |> length() == 4
     end
   end
 end

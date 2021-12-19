@@ -3,7 +3,7 @@ defmodule Memorex.Deck do
 
   use Memorex.Schema
 
-  alias Memorex.{Deck, Note, Repo}
+  alias Memorex.{Note, Repo}
 
   schema "decks" do
     field :name, :binary
@@ -14,10 +14,17 @@ defmodule Memorex.Deck do
     timestamps()
   end
 
-  def read_file(filename) do
-    file_contents = File.read!(filename)
-    name = Path.basename(filename, ".md")
-    deck = Repo.insert!(%Deck{name: name})
-    Note.parse_file_contents(file_contents, deck)
+  def read_file(filename, deck \\ nil) do
+    filename
+    |> File.read!()
+    |> Note.parse_file_contents(deck)
+  end
+
+  def read_dir(dirname) do
+    deck_name = Path.basename(dirname)
+    deck = Repo.insert!(%__MODULE__{name: deck_name})
+
+    Path.wildcard(dirname <> "/*.md")
+    |> Enum.each(&read_file(&1, deck))
   end
 end

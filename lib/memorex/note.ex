@@ -24,8 +24,6 @@ defmodule Memorex.Note do
   end
 
   def parse_file_contents(contents, deck \\ nil) do
-    Repo.update_all(Note, set: [in_latest_parse?: false])
-
     contents
     |> String.split("\n")
     |> Enum.each(fn line ->
@@ -42,8 +40,6 @@ defmodule Memorex.Note do
         end
       end
     end)
-
-    Ecto.Query.from(n in Note, where: n.in_latest_parse? == false) |> Repo.delete_all()
   end
 
   def create_uuid_from_content(changeset) do
@@ -70,4 +66,10 @@ defmodule Memorex.Note do
   def bidirectional_note_delimitter, do: Application.get_env(:memorex, Memorex.Note)[:bidirectional_note_delimitter]
 
   defp set_parse_flag(note), do: note |> Ecto.Changeset.change(in_latest_parse?: true) |> Repo.update!()
+
+  def set_parse_flag, do: Repo.update_all(Note, set: [in_latest_parse?: false])
+
+  def delete_notes_without_flag_set do
+    Ecto.Query.from(n in Note, where: n.in_latest_parse? == false) |> Repo.delete_all()
+  end
 end

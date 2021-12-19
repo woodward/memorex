@@ -101,6 +101,23 @@ defmodule Memorex.NoteTest do
       assert Repo.all(Card) |> length() == 2
     end
 
+    test "associates a deck with the notes if one is provided" do
+      assert Repo.all(Note) |> length() == 0
+      deck = Repo.insert!(%Deck{name: "My Deck"})
+
+      file_contents = """
+      one ⮂ one
+      """
+
+      Note.parse_file_contents(file_contents, deck)
+
+      note = Repo.all(Note) |> Repo.preload(:deck) |> List.first()
+      assert note.deck.id == deck.id
+      assert note.deck.name == "My Deck"
+    end
+  end
+
+  describe ":in_latest_parse? flag operations" do
     test "deletes notes that are no longer present and leaves existing notes" do
       assert Repo.all(Note) |> length() == 0
 
@@ -119,25 +136,12 @@ defmodule Memorex.NoteTest do
       2 ⮂ 2
       """
 
+      Note.set_parse_flag()
       Note.parse_file_contents(new_file_contents)
+      Note.delete_notes_without_flag_set()
 
       assert Repo.all(Note) |> length() == 2
       assert Repo.all(Card) |> length() == 4
-    end
-
-    test "associates a deck with the notes if one is provided" do
-      assert Repo.all(Note) |> length() == 0
-      deck = Repo.insert!(%Deck{name: "My Deck"})
-
-      file_contents = """
-      one ⮂ one
-      """
-
-      Note.parse_file_contents(file_contents, deck)
-
-      note = Repo.all(Note) |> Repo.preload(:deck) |> List.first()
-      assert note.deck.id == deck.id
-      assert note.deck.name == "My Deck"
     end
   end
 
