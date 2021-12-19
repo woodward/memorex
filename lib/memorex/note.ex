@@ -34,9 +34,11 @@ defmodule Memorex.Note do
         note_from_db = Repo.get(Note, note.id)
 
         if note_from_db do
-          note_from_db |> Ecto.Changeset.change(in_latest_parse?: true) |> Repo.update!()
+          note_from_db |> set_parse_flag()
         else
-          Repo.insert!(note, on_conflict: :nothing)
+          note
+          |> Repo.insert!(on_conflict: :nothing)
+          |> Card.create_bidirectional_from_note()
         end
       end
     end)
@@ -66,4 +68,6 @@ defmodule Memorex.Note do
   end
 
   def bidirectional_note_delimitter, do: Application.get_env(:memorex, Memorex.Note)[:bidirectional_note_delimitter]
+
+  defp set_parse_flag(note), do: note |> Ecto.Changeset.change(in_latest_parse?: true) |> Repo.update!()
 end

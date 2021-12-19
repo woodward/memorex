@@ -79,8 +79,8 @@ defmodule Memorex.NoteTest do
 
       Note.parse_file_contents(file_contents)
 
-      all_notes = Repo.all(Note)
-      assert length(all_notes) == 3
+      assert Repo.all(Note) |> length() == 3
+      assert Repo.all(Card) |> length() == 6
     end
 
     test "can read in existing notes" do
@@ -97,8 +97,8 @@ defmodule Memorex.NoteTest do
 
       Note.parse_file_contents(file_contents)
 
-      all_notes = Repo.all(Note)
-      assert length(all_notes) == 1
+      assert Repo.all(Note) |> length() == 1
+      assert Repo.all(Card) |> length() == 2
     end
 
     test "deletes notes that are no longer present and leaves existing notes" do
@@ -121,8 +121,8 @@ defmodule Memorex.NoteTest do
 
       Note.parse_file_contents(new_file_contents)
 
-      all_notes = Repo.all(Note)
-      assert length(all_notes) == 2
+      assert Repo.all(Note) |> length() == 2
+      assert Repo.all(Card) |> length() == 4
     end
   end
 
@@ -135,5 +135,8 @@ defmodule Memorex.NoteTest do
 
     assert Repo.get(Card, card.id) == nil
     assert Repo.get(CardLog, card_log.id) == nil
+
+    assert Repo.all(Note) |> length() == 0
+    assert Repo.all(Card) |> length() == 0
   end
 end

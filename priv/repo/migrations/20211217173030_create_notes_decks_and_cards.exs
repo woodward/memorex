@@ -12,12 +12,16 @@ defmodule Memorex.Repo.Migrations.CreateNotes do
     create table("notes") do
       add :content, {:array, :binary}
       add :in_latest_parse?, :boolean, default: false, null: false
+
       add :deck_id, references(:decks, on_delete: :delete_all)
 
       timestamps()
     end
 
     create table("cards") do
+      add :note_question_index, :integer
+      add :note_answer_index, :integer
+
       add :note_id, references(:notes, on_delete: :delete_all)
 
       timestamps()
