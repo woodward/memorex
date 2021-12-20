@@ -29,7 +29,7 @@ defmodule Memorex.Deck do
   end
 
   def read_note_dirs(note_dirs \\ nil) do
-    Note.set_parse_flag()
+    Note.clear_parse_flags()
 
     note_dirs = if note_dirs, do: note_dirs, else: Application.get_env(:memorex, Memorex.Note)[:note_dirs]
 

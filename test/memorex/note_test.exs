@@ -136,7 +136,7 @@ defmodule Memorex.NoteTest do
       2 ⮂ 2
       """
 
-      Note.set_parse_flag()
+      Note.clear_parse_flags()
       Note.parse_file_contents(new_file_contents)
       Note.delete_notes_without_flag_set()
 

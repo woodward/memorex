@@ -67,7 +67,7 @@ defmodule Memorex.Note do
 
   defp set_parse_flag(note), do: note |> Ecto.Changeset.change(in_latest_parse?: true) |> Repo.update!()
 
-  def set_parse_flag, do: Repo.update_all(Note, set: [in_latest_parse?: false])
+  def clear_parse_flags, do: Repo.update_all(Note, set: [in_latest_parse?: false])
 
   def delete_notes_without_flag_set do
     Ecto.Query.from(n in Note, where: n.in_latest_parse? == false) |> Repo.delete_all()
