@@ -36,3 +36,5 @@ npm-debug.log
 *.iml
 
 drop_all
+
+test/tmp

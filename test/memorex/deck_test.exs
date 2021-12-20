@@ -61,4 +61,42 @@ defmodule Memorex.DeckTest do
       assert Repo.all(Card) |> length() == 4
     end
   end
+
+  describe "read_multiple_dirs" do
+    test "reads in notes from the multiple dirs in the config" do
+      Deck.read_note_dirs()
+
+      decks = Repo.all(Deck)
+      deck_names = decks |> Enum.map(& &1.name) |> Enum.sort()
+      assert deck_names == ["deck-1", "deck-2", "deck-3", "deck-4", "deck-5", "deck-6"]
+
+      assert Repo.all(Note) |> length() == 13
+      assert Repo.all(Card) |> length() == 26
+    end
+
+    test "deletes notes that are no longer present in the files" do
+      notes_dir = "test/tmp"
+      File.mkdir(notes_dir)
+      filename = "notes.md"
+      notes_file = Path.join(notes_dir, filename)
+
+      file_contents = """
+      one ⮂ 1
+      """
+
+      File.write!(notes_file, file_contents)
+
+      Deck.read_note_dirs([notes_dir])
+      assert Repo.all(Note) |> length() == 1
+
+      edited_file_contents = """
+      one ⮂ edited
+      """
+
+      File.write!(notes_file, edited_file_contents)
+
+      Deck.read_note_dirs([notes_dir])
+      assert Repo.all(Note) |> length() == 1
+    end
+  end
 end

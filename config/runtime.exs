@@ -13,7 +13,15 @@ if System.get_env("PHX_SERVER") && System.get_env("RELEASE_NAME") do
 end
 
 if config_env() != :test do
-  config :memorex, Memorex.Note, bidirectional_note_delimitter: System.get_env("BIDIRECTIONAL_NOTE_DELIMITTER")
+  note_dirs = System.get_env("NOTE_DIRS") || raise "Environment variable NOTE_DIRS must be set!"
+  note_dirs = note_dirs |> String.split(",") |> Enum.map(&String.trim(&1))
+
+  bidirectional_note_delimitter =
+    System.get_env("BIDIRECTIONAL_NOTE_DELIMITTER") || raise "Environment variable BIDIRECTIONAL_NOTE_DELIMITTER must be set!"
+
+  config :memorex, Memorex.Note,
+    bidirectional_note_delimitter: bidirectional_note_delimitter,
+    note_dirs: note_dirs
 end
 
 if config_env() == :prod do

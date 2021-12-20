@@ -13,7 +13,9 @@ config :memorex, Memorex.Repo,
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
 
-config :memorex, Memorex.Note, bidirectional_note_delimitter: "⮂"
+config :memorex, Memorex.Note,
+  bidirectional_note_delimitter: "⮂",
+  note_dirs: ["test/fixtures/contains_multiple_decks/dir1", "test/fixtures/contains_multiple_decks/dir2"]
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.

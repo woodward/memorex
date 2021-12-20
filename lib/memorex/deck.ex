@@ -27,4 +27,32 @@ defmodule Memorex.Deck do
     Path.wildcard(dirname <> "/*.md")
     |> Enum.each(&read_file(&1, deck))
   end
+
+  def read_note_dirs(note_dirs \\ nil) do
+    Note.set_parse_flag()
+
+    note_dirs = if note_dirs, do: note_dirs, else: Application.get_env(:memorex, Memorex.Note)[:note_dirs]
+
+    note_dirs
+    |> Enum.each(fn dir ->
+      {:ok, files_and_dirs} = File.ls(dir)
+
+      files_and_dirs
+      |> Enum.map(fn file_or_dir ->
+        pathname = Path.join(dir, file_or_dir)
+        {:ok, file_stat} = File.stat(pathname)
+
+        case file_stat.type do
+          :regular ->
+            deck = Repo.insert!(%__MODULE__{name: Path.rootname(file_or_dir)})
+            read_file(pathname, deck)
+
+          :directory ->
+            read_dir(pathname)
+        end
+      end)
+    end)
+
+    Note.delete_notes_without_flag_set()
+  end
 end
