@@ -19,8 +19,9 @@ defmodule Memorex.Note do
 
   def new(opts \\ []) do
     content = Keyword.get(opts, :content)
+    deck = Keyword.get(opts, :deck)
     in_latest_parse? = Keyword.get(opts, :in_latest_parse?, true)
-    %__MODULE__{id: content_to_uuid(content), content: content, in_latest_parse?: in_latest_parse?}
+    %__MODULE__{id: content_to_uuid(content), content: content, in_latest_parse?: in_latest_parse?, deck: deck}
   end
 
   def parse_file_contents(contents, deck \\ nil) do
