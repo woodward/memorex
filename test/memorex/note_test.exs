@@ -59,7 +59,7 @@ defmodule Memorex.NoteTest do
   test "parse_line/1" do
     line = " one ⮂   two  "
     note = Note.parse_line(line)
-    assert note == %Note{content: ["one", "two"], id: "b6db891e-d142-51fa-9e0a-7100b0843d78", in_latest_parse?: true}
+    assert note == %Note{content: ["one", "two"], id: "b6db891e-d142-51fa-9e0a-7100b0843d78", in_latest_parse?: true, deck: nil}
   end
 
   describe "parse_file_contents/1" do
