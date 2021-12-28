@@ -4,6 +4,10 @@ defmodule Memorex.MixProject do
   def project do
     [
       app: :memorex,
+      dialyzer: [
+        plt_add_apps: [:mix],
+        plt_add_deps: [:mix]
+      ],
       version: "0.1.0",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
