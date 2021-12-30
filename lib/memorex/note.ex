@@ -7,6 +7,14 @@ defmodule Memorex.Note do
 
   alias Memorex.{Card, Deck, Note, Repo}
 
+  @type t :: %__MODULE__{
+          content: [String.t()],
+          in_latest_parse?: boolean(),
+          deck_id: Ecto.UUID.t(),
+          inserted_at: NaiveDateTime.t(),
+          updated_at: NaiveDateTime.t()
+        }
+
   schema "notes" do
     field :content, {:array, :binary}
     field :in_latest_parse?, :boolean

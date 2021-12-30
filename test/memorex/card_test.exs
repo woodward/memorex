@@ -28,4 +28,10 @@ defmodule Memorex.CardTest do
     assert card2.note_answer_index == 0
     assert card2.note_id == note.id
   end
+
+  test "enums work properly" do
+    card = Repo.insert!(%Card{card_type: :relearn, card_queue: :review})
+    assert card.card_type == :relearn
+    assert card.card_queue == :review
+  end
 end

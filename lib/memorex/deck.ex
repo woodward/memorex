@@ -5,6 +5,12 @@ defmodule Memorex.Deck do
 
   alias Memorex.{Note, Repo}
 
+  @type t :: %__MODULE__{
+          name: String.t(),
+          inserted_at: NaiveDateTime.t(),
+          updated_at: NaiveDateTime.t()
+        }
+
   schema "decks" do
     field :name, :binary
 

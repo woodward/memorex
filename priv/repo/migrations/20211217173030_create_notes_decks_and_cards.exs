@@ -21,6 +21,8 @@ defmodule Memorex.Repo.Migrations.CreateNotes do
     create table("cards") do
       add :note_question_index, :integer
       add :note_answer_index, :integer
+      add :card_type, :string
+      add :card_queue, :string
 
       add :note_id, references(:notes, on_delete: :delete_all)
 
