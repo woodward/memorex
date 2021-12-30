@@ -4,7 +4,6 @@ defmodule Memorex.Card do
   use Memorex.Schema
   alias Memorex.{CardLog, Note, Repo}
 
-  @type answer_choice :: :again | :hard | :ok | :easy
   @type card_queue :: :new | :learn | :review | :day_learn | :suspended | :buried
   @type card_type :: :new | :learn | :review | :relearn
 

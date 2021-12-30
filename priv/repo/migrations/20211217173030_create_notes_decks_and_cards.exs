@@ -31,6 +31,8 @@ defmodule Memorex.Repo.Migrations.CreateNotes do
 
     create table("card_logs") do
       add :card_id, references(:cards, on_delete: :delete_all)
+      add :card_type, :string
+      add :answer_choice, :string
 
       timestamps()
     end
