@@ -7,6 +7,7 @@ defmodule Memorex.Schema do
       # See example `MyApp.Schema` here: https://hexdocs.pm/ecto/Ecto.Schema.html#module-schema-attributes
       @primary_key {:id, :binary_id, autogenerate: true}
       @foreign_key_type :binary_id
+      @timestamps_opts [type: :utc_datetime]
     end
   end
 end

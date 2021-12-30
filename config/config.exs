@@ -13,7 +13,10 @@ config :memorex,
 config :memorex, Memorex.Repo,
   # See `:migration_primary_key` description here: https://hexdocs.pm/ecto_sql/Ecto.Migration.html#module-repo-configuration
   migration_primary_key: [name: :id, type: :binary_id],
-  migration_foreign_key: [column: :id, type: :binary_id]
+  migration_foreign_key: [column: :id, type: :binary_id],
+  # See: https://elixirforum.com/t/why-cant-timestamptz-be-set-up-as-default-timestamp-for-migrations-in-config/25778
+  # Also: https://elixirguides.com/2019/06/what-is-the-difference-between-utc_datetime-and-naive_datetime-in-ecto/
+  migration_timestamps: [type: :timestamptz]
 
 # Configures the endpoint
 config :memorex, MemorexWeb.Endpoint,
