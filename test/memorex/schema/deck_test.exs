@@ -1,8 +1,8 @@
-defmodule Memorex.DeckTest do
+defmodule Memorex.Schema.DeckTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.{Card, CardLog, Deck, Note}
+  alias Memorex.Schema.{Card, CardLog, Deck, Note}
 
   test "deletes notes, cards, and card logs when deleted" do
     deck = Repo.insert!(%Deck{})

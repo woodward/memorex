@@ -2,7 +2,8 @@ defmodule Memorex.CardsTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.{Card, Cards}
+  alias Memorex.Schema.Card
+  alias Memorex.Cards
 
   test "next_intervals/1" do
     card = %Card{}

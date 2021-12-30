@@ -1,8 +1,9 @@
-defmodule Memorex.Card do
+defmodule Memorex.Schema.Card do
   @moduledoc false
 
   use Memorex.Schema
-  alias Memorex.{CardLog, Note, Repo}
+  alias Memorex.Schema.{CardLog, Note}
+  alias Memorex.Repo
 
   @type card_queue :: :new | :learn | :review | :day_learn | :suspended | :buried
   @type card_type :: :new | :learn | :review | :relearn

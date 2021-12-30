@@ -1,9 +1,10 @@
-defmodule Memorex.Deck do
+defmodule Memorex.Schema.Deck do
   @moduledoc false
 
   use Memorex.Schema
 
-  alias Memorex.{Note, Repo}
+  alias Memorex.Schema.Note
+  alias Memorex.Repo
 
   @type t :: %__MODULE__{
           name: String.t(),

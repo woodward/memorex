@@ -1,8 +1,8 @@
-defmodule Memorex.CardLog do
+defmodule Memorex.Schema.CardLog do
   @moduledoc false
 
   use Memorex.Schema
-  alias Memorex.Card
+  alias Memorex.Schema.Card
 
   @type answer_choice :: :again | :hard | :ok | :easy
 

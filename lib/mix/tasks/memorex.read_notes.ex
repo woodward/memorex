@@ -13,6 +13,6 @@ defmodule Mix.Tasks.Memorex.ReadNotes do
   @impl Mix.Task
   def run(_args) do
     Mix.Task.run("app.start")
-    Memorex.Deck.read_note_dirs()
+    Memorex.Schema.Deck.read_note_dirs()
   end
 end
