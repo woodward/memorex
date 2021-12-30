@@ -13,8 +13,8 @@ defmodule Memorex.Card do
           note_id: Ecto.UUID.t(),
           card_type: card_type(),
           card_queue: card_queue(),
-          inserted_at: NaiveDateTime.t(),
-          updated_at: NaiveDateTime.t()
+          inserted_at: DateTime.t(),
+          updated_at: DateTime.t()
         }
 
   schema "cards" do

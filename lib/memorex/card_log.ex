@@ -10,8 +10,8 @@ defmodule Memorex.CardLog do
           card_id: Ecto.UUID.t(),
           card_type: Card.card_type(),
           answer_choice: answer_choice(),
-          inserted_at: NaiveDateTime.t(),
-          updated_at: NaiveDateTime.t()
+          inserted_at: DateTime.t(),
+          updated_at: DateTime.t()
         }
 
   schema "card_logs" do

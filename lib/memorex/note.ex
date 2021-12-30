@@ -11,8 +11,8 @@ defmodule Memorex.Note do
           content: [String.t()],
           in_latest_parse?: boolean(),
           deck_id: Ecto.UUID.t(),
-          inserted_at: NaiveDateTime.t(),
-          updated_at: NaiveDateTime.t()
+          inserted_at: DateTime.t(),
+          updated_at: DateTime.t()
         }
 
   schema "notes" do

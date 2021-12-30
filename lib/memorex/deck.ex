@@ -7,8 +7,8 @@ defmodule Memorex.Deck do
 
   @type t :: %__MODULE__{
           name: String.t(),
-          inserted_at: NaiveDateTime.t(),
-          updated_at: NaiveDateTime.t()
+          inserted_at: DateTime.t(),
+          updated_at: DateTime.t()
         }
 
   schema "decks" do
