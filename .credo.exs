@@ -141,7 +141,6 @@
           {Credo.Check.Warning.BoolOperationOnSameValues, []},
           {Credo.Check.Warning.ExpensiveEmptyEnumCheck, []},
           {Credo.Check.Warning.IExPry, []},
-          {Credo.Check.Warning.IoInspect, []},
           {Credo.Check.Warning.OperationOnSameValues, []},
           {Credo.Check.Warning.OperationWithConstantResult, []},
           {Credo.Check.Warning.RaiseInsideRescue, []},
@@ -158,6 +157,7 @@
           {Credo.Check.Warning.UnsafeExec, []}
         ],
         disabled: [
+          {Credo.Check.Warning.IoInspect, []},
           #
           # Checks scheduled for next check update (opt-in for now, just replace `false` with `[]`)
 
