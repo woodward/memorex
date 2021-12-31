@@ -8,6 +8,7 @@ defmodule Memorex.Schema.Deck do
 
   @type t :: %__MODULE__{
           name: String.t(),
+          #
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }

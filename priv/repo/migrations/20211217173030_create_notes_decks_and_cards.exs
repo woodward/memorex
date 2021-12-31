@@ -23,6 +23,7 @@ defmodule Memorex.Repo.Migrations.CreateNotes do
       add :note_answer_index, :integer
       add :card_type, :string
       add :card_queue, :string
+      add :due, :utc_datetime
 
       add :note_id, references(:notes, on_delete: :delete_all)
 

@@ -14,6 +14,8 @@ defmodule Memorex.Schema.Card do
           note_id: Ecto.UUID.t(),
           card_type: card_type(),
           card_queue: card_queue(),
+          due: DateTime.t(),
+          #
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
@@ -21,8 +23,9 @@ defmodule Memorex.Schema.Card do
   schema "cards" do
     field :note_question_index, :integer
     field :note_answer_index, :integer
-    field :card_type, Ecto.Enum, values: [:new, :learn, :review, :relearn]
-    field :card_queue, Ecto.Enum, values: [:new, :learn, :review, :day_learn, :suspended, :buried]
+    field :card_type, Ecto.Enum, values: [:new, :learn, :review, :relearn], default: :new
+    field :card_queue, Ecto.Enum, values: [:new, :learn, :review, :day_learn, :suspended, :buried], default: :new
+    field :due, :utc_datetime
 
     # belongs_to :deck, Deck
     belongs_to :note, Note

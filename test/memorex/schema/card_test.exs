@@ -35,4 +35,10 @@ defmodule Memorex.Schema.CardTest do
     assert card.card_type == :relearn
     assert card.card_queue == :review
   end
+
+  test "default values" do
+    card = %Card{}
+    assert card.card_queue == :new
+    assert card.card_type == :new
+  end
 end
