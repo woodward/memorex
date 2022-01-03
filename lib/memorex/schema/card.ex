@@ -4,6 +4,7 @@ defmodule Memorex.Schema.Card do
   use Memorex.Schema
   alias Memorex.Schema.{CardLog, Note}
   alias Memorex.Repo
+  alias Timex.Duration
 
   @type card_queue :: :new | :learn | :review | :day_learn | :suspended | :buried
   @type card_type :: :new | :learn | :review | :relearn
@@ -20,6 +21,9 @@ defmodule Memorex.Schema.Card do
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
+
+  @min_time_to_answer Duration.parse!("PT1S")
+  @max_time_to_answer Duration.parse!("PT1M")
 
   schema "cards" do
     field :note_question_index, :integer
@@ -40,5 +44,20 @@ defmodule Memorex.Schema.Card do
     card2 = %__MODULE__{note: note, note_question_index: 1, note_answer_index: 0}
     Repo.insert!(card1)
     Repo.insert!(card2)
+  end
+
+  @spec bracket_time_to_answer(Duration.t()) :: Duration.t()
+  def bracket_time_to_answer(time_to_answer) do
+    time_to_answer_in_sec = Duration.to_seconds(time_to_answer)
+
+    if time_to_answer_in_sec > Duration.to_seconds(@min_time_to_answer) do
+      if time_to_answer_in_sec > Duration.to_seconds(@max_time_to_answer) do
+        @max_time_to_answer
+      else
+        time_to_answer
+      end
+    else
+      @min_time_to_answer
+    end
   end
 end

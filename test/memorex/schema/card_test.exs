@@ -41,4 +41,21 @@ defmodule Memorex.Schema.CardTest do
     assert card.card_queue == :new
     assert card.card_type == :new
   end
+
+  describe "bracket_time_to_answer/1" do
+    test "returns the actual time to answer if it is not too large or too small" do
+      time_to_answer = Timex.Duration.parse!("PT15S")
+      assert Card.bracket_time_to_answer(time_to_answer) == Timex.Duration.parse!("PT15S")
+    end
+
+    test "returns the minimum time if the time to answer is too small" do
+      time_to_answer = Timex.Duration.parse!("PT0S")
+      assert Card.bracket_time_to_answer(time_to_answer) == Timex.Duration.parse!("PT1S")
+    end
+
+    test "returns the maximum time if the time to answer is too large" do
+      time_to_answer = Timex.Duration.parse!("PT61S")
+      assert Card.bracket_time_to_answer(time_to_answer) == Timex.Duration.parse!("PT1M")
+    end
+  end
 end
