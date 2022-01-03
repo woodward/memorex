@@ -14,6 +14,8 @@ defmodule Memorex.SchedulerTest do
       card = Scheduler.answer_card(card, :again, scheduler_config)
       assert card.card_queue == :learn
       assert card.card_type == :learn
+
+      # Can this assertion be made more specific?
       assert DateTime.compare(card.due, now) == :gt
     end
 
