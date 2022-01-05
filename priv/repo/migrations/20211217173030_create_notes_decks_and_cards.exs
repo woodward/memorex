@@ -19,11 +19,11 @@ defmodule Memorex.Repo.Migrations.CreateNotes do
     end
 
     create table("cards") do
-      add :note_question_index, :integer
-      add :note_answer_index, :integer
-      add :card_type, :string
       add :card_queue, :string
+      add :card_type, :string
       add :due, :utc_datetime
+      add :note_answer_index, :integer
+      add :note_question_index, :integer
 
       add :note_id, references(:notes, on_delete: :delete_all)
 
@@ -31,9 +31,14 @@ defmodule Memorex.Repo.Migrations.CreateNotes do
     end
 
     create table("card_logs") do
-      add :card_id, references(:cards, on_delete: :delete_all)
-      add :card_type, :string
       add :answer_choice, :string
+      add :card_type, :string
+      add(:ease_factor, :integer, null: false)
+      add(:interval, :integer, null: false)
+      add(:last_interval, :integer, null: false)
+      add(:time_to_answer, :integer, null: false)
+
+      add :card_id, references(:cards, on_delete: :delete_all)
 
       timestamps()
     end

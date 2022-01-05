@@ -9,6 +9,7 @@ defmodule Memorex.Schema.Note do
   alias Memorex.Repo
 
   @type t :: %__MODULE__{
+          id: Ecto.UUID.t() | nil,
           content: [String.t()],
           in_latest_parse?: boolean(),
           deck_id: Ecto.UUID.t(),

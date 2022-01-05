@@ -11,6 +11,7 @@ defmodule Memorex.Schema.Card do
   @type answer_choice :: :again | :hard | :ok | :easy
 
   @type t :: %__MODULE__{
+          id: Ecto.UUID.t() | nil,
           note_question_index: non_neg_integer(),
           note_answer_index: non_neg_integer(),
           note_id: Ecto.UUID.t(),

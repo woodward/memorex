@@ -7,6 +7,7 @@ defmodule Memorex.Schema.Deck do
   alias Memorex.Repo
 
   @type t :: %__MODULE__{
+          id: Ecto.UUID.t() | nil,
           name: String.t(),
           #
           inserted_at: DateTime.t(),

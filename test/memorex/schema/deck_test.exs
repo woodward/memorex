@@ -8,7 +8,7 @@ defmodule Memorex.Schema.DeckTest do
     deck = Repo.insert!(%Deck{})
     note = Repo.insert!(%Note{deck: deck})
     card = Repo.insert!(%Card{note: note})
-    card_log = Repo.insert!(%CardLog{card: card})
+    card_log = Repo.insert!(%CardLog{card: card, ease_factor: 1, interval: 1, last_interval: 1, time_to_answer: 1})
 
     Repo.delete!(deck)
 
