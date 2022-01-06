@@ -7,7 +7,9 @@ defmodule Memorex.Schema.CardTest do
 
   test "deletes card logs when deleted" do
     card = Repo.insert!(%Card{})
-    card_log = Repo.insert!(%CardLog{card: card, ease_factor: 1, interval: 1, last_interval: 1, time_to_answer: 1})
+
+    card_log =
+      Repo.insert!(%CardLog{card: card, ease_factor: 1, interval: 1, last_interval: 1, time_to_answer: Timex.Duration.parse!("PT1S")})
 
     Repo.delete!(card)
     assert Repo.get(CardLog, card_log.id) == nil

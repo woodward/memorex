@@ -3,12 +3,14 @@ defmodule Memorex.Schema.CardLogTest do
   use Memorex.DataCase
 
   alias Memorex.Schema.{Card, CardLog}
+  alias Memorex.Repo
+  alias Timex.Duration
 
   test "new/4" do
     answer_choice = :hard
     card_before = %Card{card_queue: :day_learn, card_type: :relearn, id: Ecto.UUID.generate()}
     card_after = %Card{card_queue: :learn, card_type: :review}
-    time_to_answer = Timex.Duration.parse!("PT1M15S")
+    time_to_answer = Duration.parse!("PT1M15S")
 
     card_log = CardLog.new(answer_choice, card_before, card_after, time_to_answer)
 
@@ -20,5 +22,14 @@ defmodule Memorex.Schema.CardLogTest do
     # assert card_log.last_interval == card_before.last_interval
     # assert card_log.interval == card_after.interval
     # assert card_log.ease_factor == card_before.ease_factor
+  end
+
+  test "Timex.Duration fields are stored in the database as ints" do
+    card_log = %CardLog{card_type: :relearn, ease_factor: 1, interval: 2, last_interval: 3}
+    card_log = %{card_log | time_to_answer: Duration.parse!("PT1M15S")}
+
+    card_log = card_log |> CardLog.changeset(%{}) |> Repo.insert!()
+
+    assert card_log.time_to_answer == Duration.parse!("PT1M15S")
   end
 end
