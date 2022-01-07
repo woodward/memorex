@@ -3,6 +3,7 @@ defmodule Memorex.Schema.DeckTest do
   use Memorex.DataCase
 
   alias Memorex.Schema.{Card, CardLog, Deck, Note}
+  alias Timex.Duration
 
   test "deletes notes, cards, and card logs when deleted" do
     deck = Repo.insert!(%Deck{})
@@ -10,7 +11,13 @@ defmodule Memorex.Schema.DeckTest do
     card = Repo.insert!(%Card{note: note})
 
     card_log =
-      Repo.insert!(%CardLog{card: card, ease_factor: 1, interval: 1, last_interval: 1, time_to_answer: Timex.Duration.parse!("PT1S")})
+      Repo.insert!(%CardLog{
+        card: card,
+        ease_factor: 1,
+        interval: Duration.parse!("PT1S"),
+        last_interval: Duration.parse!("PT1S"),
+        time_to_answer: Timex.Duration.parse!("PT1S")
+      })
 
     Repo.delete!(deck)
 

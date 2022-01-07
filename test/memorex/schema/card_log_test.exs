@@ -25,10 +25,10 @@ defmodule Memorex.Schema.CardLogTest do
   end
 
   test "Timex.Duration fields are stored in the database as ints" do
-    card_log = %CardLog{card_type: :relearn, ease_factor: 1, interval: 2, last_interval: 3}
+    card_log = %CardLog{card_type: :relearn, ease_factor: 1, interval: Duration.parse!("PT2S"), last_interval: Duration.parse!("PT3S")}
     card_log = %{card_log | time_to_answer: Duration.parse!("PT1M15S")}
 
-    card_log = card_log |> CardLog.changeset(%{}) |> Repo.insert!()
+    card_log = card_log |> Repo.insert!()
 
     assert card_log.time_to_answer == Duration.parse!("PT1M15S")
   end

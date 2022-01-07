@@ -4,6 +4,7 @@ defmodule Memorex.Schema.NoteTest do
 
   alias Memorex.Schema.{Card, CardLog, Deck, Note}
   alias Memorex.Repo
+  alias Timex.Duration
 
   # From: https://stackoverflow.com/questions/136505/searching-for-uuids-in-text-with-regex
   @uuid_regex ~r/\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/
@@ -151,7 +152,13 @@ defmodule Memorex.Schema.NoteTest do
     card = Repo.insert!(%Card{note: note})
 
     card_log =
-      Repo.insert!(%CardLog{card: card, ease_factor: 1, interval: 1, last_interval: 1, time_to_answer: Timex.Duration.parse!("PT1S")})
+      Repo.insert!(%CardLog{
+        card: card,
+        ease_factor: 1,
+        interval: Duration.parse!("PT1S"),
+        last_interval: Duration.parse!("PT1S"),
+        time_to_answer: Duration.parse!("PT1S")
+      })
 
     Repo.delete!(note)
 

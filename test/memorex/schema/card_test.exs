@@ -4,12 +4,19 @@ defmodule Memorex.Schema.CardTest do
 
   alias Memorex.Schema.{Card, CardLog, Note}
   alias Memorex.Repo
+  alias Timex.Duration
 
   test "deletes card logs when deleted" do
     card = Repo.insert!(%Card{})
 
     card_log =
-      Repo.insert!(%CardLog{card: card, ease_factor: 1, interval: 1, last_interval: 1, time_to_answer: Timex.Duration.parse!("PT1S")})
+      Repo.insert!(%CardLog{
+        card: card,
+        ease_factor: 1,
+        interval: Duration.parse!("PT1S"),
+        last_interval: Duration.parse!("PT1S"),
+        time_to_answer: Timex.Duration.parse!("PT1S")
+      })
 
     Repo.delete!(card)
     assert Repo.get(CardLog, card_log.id) == nil
