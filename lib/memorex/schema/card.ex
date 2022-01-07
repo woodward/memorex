@@ -2,8 +2,9 @@ defmodule Memorex.Schema.Card do
   @moduledoc false
 
   use Memorex.Schema
+
   alias Memorex.Schema.{CardLog, Note}
-  alias Memorex.Repo
+  alias Memorex.{EctoTimexDuration, Repo}
   alias Timex.Duration
 
   @type card_queue :: :new | :learn | :review | :day_learn | :suspended | :buried
@@ -12,12 +13,15 @@ defmodule Memorex.Schema.Card do
 
   @type t :: %__MODULE__{
           id: Ecto.UUID.t() | nil,
-          note_question_index: non_neg_integer(),
+          #
+          card_queue: card_queue(),
+          card_type: card_type(),
+          due: DateTime.t(),
+          ease_factor: non_neg_integer(),
+          interval: Duration.t(),
           note_answer_index: non_neg_integer(),
           note_id: Ecto.UUID.t(),
-          card_type: card_type(),
-          card_queue: card_queue(),
-          due: DateTime.t(),
+          note_question_index: non_neg_integer(),
           #
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
@@ -27,11 +31,13 @@ defmodule Memorex.Schema.Card do
   @max_time_to_answer Duration.parse!("PT1M")
 
   schema "cards" do
-    field :note_question_index, :integer
-    field :note_answer_index, :integer
-    field :card_type, Ecto.Enum, values: [:new, :learn, :review, :relearn], default: :new
     field :card_queue, Ecto.Enum, values: [:new, :learn, :review, :day_learn, :suspended, :buried], default: :new
+    field :card_type, Ecto.Enum, values: [:new, :learn, :review, :relearn], default: :new
     field :due, :utc_datetime
+    field :ease_factor, :integer
+    field :interval, EctoTimexDuration
+    field :note_answer_index, :integer
+    field :note_question_index, :integer
 
     # belongs_to :deck, Deck
     belongs_to :note, Note

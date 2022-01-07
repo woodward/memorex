@@ -1,4 +1,4 @@
-defmodule Memorex.Repo.Migrations.CreateNotes do
+defmodule Memorex.Repo.Migrations.CreateSchema do
   @moduledoc false
   use Ecto.Migration
 
@@ -24,6 +24,8 @@ defmodule Memorex.Repo.Migrations.CreateNotes do
       add :due, :utc_datetime
       add :note_answer_index, :integer
       add :note_question_index, :integer
+      add(:interval, :integer)
+      add(:ease_factor, :integer)
 
       add :note_id, references(:notes, on_delete: :delete_all)
 
