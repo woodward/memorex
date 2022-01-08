@@ -19,9 +19,13 @@ defmodule Memorex.Schema.Card do
           due: DateTime.t(),
           ease_factor: non_neg_integer(),
           interval: Duration.t(),
+          lapses: non_neg_integer(),
           note_answer_index: non_neg_integer(),
-          note_id: Ecto.UUID.t(),
           note_question_index: non_neg_integer(),
+          remaining_steps: non_neg_integer(),
+          reps: non_neg_integer(),
+          #
+          note_id: Ecto.UUID.t(),
           #
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
@@ -36,8 +40,11 @@ defmodule Memorex.Schema.Card do
     field :due, :utc_datetime
     field :ease_factor, :integer
     field :interval, EctoTimexDuration
+    field :lapses, :integer
     field :note_answer_index, :integer
     field :note_question_index, :integer
+    field :remaining_steps, :integer
+    field :reps, :integer
 
     # belongs_to :deck, Deck
     belongs_to :note, Note

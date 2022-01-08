@@ -24,8 +24,11 @@ defmodule Memorex.Repo.Migrations.CreateSchema do
       add :due, :utc_datetime
       add :note_answer_index, :integer
       add :note_question_index, :integer
-      add(:interval, :integer)
       add(:ease_factor, :integer)
+      add(:interval, :integer)
+      add(:lapses, :integer)
+      add(:remaining_steps, :integer)
+      add(:reps, :integer)
 
       add :note_id, references(:notes, on_delete: :delete_all)
 
