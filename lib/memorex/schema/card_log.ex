@@ -39,9 +39,9 @@ defmodule Memorex.Schema.CardLog do
       answer_choice: answer_choice,
       card_id: card_before.id,
       card_type: card_after.card_type,
-      interval: Duration.parse!("PT3S"),
-      last_interval: Duration.parse!("PT3S"),
-      ease_factor: 3,
+      interval: card_after.interval,
+      last_interval: card_before.interval,
+      ease_factor: card_after.ease_factor,
       time_to_answer: Card.bracket_time_to_answer(time_to_answer)
     }
   end
