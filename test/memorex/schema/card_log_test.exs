@@ -2,8 +2,8 @@ defmodule Memorex.Schema.CardLogTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.Schema.{Card, CardLog}
   alias Memorex.Repo
+  alias Memorex.Schema.{Card, CardLog}
   alias Timex.Duration
 
   test "new/4" do

@@ -5,8 +5,8 @@ defmodule Memorex.Schema.Note do
   import Ecto.Changeset
   require Ecto.Query
 
-  alias Memorex.Schema.{Card, Deck, Note}
   alias Memorex.Repo
+  alias Memorex.Schema.{Card, Deck, Note}
 
   @type t :: %__MODULE__{
           id: Ecto.UUID.t() | nil,

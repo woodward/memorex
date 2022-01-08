@@ -3,8 +3,8 @@ defmodule Memorex.Schema.Deck do
 
   use Memorex.Schema
 
-  alias Memorex.Schema.Note
   alias Memorex.Repo
+  alias Memorex.Schema.Note
 
   @type t :: %__MODULE__{
           id: Ecto.UUID.t() | nil,

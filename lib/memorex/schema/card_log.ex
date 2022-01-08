@@ -2,9 +2,10 @@ defmodule Memorex.Schema.CardLog do
   @moduledoc false
 
   use Memorex.Schema
+
+  alias Memorex.EctoTimexDuration
   alias Memorex.Schema.Card
   alias Timex.Duration
-  alias Memorex.EctoTimexDuration
 
   @type t :: %__MODULE__{
           id: Ecto.UUID.t() | nil,
