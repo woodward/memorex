@@ -5,6 +5,40 @@ defmodule Memorex.SchedulerTest do
   alias Memorex.Scheduler
   alias Memorex.Schema.Card
 
+  describe "learn_ahead_time" do
+    test "uses the config :learn_ahead_time_inveral value" do
+      now = ~U[2021-01-01 10:30:00Z]
+      learn_ahead_time = Scheduler.learn_ahead_time(now)
+      assert learn_ahead_time == ~U[2021-01-01 10:50:00Z]
+    end
+  end
+
+  describe "is_card_due?/2" do
+    test "is true for| a card in the new queue" do
+      now = Timex.now()
+      three_minutes_from_now = Timex.shift(now, minutes: 3)
+      card = %Card{card_queue: :new, due: three_minutes_from_now}
+      assert Scheduler.is_card_due?(card, now) == true
+    end
+
+    test "is true for a :learn card if the card due date is less than today" do
+      now = Timex.now()
+      three_minutes_ago = Timex.shift(now, minutes: -3)
+      card = %Card{card_queue: :learn, due: three_minutes_ago}
+      assert Scheduler.is_card_due?(card, now) == true
+    end
+
+    test "is false for a :learn card if the card due date is greater than or equal to today" do
+      now = Timex.now()
+      three_minutes_from_now = Timex.shift(now, minutes: 3)
+      card = %Card{card_queue: :learn, due: three_minutes_from_now}
+      assert Scheduler.is_card_due?(card, now) == false
+
+      card = %Card{card_queue: :learn, due: now}
+      assert Scheduler.is_card_due?(card, now) == false
+    end
+  end
+
   describe "implemented tests from Anki" do
     test "test_new" do
       # Corresponds to test_new() in test_schedv2.py in Anki
