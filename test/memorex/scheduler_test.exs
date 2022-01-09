@@ -14,7 +14,7 @@ defmodule Memorex.SchedulerTest do
   end
 
   describe "is_card_due?/2" do
-    test "is true for| a card in the new queue" do
+    test "is true for a card in the new queue" do
       now = Timex.now()
       three_minutes_from_now = Timex.shift(now, minutes: 3)
       card = %Card{card_queue: :new, due: three_minutes_from_now}
