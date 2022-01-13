@@ -59,11 +59,27 @@ defmodule Memorex.Scheduler do
 
   @spec is_card_due?(Card.t(), DateTime.t() | nil) :: boolean()
   def is_card_due?(%Card{card_queue: :new} = _card, _now), do: true
+  def is_card_due?(%Card{card_queue: :buried}, _now), do: false
+  def is_card_due?(%Card{card_queue: :suspended}, _now), do: false
 
-  def is_card_due?(card, now) do
-    case DateTime.compare(card.due, now) do
-      :lt -> true
-      _ -> false
+  def is_card_due?(%Card{card_queue: :learn} = card, now) do
+    case DateTime.compare(card.due, learn_ahead_time(now)) do
+      :gt -> false
+      _ -> true
+    end
+  end
+
+  def is_card_due?(%Card{card_queue: :day_learn} = card, now) do
+    case DateTime.compare(card.due, Timex.end_of_day(now)) do
+      :gt -> false
+      _ -> true
+    end
+  end
+
+  def is_card_due?(%Card{card_queue: :review} = card, now) do
+    case DateTime.compare(card.due, Timex.end_of_day(now)) do
+      :gt -> false
+      _ -> true
     end
   end
 

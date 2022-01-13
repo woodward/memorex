@@ -14,27 +14,70 @@ defmodule Memorex.SchedulerTest do
   end
 
   describe "is_card_due?/2" do
-    test "is true for a card in the new queue" do
+    test "is true for a card in the new queue, regardless of anything else" do
       now = Timex.now()
       three_minutes_from_now = Timex.shift(now, minutes: 3)
       card = %Card{card_queue: :new, due: three_minutes_from_now}
       assert Scheduler.is_card_due?(card, now) == true
     end
 
-    test "is true for a :learn card if the card due date is less than today" do
+    test "is true for a :learn card if the card due date is less than now plus the learn-ahead time" do
       now = Timex.now()
-      three_minutes_ago = Timex.shift(now, minutes: -3)
-      card = %Card{card_queue: :learn, due: three_minutes_ago}
+      nineteen_minutes_from_now = Timex.shift(now, minutes: 10)
+      card = %Card{card_queue: :learn, due: nineteen_minutes_from_now}
+      assert Scheduler.is_card_due?(card, now) == true
+
+      twenty_minutes_from_now = Timex.shift(now, minutes: 20)
+      card = %Card{card_queue: :learn, due: twenty_minutes_from_now}
       assert Scheduler.is_card_due?(card, now) == true
     end
 
-    test "is false for a :learn card if the card due date is greater than or equal to today" do
+    test "is false for a :learn card if the card due date is greater than now plus the learn-ahead time" do
       now = Timex.now()
-      three_minutes_from_now = Timex.shift(now, minutes: 3)
-      card = %Card{card_queue: :learn, due: three_minutes_from_now}
+      thirty_minutes_from_now = Timex.shift(now, minutes: 30)
+      card = %Card{card_queue: :learn, due: thirty_minutes_from_now}
       assert Scheduler.is_card_due?(card, now) == false
+    end
 
-      card = %Card{card_queue: :learn, due: now}
+    test "is true for a :day_learn card if the card due date is less than the end of today" do
+      now = Timex.now()
+      nineteen_minutes_from_now = Timex.shift(now, minutes: 10)
+      card = %Card{card_queue: :day_learn, due: nineteen_minutes_from_now}
+      assert Scheduler.is_card_due?(card, now) == true
+    end
+
+    test "is false for a :day_learn card if the card due date is less than the end of today" do
+      now = Timex.now()
+      one_day_from_now = Timex.shift(now, days: 1)
+      card = %Card{card_queue: :day_learn, due: one_day_from_now}
+      assert Scheduler.is_card_due?(card, now) == false
+    end
+
+    test "is true for a :review card if the card due date is less than the end of today" do
+      now = Timex.now()
+      nineteen_minutes_from_now = Timex.shift(now, minutes: 10)
+      card = %Card{card_queue: :review, due: nineteen_minutes_from_now}
+      assert Scheduler.is_card_due?(card, now) == true
+    end
+
+    test "is false for a :review card if the card due date is less than the end of today" do
+      now = Timex.now()
+      one_day_from_now = Timex.shift(now, days: 1)
+      card = %Card{card_queue: :review, due: one_day_from_now}
+      assert Scheduler.is_card_due?(card, now) == false
+    end
+
+    test "is false for a :buried card" do
+      now = Timex.now()
+      one_minute_from_now = Timex.shift(now, minutes: 1)
+      card = %Card{card_queue: :buried, due: one_minute_from_now}
+      assert Scheduler.is_card_due?(card, now) == false
+    end
+
+    test "is false for a :suspended card" do
+      now = Timex.now()
+      one_minute_from_now = Timex.shift(now, minutes: 1)
+      card = %Card{card_queue: :suspended, due: one_minute_from_now}
       assert Scheduler.is_card_due?(card, now) == false
     end
   end
