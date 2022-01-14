@@ -8,8 +8,8 @@ defmodule Memorex.SchedulerTest do
   describe "learn_ahead_time" do
     test "uses the config :learn_ahead_time_inveral value" do
       now = ~U[2021-01-01 10:30:00Z]
-      learn_ahead_time = Scheduler.learn_ahead_time(now)
-      assert learn_ahead_time == ~U[2021-01-01 10:50:00Z]
+      learn_ahead_time_twenty_minutes_from_now = Scheduler.learn_ahead_time(now)
+      assert learn_ahead_time_twenty_minutes_from_now == ~U[2021-01-01 10:50:00Z]
     end
   end
 
@@ -23,7 +23,7 @@ defmodule Memorex.SchedulerTest do
 
     test "is true for a :learn card if the card due date is less than now plus the learn-ahead time" do
       now = Timex.now()
-      nineteen_minutes_from_now = Timex.shift(now, minutes: 10)
+      nineteen_minutes_from_now = Timex.shift(now, minutes: 19)
       card = %Card{card_queue: :learn, due: nineteen_minutes_from_now}
       assert Scheduler.is_card_due?(card, now) == true
 
@@ -41,7 +41,7 @@ defmodule Memorex.SchedulerTest do
 
     test "is true for a :day_learn card if the card due date is less than the end of today" do
       now = Timex.now()
-      nineteen_minutes_from_now = Timex.shift(now, minutes: 10)
+      nineteen_minutes_from_now = Timex.shift(now, minutes: 19)
       card = %Card{card_queue: :day_learn, due: nineteen_minutes_from_now}
       assert Scheduler.is_card_due?(card, now) == true
     end
@@ -55,7 +55,7 @@ defmodule Memorex.SchedulerTest do
 
     test "is true for a :review card if the card due date is less than the end of today" do
       now = Timex.now()
-      nineteen_minutes_from_now = Timex.shift(now, minutes: 10)
+      nineteen_minutes_from_now = Timex.shift(now, minutes: 19)
       card = %Card{card_queue: :review, due: nineteen_minutes_from_now}
       assert Scheduler.is_card_due?(card, now) == true
     end
@@ -79,6 +79,18 @@ defmodule Memorex.SchedulerTest do
       one_minute_from_now = Timex.shift(now, minutes: 1)
       card = %Card{card_queue: :suspended, due: one_minute_from_now}
       assert Scheduler.is_card_due?(card, now) == false
+    end
+  end
+
+  describe "answer_card" do
+    test "returns with no action if the card is not due" do
+      now = Timex.now()
+      card = %Card{card_queue: :buried, due: now, card_type: :learn}
+      assert Scheduler.is_card_due?(card, now) == false
+
+      scheduler_config = %Scheduler.Config{}
+      answered_card = Scheduler.answer_card(card, :hard, scheduler_config)
+      assert answered_card == card
     end
   end
 

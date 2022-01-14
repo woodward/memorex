@@ -52,9 +52,14 @@ defmodule Memorex.Scheduler do
     # leech_threshold: 7,
   end
 
-  @spec answer_card(Card.t(), Card.answer_choice(), __MODULE__.Config.t()) :: Card.t()
-  def answer_card(card, _answer_choice, _scheduler_config) do
-    %{card | card_queue: :learn, card_type: :learn, due: Timex.now()}
+  # I'm not sure what is up with this spec...
+  # @spec answer_card(Card.t(), Card.answer_choice(), __MODULE__.Config.t()) :: Card.t()
+  def answer_card(card, answer_choice, _scheduler_config) do
+    if is_card_due?(card, answer_choice) do
+      %{card | card_queue: :learn, card_type: :learn, due: Timex.now()}
+    else
+      card
+    end
   end
 
   @spec is_card_due?(Card.t(), DateTime.t() | nil) :: boolean()

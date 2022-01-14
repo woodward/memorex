@@ -9,6 +9,7 @@ defmodule Memorex.Schema.CardLog do
 
   @type t :: %__MODULE__{
           id: Ecto.UUID.t() | nil,
+          #
           card_id: Ecto.UUID.t(),
           card_type: Card.card_type(),
           answer_choice: Card.answer_choice(),
@@ -34,7 +35,7 @@ defmodule Memorex.Schema.CardLog do
     timestamps()
   end
 
-  @spec new(Card.answer_choice(), Card.t(), Card.t(), Duration.t()) :: t()
+  @spec new(Card.answer_choice(), card_before :: Card.t(), card_after :: Card.t(), time_to_answer :: Duration.t()) :: t()
   def new(answer_choice, card_before, card_after, time_to_answer) do
     %__MODULE__{
       answer_choice: answer_choice,
