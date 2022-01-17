@@ -6,7 +6,7 @@ defmodule Memorex.SchedulerTest do
   alias Memorex.Schema.Card
 
   describe "learn_ahead_time" do
-    test "uses the config :learn_ahead_time_inveral value" do
+    test "uses the config :learn_ahead_time_interval value" do
       now = ~U[2021-01-01 10:30:00Z]
       learn_ahead_time_twenty_minutes_from_now = Scheduler.learn_ahead_time(now)
       assert learn_ahead_time_twenty_minutes_from_now == ~U[2021-01-01 10:50:00Z]
@@ -46,7 +46,7 @@ defmodule Memorex.SchedulerTest do
       assert Scheduler.is_card_due?(card, now) == true
     end
 
-    test "is false for a :day_learn card if the card due date is less than the end of today" do
+    test "is false for a :day_learn card if the card due date is greater than the end of today" do
       now = Timex.now()
       one_day_from_now = Timex.shift(now, days: 1)
       card = %Card{card_queue: :day_learn, due: one_day_from_now}
@@ -60,7 +60,7 @@ defmodule Memorex.SchedulerTest do
       assert Scheduler.is_card_due?(card, now) == true
     end
 
-    test "is false for a :review card if the card due date is less than the end of today" do
+    test "is false for a :review card if the card due date is greater than the end of today" do
       now = Timex.now()
       one_day_from_now = Timex.shift(now, days: 1)
       card = %Card{card_queue: :review, due: one_day_from_now}
