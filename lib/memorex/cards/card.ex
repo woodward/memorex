@@ -3,6 +3,7 @@ defmodule Memorex.Cards.Card do
 
   use Memorex.Schema
 
+  alias Memorex.Config
   alias Memorex.Cards.{CardLog, Note}
   alias Memorex.{EctoTimexDuration, Repo}
   alias Timex.Duration
@@ -31,9 +32,6 @@ defmodule Memorex.Cards.Card do
           updated_at: DateTime.t()
         }
 
-  @min_time_to_answer Duration.parse!("PT1S")
-  @max_time_to_answer Duration.parse!("PT1M")
-
   schema "cards" do
     field :card_queue, Ecto.Enum, values: [:new, :learn, :review, :day_learn, :suspended, :buried], default: :new
     field :card_type, Ecto.Enum, values: [:new, :learn, :review, :relearn], default: :new
@@ -60,18 +58,18 @@ defmodule Memorex.Cards.Card do
     Repo.insert!(card2)
   end
 
-  @spec bracket_time_to_answer(Duration.t()) :: Duration.t()
-  def bracket_time_to_answer(time_to_answer) do
+  @spec bracket_time_to_answer(Duration.t(), Config.t()) :: Duration.t()
+  def bracket_time_to_answer(time_to_answer, config \\ %Config{}) do
     time_to_answer_in_sec = Duration.to_seconds(time_to_answer)
 
-    if time_to_answer_in_sec > Duration.to_seconds(@min_time_to_answer) do
-      if time_to_answer_in_sec > Duration.to_seconds(@max_time_to_answer) do
-        @max_time_to_answer
+    if time_to_answer_in_sec > Duration.to_seconds(config.min_time_to_answer) do
+      if time_to_answer_in_sec > Duration.to_seconds(config.max_time_to_answer) do
+        config.max_time_to_answer
       else
         time_to_answer
       end
     else
-      @min_time_to_answer
+      config.min_time_to_answer
     end
   end
 end
