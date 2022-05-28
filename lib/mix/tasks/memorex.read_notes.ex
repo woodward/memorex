@@ -7,7 +7,7 @@ defmodule Mix.Tasks.Memorex.ReadNotes do
   ```
   """
 
-  alias Memorex.Schema.Deck
+  alias Memorex.Cards.Deck
 
   @shortdoc "Reads the notes from the notes dirs"
   use Mix.Task
