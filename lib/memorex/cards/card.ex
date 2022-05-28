@@ -51,7 +51,8 @@ defmodule Memorex.Cards.Card do
     timestamps()
   end
 
-  def create_bidirectional_from_note(note) do
+  @spec create_bidirectional_from_note(Note.t()) :: Ecto.Schema.t()
+  def(create_bidirectional_from_note(note)) do
     card1 = %__MODULE__{note: note, note_question_index: 0, note_answer_index: 1}
     card2 = %__MODULE__{note: note, note_question_index: 1, note_answer_index: 0}
     Repo.insert!(card1)
