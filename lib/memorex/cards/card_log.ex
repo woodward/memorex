@@ -15,7 +15,7 @@ defmodule Memorex.Cards.CardLog do
           answer_choice: Card.answer_choice(),
           interval: Duration.t(),
           last_interval: Duration.t(),
-          ease_factor: non_neg_integer(),
+          ease_factor: float(),
           time_to_answer: Duration.t(),
           #
           inserted_at: DateTime.t() | nil,
@@ -27,7 +27,7 @@ defmodule Memorex.Cards.CardLog do
     field :answer_choice, Ecto.Enum, values: [:again, :hard, :ok, :easy]
     field :interval, EctoTimexDuration
     field :last_interval, EctoTimexDuration
-    field :ease_factor, :integer
+    field :ease_factor, :float
     field :time_to_answer, EctoTimexDuration
 
     belongs_to :card, Card

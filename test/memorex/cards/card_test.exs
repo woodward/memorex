@@ -12,7 +12,7 @@ defmodule Memorex.Cards.CardTest do
     card_log =
       Repo.insert!(%CardLog{
         card: card,
-        ease_factor: 1,
+        ease_factor: 2.5,
         interval: Duration.parse!("PT1S"),
         last_interval: Duration.parse!("PT1S"),
         time_to_answer: Timex.Duration.parse!("PT1S")

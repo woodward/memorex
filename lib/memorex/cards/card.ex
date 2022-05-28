@@ -17,7 +17,7 @@ defmodule Memorex.Cards.Card do
           card_queue: card_queue(),
           card_type: card_type(),
           due: DateTime.t(),
-          ease_factor: non_neg_integer(),
+          ease_factor: float(),
           interval: Duration.t(),
           lapses: non_neg_integer(),
           note_answer_index: non_neg_integer(),
@@ -38,7 +38,7 @@ defmodule Memorex.Cards.Card do
     field :card_queue, Ecto.Enum, values: [:new, :learn, :review, :day_learn, :suspended, :buried], default: :new
     field :card_type, Ecto.Enum, values: [:new, :learn, :review, :relearn], default: :new
     field :due, :utc_datetime
-    field :ease_factor, :integer
+    field :ease_factor, :float
     field :interval, EctoTimexDuration
     field :lapses, :integer
     field :note_answer_index, :integer

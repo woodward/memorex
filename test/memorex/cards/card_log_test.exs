@@ -14,10 +14,10 @@ defmodule Memorex.Cards.CardLogTest do
       card_type: :relearn,
       id: Ecto.UUID.generate(),
       interval: Duration.parse!("PT33S"),
-      ease_factor: 123
+      ease_factor: 2.5
     }
 
-    card_after = %Card{card_queue: :learn, card_type: :review, interval: Duration.parse!("PT47S"), ease_factor: 321}
+    card_after = %Card{card_queue: :learn, card_type: :review, interval: Duration.parse!("PT47S"), ease_factor: 2.5}
     time_to_answer = Duration.parse!("PT1M15S")
 
     card_log = CardLog.new(answer_choice, card_before, card_after, time_to_answer)
@@ -28,11 +28,11 @@ defmodule Memorex.Cards.CardLogTest do
     assert card_log.card_type == :review
     assert card_log.last_interval == Duration.parse!("PT33S")
     assert card_log.interval == Duration.parse!("PT47S")
-    assert card_log.ease_factor == 321
+    assert card_log.ease_factor == 2.5
   end
 
   test "Timex.Duration fields are stored in the database as ints" do
-    card_log = %CardLog{card_type: :relearn, ease_factor: 1, interval: Duration.parse!("PT2S"), last_interval: Duration.parse!("PT3S")}
+    card_log = %CardLog{card_type: :relearn, ease_factor: 2.5, interval: Duration.parse!("PT2S"), last_interval: Duration.parse!("PT3S")}
     card_log = %{card_log | time_to_answer: Duration.parse!("PT1M15S")}
 
     card_log = card_log |> Repo.insert!()
