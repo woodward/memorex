@@ -1,9 +1,9 @@
-defmodule Memorex.Schema.Card do
+defmodule Memorex.Cards.Card do
   @moduledoc false
 
   use Memorex.Schema
 
-  alias Memorex.Schema.{CardLog, Note}
+  alias Memorex.Cards.{CardLog, Note}
   alias Memorex.{EctoTimexDuration, Repo}
   alias Timex.Duration
 

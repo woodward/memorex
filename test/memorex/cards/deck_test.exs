@@ -1,8 +1,8 @@
-defmodule Memorex.Schema.DeckTest do
+defmodule Memorex.Cards.DeckTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.Schema.{Card, CardLog, Deck, Note}
+  alias Memorex.Cards.{Card, CardLog, Deck, Note}
   alias Timex.Duration
 
   test "deletes notes, cards, and card logs when deleted" do

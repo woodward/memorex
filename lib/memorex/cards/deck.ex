@@ -1,10 +1,10 @@
-defmodule Memorex.Schema.Deck do
+defmodule Memorex.Cards.Deck do
   @moduledoc false
 
   use Memorex.Schema
 
   alias Memorex.Repo
-  alias Memorex.Schema.Note
+  alias Memorex.Cards.Note
 
   @type t :: %__MODULE__{
           id: Ecto.UUID.t() | nil,

@@ -1,4 +1,4 @@
-defmodule Memorex.Schema.Note do
+defmodule Memorex.Cards.Note do
   @moduledoc false
 
   use Memorex.Schema
@@ -6,7 +6,7 @@ defmodule Memorex.Schema.Note do
   require Ecto.Query
 
   alias Memorex.Repo
-  alias Memorex.Schema.{Card, Deck, Note}
+  alias Memorex.Cards.{Card, Deck, Note}
 
   @type t :: %__MODULE__{
           id: Ecto.UUID.t() | nil,

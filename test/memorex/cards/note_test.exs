@@ -1,9 +1,9 @@
-defmodule Memorex.Schema.NoteTest do
+defmodule Memorex.Cards.NoteTest do
   @moduledoc false
   use Memorex.DataCase
 
   alias Memorex.Repo
-  alias Memorex.Schema.{Card, CardLog, Deck, Note}
+  alias Memorex.Cards.{Card, CardLog, Deck, Note}
   alias Timex.Duration
 
   # From: https://stackoverflow.com/questions/136505/searching-for-uuids-in-text-with-regex

@@ -3,7 +3,7 @@ defmodule Memorex.CardsTest do
   use Memorex.DataCase
 
   alias Memorex.Cards
-  alias Memorex.Schema.Card
+  alias Memorex.Cards.Card
 
   test "next_intervals/1" do
     card = %Card{}

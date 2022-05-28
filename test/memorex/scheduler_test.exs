@@ -3,7 +3,7 @@ defmodule Memorex.SchedulerTest do
   use Memorex.DataCase
 
   alias Memorex.Scheduler
-  alias Memorex.Schema.Card
+  alias Memorex.Cards.Card
 
   describe "learn_ahead_time" do
     test "uses the config :learn_ahead_time_interval value" do

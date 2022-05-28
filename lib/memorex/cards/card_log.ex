@@ -1,10 +1,10 @@
-defmodule Memorex.Schema.CardLog do
+defmodule Memorex.Cards.CardLog do
   @moduledoc false
 
   use Memorex.Schema
 
   alias Memorex.EctoTimexDuration
-  alias Memorex.Schema.Card
+  alias Memorex.Cards.Card
   alias Timex.Duration
 
   @type t :: %__MODULE__{

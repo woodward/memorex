@@ -1,7 +1,7 @@
 defmodule Memorex.Scheduler do
   @moduledoc false
 
-  alias Memorex.Schema.Card
+  alias Memorex.Cards.Card
   alias Timex.Duration
 
   defmodule Config do
