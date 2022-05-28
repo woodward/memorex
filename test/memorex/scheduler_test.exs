@@ -2,7 +2,7 @@ defmodule Memorex.SchedulerTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.Scheduler
+  alias Memorex.{Config, Scheduler}
   alias Memorex.Cards.Card
 
   describe "learn_ahead_time" do
@@ -88,7 +88,7 @@ defmodule Memorex.SchedulerTest do
       card = %Card{card_queue: :buried, due: now, card_type: :learn}
       assert Scheduler.is_card_due?(card, now) == false
 
-      scheduler_config = %Scheduler.Config{}
+      scheduler_config = %Config{}
       answered_card = Scheduler.answer_card(card, :hard, scheduler_config)
       assert answered_card == card
     end
@@ -98,7 +98,7 @@ defmodule Memorex.SchedulerTest do
     test "test_new" do
       # Corresponds to test_new() in pylib/tests/test_schedv2.py in Anki
       now = Timex.now()
-      scheduler_config = %Scheduler.Config{}
+      scheduler_config = %Config{}
       card = %Card{}
       card = Scheduler.answer_card(card, :again, scheduler_config)
       assert card.card_queue == :learn
