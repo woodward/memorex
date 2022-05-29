@@ -24,9 +24,6 @@ config :memorex, MemorexWeb.Endpoint,
   secret_key_base: "dIEhnYcaalhIo+QHw0MxxRP7Ib8x5DURfqGo5WpebuAeXZb8ZYnLb3VtRV5qqSox",
   server: false
 
-# In test we don't send emails.
-config :memorex, Memorex.Mailer, adapter: Swoosh.Adapters.Test
-
 # Print only warnings and errors during test
 config :logger, level: :warn
 
