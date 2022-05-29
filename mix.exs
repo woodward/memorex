@@ -39,7 +39,7 @@ defmodule Memorex.MixProject do
   defp deps do
     [
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:dart_sass, "~> 0.3", runtime: Mix.env() == :dev},
+      {:dart_sass, "~> 0.5", runtime: Mix.env() == :dev},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ecto_sql, "~> 3.8"},
       {:esbuild, "~> 0.5", runtime: Mix.env() == :dev},
