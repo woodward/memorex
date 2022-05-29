@@ -2,8 +2,8 @@ defmodule Memorex.Cards.Card do
   @moduledoc false
 
   use Memorex.Schema
+  import Ecto.Changeset
 
-  alias Memorex.Config
   alias Memorex.Cards.{CardLog, Note}
   alias Memorex.{EctoTimexDuration, Repo}
   alias Timex.Duration
@@ -51,26 +51,23 @@ defmodule Memorex.Cards.Card do
     timestamps()
   end
 
+  # Uncomment this typespec once we figure out the defaults for all of the values:
+  # @spec new(Config.t()) :: t()
+  def new(config) do
+    %__MODULE__{ease_factor: config.initial_ease}
+  end
+
+  @spec changeset(Ecto.Changeset.t() | t(), map()) :: Ecto.Changeset.t()
+  def changeset(card, params \\ %{}) do
+    card
+    |> cast(params, [:ease_factor, :card_queue, :card_type, :interval])
+  end
+
   @spec create_bidirectional_from_note(Note.t()) :: Ecto.Schema.t()
   def(create_bidirectional_from_note(note)) do
     card1 = %__MODULE__{note: note, note_question_index: 0, note_answer_index: 1}
     card2 = %__MODULE__{note: note, note_question_index: 1, note_answer_index: 0}
     Repo.insert!(card1)
     Repo.insert!(card2)
-  end
-
-  @spec bracket_time_to_answer(Duration.t(), Config.t()) :: Duration.t()
-  def bracket_time_to_answer(time_to_answer, config \\ %Config{}) do
-    time_to_answer_in_sec = Duration.to_seconds(time_to_answer)
-
-    if time_to_answer_in_sec > Duration.to_seconds(config.min_time_to_answer) do
-      if time_to_answer_in_sec > Duration.to_seconds(config.max_time_to_answer) do
-        config.max_time_to_answer
-      else
-        time_to_answer
-      end
-    else
-      config.min_time_to_answer
-    end
   end
 end

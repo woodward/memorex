@@ -2,9 +2,18 @@ defmodule Memorex.Cards.CardTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.Repo
+  alias Memorex.{Config, Repo}
   alias Memorex.Cards.{Card, CardLog, Note}
   alias Timex.Duration
+
+  describe "new" do
+    test "incorporates the defaults from Config" do
+      card = Card.new(%Config{initial_ease: 2.5})
+
+      assert card.card_type == :new
+      assert card.ease_factor == 2.5
+    end
+  end
 
   test "deletes card logs when deleted" do
     card = Repo.insert!(%Card{})
@@ -51,20 +60,21 @@ defmodule Memorex.Cards.CardTest do
     assert card.card_type == :new
   end
 
-  describe "bracket_time_to_answer/1" do
-    test "returns the actual time to answer if it is not too large or too small" do
-      time_to_answer = Timex.Duration.parse!("PT15S")
-      assert Card.bracket_time_to_answer(time_to_answer) == Timex.Duration.parse!("PT15S")
-    end
+  test "changeset" do
+    card = %Card{
+      card_queue: :day_learn,
+      card_type: :relearn,
+      interval: Duration.parse!("PT33S"),
+      ease_factor: 2.5
+    }
 
-    test "returns the minimum time if the time to answer is too small" do
-      time_to_answer = Timex.Duration.parse!("PT0S")
-      assert Card.bracket_time_to_answer(time_to_answer) == Timex.Duration.parse!("PT1S")
-    end
+    card_changeset = Card.changeset(card, %{card_queue: :learn, card_type: :review, interval: Duration.parse!("PT47S"), ease_factor: 2.4})
 
-    test "returns the maximum time if the time to answer is too large" do
-      time_to_answer = Timex.Duration.parse!("PT61S")
-      assert Card.bracket_time_to_answer(time_to_answer) == Timex.Duration.parse!("PT1M")
-    end
+    changes = card_changeset.changes
+
+    assert changes.ease_factor == 2.4
+    assert changes.card_queue == :learn
+    assert changes.card_type == :review
+    assert changes.interval == Duration.parse!("PT47S")
   end
 end
