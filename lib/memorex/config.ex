@@ -43,7 +43,7 @@ defmodule Memorex.Config do
             interval_multiplier: 0.0,
             #
             max_review_interval: Duration.parse!("P100Y"),
-            min_review_interval: Duration.parse!("PT1S"),
+            min_review_interval: Duration.parse!("P1D"),
             #
             graduating_interval_good: Duration.parse!("P1D"),
             graduating_interval_easy: Duration.parse!("P4D"),
