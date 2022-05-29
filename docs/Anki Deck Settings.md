@@ -6,6 +6,8 @@ select "Options".
 These are the tooltip values that show up when you hover on the "i" icon next to the value's name.  They are 
 copied/pasted from the file [deck-config.ftl](https://github.com/ankitects/anki/blob/main/ftl/core/deck-config.ftl)
 
+This [manual page](https://docs.ankiweb.net/deck-options.html) also talks about the various deck settings.
+
 
 ## Daily Limits
 
