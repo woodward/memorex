@@ -17,12 +17,10 @@ defmodule Memorex.Cards.CardLogTest do
       ease_factor: 2.5
     }
 
-    card_after_changeset =
-      Card.changeset(card_before, %{card_queue: :day_learn, card_type: :review, interval: Duration.parse!("PT47S"), ease_factor: 2.4})
-
+    card_after = %Card{card_queue: :learn, card_type: :review, interval: Duration.parse!("PT47S"), ease_factor: 2.4}
     time_to_answer = Duration.parse!("PT1M15S")
 
-    card_log = CardLog.new(answer_choice, card_before, card_after_changeset, time_to_answer)
+    card_log = CardLog.new(answer_choice, card_before, card_after, time_to_answer)
 
     assert card_log.answer_choice == answer_choice
     assert card_log.card_id == card_before.id
