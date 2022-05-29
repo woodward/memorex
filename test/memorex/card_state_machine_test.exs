@@ -6,18 +6,35 @@ defmodule Memorex.CardStateMachineTest do
   alias Memorex.{CardStateMachine, Config}
   alias Timex.Duration
 
-  describe "new cards" do
-    test "graduates to the next learning step" do
-      config = %Config{max_time_to_answer: Duration.parse!("PT2M")}
+  describe "learn cards" do
+    test "answer: 'easy'" do
+      config = %Config{}
       card = Card.new(config)
-      assert card.card_type == :new
+      card = %{card | card_type: :learn}
 
-      {answered_card_changeset, card_log} = CardStateMachine.answer_card(card, :good, Duration.parse!("PT3M15S"), config)
+      changes = CardStateMachine.answer_card(card, :easy, config)
 
-      # assert answered_card_changeset.changes == %{card_type: :learn}
+      assert changes == %{card_type: :review}
+    end
 
-      assert card_log.ease_factor == 2.5
-      assert card_log.time_to_answer == Duration.parse!("PT2M")
+    test "answer: 'good' and this is the last learning step" do
+      config = %Config{}
+      card = Card.new(config)
+      card = %{card | card_type: :learn}
+
+      changes = CardStateMachine.answer_card(card, :good, config)
+
+      assert changes == %{card_type: :review}
+    end
+
+    test "answer: 'good' but this is not the last learning step" do
+      config = %Config{}
+      card = Card.new(config)
+      card = %{card | card_type: :learn}
+
+      changes = CardStateMachine.answer_card(card, :good, config)
+
+      assert changes == %{card_type: :review}
     end
   end
 

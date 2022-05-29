@@ -1,15 +1,17 @@
 defmodule Memorex.CardStateMachine do
   @moduledoc false
 
-  alias Memorex.Cards.{Card, CardLog}
+  alias Memorex.Cards.Card
   alias Memorex.Config
   alias Timex.Duration
 
-  @spec answer_card(Card.t(), Card.answer_choice(), Duration.t(), Config.t()) :: {Ecto.Changeset.t(), CardLog.t()}
-  def answer_card(card, answer, time_to_answer, config) do
-    card_changeset = Card.changeset(card)
-    card_log = CardLog.new(answer, card, card_changeset, bracket_time_to_answer(time_to_answer, config))
-    {card_changeset, card_log}
+  @spec answer_card(Card.t(), Card.answer_choice(), Config.t()) :: Ecto.Changeset.t()
+  def answer_card(%Card{card_type: :learn} = _card, :easy, _config) do
+    %{card_type: :review}
+  end
+
+  def answer_card(%Card{card_type: :learn} = _card, :good, _config) do
+    %{card_type: :review}
   end
 
   @spec bracket_time_to_answer(Duration.t(), Config.t()) :: Duration.t()
