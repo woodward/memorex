@@ -21,6 +21,7 @@ defmodule Memorex.CardReviewer do
     update_card!(card_before, changes, time_now)
   end
 
+  @spec update_card!(Card.t(), map(), DateTime.t()) :: Card.t()
   def update_card!(card, changes, time) do
     card
     |> Card.changeset(changes)
