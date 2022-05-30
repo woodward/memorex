@@ -75,6 +75,7 @@ defmodule Memorex.CardStateMachine do
   end
 
   def answer_card(%Card{card_type: :relearn} = _card, :easy, config) do
-    %{card_type: :review, interval: Duration.add(config.min_review_interval, Duration.parse!("P1D"))}
+    interval = Duration.add(config.min_review_interval, config.relearn_easy_adj)
+    %{card_type: :review, interval: interval}
   end
 end

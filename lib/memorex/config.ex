@@ -34,6 +34,8 @@ defmodule Memorex.Config do
           min_time_to_answer: Duration.t(),
           max_time_to_answer: Duration.t(),
           #
+          relearn_easy_adj: Duration.t(),
+          #
           timezone: String.t()
         }
 
@@ -65,6 +67,8 @@ defmodule Memorex.Config do
             #
             min_time_to_answer: Duration.parse!("PT1S"),
             max_time_to_answer: Duration.parse!("PT1M"),
+            #
+            relearn_easy_adj: Duration.parse!("P1D"),
             #
             timezone: Timex.Timezone.Local.lookup()
 end
