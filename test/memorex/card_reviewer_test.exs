@@ -1,8 +1,8 @@
-defmodule Memorex.DrillerTest do
+defmodule Memorex.CardReviewerTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.{Driller, Config}
+  alias Memorex.{CardReviewer, Config}
   alias Timex.Duration
 
   describe "bracket_time_to_answer/1" do
@@ -13,17 +13,17 @@ defmodule Memorex.DrillerTest do
 
     test "returns the actual time to answer if it is not too large or too small", %{config: config} do
       time_to_answer = Duration.parse!("PT15S")
-      assert Driller.bracket_time_to_answer(time_to_answer, config) == Duration.parse!("PT15S")
+      assert CardReviewer.bracket_time_to_answer(time_to_answer, config) == Duration.parse!("PT15S")
     end
 
     test "returns the minimum time if the time to answer is too small", %{config: config} do
       time_to_answer = Duration.parse!("PT0S")
-      assert Driller.bracket_time_to_answer(time_to_answer, config) == Duration.parse!("PT1S")
+      assert CardReviewer.bracket_time_to_answer(time_to_answer, config) == Duration.parse!("PT1S")
     end
 
     test "returns the maximum time if the time to answer is too large", %{config: config} do
       time_to_answer = Duration.parse!("PT61S")
-      assert Driller.bracket_time_to_answer(time_to_answer, config) == Duration.parse!("PT1M")
+      assert CardReviewer.bracket_time_to_answer(time_to_answer, config) == Duration.parse!("PT1M")
     end
   end
 end

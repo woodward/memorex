@@ -1,4 +1,4 @@
-defmodule Memorex.Driller do
+defmodule Memorex.CardReviewer do
   @moduledoc false
 
   alias Timex.Duration
