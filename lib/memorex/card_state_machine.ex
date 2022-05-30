@@ -4,7 +4,7 @@ defmodule Memorex.CardStateMachine do
   alias Memorex.Cards.Card
   alias Memorex.Config
 
-  @spec answer_card(Card.t(), Card.answer_choice(), Config.t()) :: Ecto.Changeset.t()
+  @spec answer_card(Card.t(), Card.answer_choice(), Config.t()) :: map()
   def answer_card(%Card{card_type: :learn} = _card, :easy, _config) do
     %{card_type: :review}
   end
