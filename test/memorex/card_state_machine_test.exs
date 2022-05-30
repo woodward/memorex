@@ -9,8 +9,7 @@ defmodule Memorex.CardStateMachineTest do
   describe "learn cards" do
     test "answer: 'again'" do
       config = %Config{learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")]}
-      card = Card.new(config)
-      card = %{card | card_type: :learn, remaining_steps: 1}
+      card = %Card{card_type: :learn, remaining_steps: 1}
 
       changes = CardStateMachine.answer_card(card, :again, config)
 
@@ -19,8 +18,7 @@ defmodule Memorex.CardStateMachineTest do
 
     test "answer: 'hard'" do
       config = %Config{learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")]}
-      card = Card.new(config)
-      card = %{card | card_type: :learn, remaining_steps: 1}
+      card = %Card{card_type: :learn, remaining_steps: 1}
 
       changes = CardStateMachine.answer_card(card, :hard, config)
 
@@ -29,8 +27,7 @@ defmodule Memorex.CardStateMachineTest do
 
     test "answer: 'good' and this is the last learning step" do
       config = %Config{initial_ease: 2.34, graduating_interval_good: Duration.parse!("P1D")}
-      card = Card.new(config)
-      card = %{card | card_type: :learn, remaining_steps: 0}
+      card = %Card{card_type: :learn, remaining_steps: 0}
 
       changes = CardStateMachine.answer_card(card, :good, config)
 
@@ -39,8 +36,7 @@ defmodule Memorex.CardStateMachineTest do
 
     test "answer: 'good' but this is not the last learning step" do
       config = %Config{learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")]}
-      card = Card.new(config)
-      card = %{card | card_type: :learn, remaining_steps: 1}
+      card = %Card{card_type: :learn, remaining_steps: 1}
 
       changes = CardStateMachine.answer_card(card, :good, config)
 
@@ -49,8 +45,7 @@ defmodule Memorex.CardStateMachineTest do
 
     test "answer: 'easy'" do
       config = %Config{initial_ease: 2.34, graduating_interval_easy: Duration.parse!("P4D")}
-      card = Card.new(config)
-      card = %{card | card_type: :learn}
+      card = %Card{card_type: :learn}
 
       changes = CardStateMachine.answer_card(card, :easy, config)
 

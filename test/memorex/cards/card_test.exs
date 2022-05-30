@@ -2,18 +2,9 @@ defmodule Memorex.Cards.CardTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.{Config, Repo}
+  alias Memorex.Repo
   alias Memorex.Cards.{Card, CardLog, Note}
   alias Timex.Duration
-
-  describe "new" do
-    test "incorporates the defaults from Config" do
-      card = Card.new(%Config{initial_ease: 2.5})
-
-      assert card.card_type == :new
-      assert card.ease_factor == 2.5
-    end
-  end
 
   test "deletes card logs when deleted" do
     card = Repo.insert!(%Card{})
