@@ -99,12 +99,12 @@ defmodule Memorex.CardStateMachineTest do
 
   describe "relearn cards" do
     test "answer: 'again'" do
-      config = %Config{}
-      card = %Card{card_type: :relearn, remaining_steps: 3}
+      config = %Config{relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT1H")]}
+      card = %Card{card_type: :relearn, remaining_steps: 1}
 
       changes = CardStateMachine.answer_card(card, :again, config)
 
-      assert changes == %{remaining_steps: 0}
+      assert changes == %{remaining_steps: 2}
     end
 
     test "answer: 'hard'" do

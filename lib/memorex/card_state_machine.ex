@@ -52,8 +52,8 @@ defmodule Memorex.CardStateMachine do
 
   # --------------- Re-Learn Cards -------------------------------------------------------------------------------------
 
-  def answer_card(%Card{card_type: :relearn} = _card, :again, _config) do
-    %{remaining_steps: 0}
+  def answer_card(%Card{card_type: :relearn} = _card, :again, config) do
+    %{remaining_steps: length(config.relearn_steps)}
   end
 
   def answer_card(%Card{card_type: :relearn} = _card, :hard, _config) do
