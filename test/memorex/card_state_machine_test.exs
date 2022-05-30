@@ -7,18 +7,28 @@ defmodule Memorex.CardStateMachineTest do
   alias Timex.Duration
 
   describe "learn cards" do
-    test "answer: 'easy'" do
-      config = %Config{initial_ease: 2.34, graduating_interval_easy: Duration.parse!("P4D")}
+    test "answer: 'again'" do
+      config = %Config{learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")]}
       card = Card.new(config)
-      card = %{card | card_type: :learn}
+      card = %{card | card_type: :learn, remaining_steps: 1}
 
-      changes = CardStateMachine.answer_card(card, :easy, config)
+      changes = CardStateMachine.answer_card(card, :again, config)
 
-      assert changes == %{card_type: :review, ease_factor: 2.34, interval: Duration.parse!("P4D")}
+      assert changes == %{remaining_steps: 2}
+    end
+
+    test "answer: 'hard'" do
+      config = %Config{learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")]}
+      card = Card.new(config)
+      card = %{card | card_type: :learn, remaining_steps: 1}
+
+      changes = CardStateMachine.answer_card(card, :hard, config)
+
+      assert changes == %{}
     end
 
     test "answer: 'good' and this is the last learning step" do
-      config = %Config{initial_ease: 2.34}
+      config = %Config{initial_ease: 2.34, graduating_interval_good: Duration.parse!("P1D")}
       card = Card.new(config)
       card = %{card | card_type: :learn, remaining_steps: 0}
 
@@ -37,24 +47,20 @@ defmodule Memorex.CardStateMachineTest do
       assert changes == %{remaining_steps: 0}
     end
 
-    test "answer: 'hard'" do
-      config = %Config{learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")]}
+    test "answer: 'easy'" do
+      config = %Config{initial_ease: 2.34, graduating_interval_easy: Duration.parse!("P4D")}
       card = Card.new(config)
-      card = %{card | card_type: :learn, remaining_steps: 1}
+      card = %{card | card_type: :learn}
 
-      changes = CardStateMachine.answer_card(card, :hard, config)
+      changes = CardStateMachine.answer_card(card, :easy, config)
 
-      assert changes == %{}
+      assert changes == %{card_type: :review, ease_factor: 2.34, interval: Duration.parse!("P4D")}
     end
+  end
 
-    test "answer: 'again'" do
-      config = %Config{learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")]}
-      card = Card.new(config)
-      card = %{card | card_type: :learn, remaining_steps: 1}
+  describe "review cards" do
+  end
 
-      changes = CardStateMachine.answer_card(card, :again, config)
-
-      assert changes == %{remaining_steps: 2}
-    end
+  describe "relearn cards" do
   end
 end
