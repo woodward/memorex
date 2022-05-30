@@ -30,7 +30,7 @@ defmodule Memorex.CardReviewer do
 
   @spec time_to_answer(DateTime.t(), DateTime.t(), Config.t()) :: Duration.t()
   def time_to_answer(start_time, end_time, config) do
-    Timex.diff(start_time, end_time, :duration) |> bracket_time_to_answer(config)
+    Timex.diff(end_time, start_time, :duration) |> bracket_time_to_answer(config)
   end
 
   @spec bracket_time_to_answer(Duration.t(), Config.t()) :: Duration.t()
