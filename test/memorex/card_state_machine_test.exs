@@ -84,6 +84,17 @@ defmodule Memorex.CardStateMachineTest do
 
       assert changes == %{interval: new_interval}
     end
+
+    test "answer: 'easy'" do
+      config = %Config{interval_multiplier: 1.1, easy_multiplier: 1.3}
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
+
+      changes = CardStateMachine.answer_card(card, :easy, config)
+      scale = 2.5 * 1.1 * 1.3
+      new_interval = Duration.parse!("P4D") |> Timex.Duration.scale(scale)
+
+      assert changes == %{ease_factor: 2.65, interval: new_interval}
+    end
   end
 
   describe "relearn cards" do
