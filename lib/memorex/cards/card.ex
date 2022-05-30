@@ -10,7 +10,7 @@ defmodule Memorex.Cards.Card do
 
   @type card_queue :: :new | :learn | :review | :day_learn | :suspended | :buried
   @type card_type :: :new | :learn | :review | :relearn
-  @type answer_choice :: :again | :hard | :ok | :easy
+  @type answer_choice :: :again | :hard | :good | :easy
 
   @type t :: %__MODULE__{
           id: Ecto.UUID.t() | nil,
