@@ -3,6 +3,7 @@ defmodule Memorex.CardStateMachine do
 
   alias Memorex.Cards.Card
   alias Memorex.Config
+  alias Timex.Duration
 
   @spec answer_card(Card.t(), Card.answer_choice(), Config.t()) :: map()
   def answer_card(%Card{card_type: :learn} = _card, :again, config) do
@@ -27,5 +28,10 @@ defmodule Memorex.CardStateMachine do
 
   def answer_card(%Card{card_type: :review} = card, :again, _config) do
     %{ease_factor: card.ease_factor - 0.2, card_type: :relearn, remaining_steps: 0}
+  end
+
+  def answer_card(%Card{card_type: :review} = card, :hard, config) do
+    scale = card.ease_factor * config.hard_multiplier * config.interval_multiplier
+    %{ease_factor: card.ease_factor - 0.15, interval: Duration.scale(card.interval, scale)}
   end
 end

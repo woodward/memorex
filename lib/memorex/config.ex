@@ -46,7 +46,7 @@ defmodule Memorex.Config do
             easy_multiplier: 1.3,
             hard_multiplier: 1.2,
             lapse_multiplier: 0.0,
-            interval_multiplier: 0.0,
+            interval_multiplier: 1.0,
             #
             max_review_interval: Duration.parse!("P100Y"),
             min_review_interval: Duration.parse!("P1D"),
