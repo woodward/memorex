@@ -55,12 +55,12 @@ defmodule Memorex.CardStateMachineTest do
 
   describe "review cards" do
     test "answer: 'again'" do
-      config = %Config{}
+      config = %Config{lapse_multiplier: 0.5}
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D"), remaining_steps: 3}
 
       changes = CardStateMachine.answer_card(card, :again, config)
 
-      assert changes == %{ease_factor: 2.3, card_type: :relearn, remaining_steps: 0}
+      assert changes == %{ease_factor: 2.3, card_type: :relearn, remaining_steps: 0, interval: Duration.parse!("P2D")}
     end
 
     test "answer: 'hard'" do
