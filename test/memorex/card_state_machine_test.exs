@@ -8,23 +8,23 @@ defmodule Memorex.CardStateMachineTest do
 
   describe "learn cards" do
     test "answer: 'easy'" do
-      config = %Config{}
+      config = %Config{initial_ease: 2.34}
       card = Card.new(config)
       card = %{card | card_type: :learn}
 
       changes = CardStateMachine.answer_card(card, :easy, config)
 
-      assert changes == %{card_type: :review}
+      assert changes == %{card_type: :review, ease_factor: 2.34}
     end
 
     test "answer: 'good' and this is the last learning step" do
-      config = %Config{}
+      config = %Config{initial_ease: 2.34}
       card = Card.new(config)
       card = %{card | card_type: :learn, remaining_steps: 0}
 
       changes = CardStateMachine.answer_card(card, :good, config)
 
-      assert changes == %{card_type: :review}
+      assert changes == %{card_type: :review, ease_factor: 2.34}
     end
 
     test "answer: 'good' but this is not the last learning step" do
