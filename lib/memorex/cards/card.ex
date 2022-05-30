@@ -63,6 +63,14 @@ defmodule Memorex.Cards.Card do
     |> cast(params, [:ease_factor, :card_queue, :card_type, :interval])
   end
 
+  @spec set_due_field_in_changeset(Ecto.Changeset.t() | t(), DateTime.t()) :: Ecto.Changeset.t()
+  def set_due_field_in_changeset(changeset, time) do
+    interval = Ecto.Changeset.get_field(changeset, :interval)
+
+    changeset
+    |> cast(%{due: Timex.add(time, interval)}, [:due])
+  end
+
   @spec create_bidirectional_from_note(Note.t()) :: Ecto.Schema.t()
   def(create_bidirectional_from_note(note)) do
     card1 = %__MODULE__{note: note, note_question_index: 0, note_answer_index: 1}

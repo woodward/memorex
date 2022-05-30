@@ -68,4 +68,27 @@ defmodule Memorex.Cards.CardTest do
     assert changes.card_type == :review
     assert changes.interval == Duration.parse!("PT47S")
   end
+
+  describe "set_due_field_in_changeset" do
+    test "sets the due field based on a time plus the current interval contained in the changeset" do
+      card = %Card{interval: Duration.parse!("PT33S")}
+      changeset = Card.changeset(card, %{interval: Duration.parse!("P1D")})
+      now = ~U[2022-05-30 15:44:00Z]
+      changeset = Card.set_due_field_in_changeset(changeset, now)
+      changes = changeset.changes
+
+      assert changes.interval == Duration.parse!("P1D")
+      assert changes.due == ~U[2022-05-31 15:44:00Z]
+    end
+
+    test "sets the due field based on a time plus the current interval contained in the card" do
+      card = %Card{interval: Duration.parse!("P1D")}
+      changeset = Card.changeset(card, %{})
+      now = ~U[2022-05-30 15:44:00Z]
+      changeset = Card.set_due_field_in_changeset(changeset, now)
+      changes = changeset.changes
+
+      assert changes.due == ~U[2022-05-31 15:44:00Z]
+    end
+  end
 end
