@@ -34,4 +34,9 @@ defmodule Memorex.CardStateMachine do
     scale = card.ease_factor * config.hard_multiplier * config.interval_multiplier
     %{ease_factor: card.ease_factor - 0.15, interval: Duration.scale(card.interval, scale)}
   end
+
+  def answer_card(%Card{card_type: :review} = card, :good, config) do
+    scale = card.ease_factor * config.interval_multiplier
+    %{interval: Duration.scale(card.interval, scale)}
+  end
 end
