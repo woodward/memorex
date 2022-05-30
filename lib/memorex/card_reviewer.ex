@@ -4,6 +4,7 @@ defmodule Memorex.CardReviewer do
   alias Timex.Duration
   alias Memorex.{CardStateMachine, Config, Repo}
   alias Memorex.Cards.{Card, CardLog}
+  alias Memorex.Cards
 
   @spec answer_card_and_create_log_entry(Card.t(), Card.answer_choice(), DateTime.t(), DateTime.t(), Config.t()) :: :ok
   def answer_card_and_create_log_entry(card_before, answer, start_time, time_now, config) do
@@ -17,15 +18,7 @@ defmodule Memorex.CardReviewer do
   @spec answer_card(Card.t(), Card.answer_choice(), DateTime.t(), Config.t()) :: Card.t()
   def answer_card(card_before, answer, time_now, config) do
     changes = CardStateMachine.answer_card(card_before, answer, config)
-    update_card!(card_before, changes, time_now)
-  end
-
-  @spec update_card!(Card.t(), map(), DateTime.t()) :: Card.t()
-  def update_card!(card, changes, time) do
-    card
-    |> Card.changeset(changes)
-    |> Card.set_due_field_in_changeset(time)
-    |> Repo.update!()
+    Cards.update_card!(card_before, changes, time_now)
   end
 
   @spec time_to_answer(DateTime.t(), DateTime.t(), Config.t()) :: Duration.t()
