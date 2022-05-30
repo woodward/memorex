@@ -24,4 +24,8 @@ defmodule Memorex.CardStateMachine do
   def answer_card(%Card{card_type: :learn} = _card, :easy, config) do
     %{card_type: :review, ease_factor: config.initial_ease, interval: config.graduating_interval_easy}
   end
+
+  def answer_card(%Card{card_type: :review} = card, :again, _config) do
+    %{ease_factor: card.ease_factor - 0.2, card_type: :relearn, remaining_steps: 0}
+  end
 end
