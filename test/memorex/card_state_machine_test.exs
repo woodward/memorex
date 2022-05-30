@@ -8,13 +8,13 @@ defmodule Memorex.CardStateMachineTest do
 
   describe "learn cards" do
     test "answer: 'easy'" do
-      config = %Config{initial_ease: 2.34}
+      config = %Config{initial_ease: 2.34, graduating_interval_easy: Duration.parse!("P4D")}
       card = Card.new(config)
       card = %{card | card_type: :learn}
 
       changes = CardStateMachine.answer_card(card, :easy, config)
 
-      assert changes == %{card_type: :review, ease_factor: 2.34}
+      assert changes == %{card_type: :review, ease_factor: 2.34, interval: Duration.parse!("P4D")}
     end
 
     test "answer: 'good' and this is the last learning step" do
@@ -24,7 +24,7 @@ defmodule Memorex.CardStateMachineTest do
 
       changes = CardStateMachine.answer_card(card, :good, config)
 
-      assert changes == %{card_type: :review, ease_factor: 2.34}
+      assert changes == %{card_type: :review, ease_factor: 2.34, interval: Duration.parse!("P1D")}
     end
 
     test "answer: 'good' but this is not the last learning step" do
