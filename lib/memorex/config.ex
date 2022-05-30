@@ -20,6 +20,11 @@ defmodule Memorex.Config do
           lapse_multiplier: float(),
           interval_multiplier: float(),
           #
+          ease_again: float(),
+          ease_hard: float(),
+          ease_good: float(),
+          ease_easy: float(),
+          #
           max_review_interval: Duration.t(),
           min_review_interval: Duration.t(),
           #
@@ -47,6 +52,11 @@ defmodule Memorex.Config do
             hard_multiplier: 1.2,
             lapse_multiplier: 0.0,
             interval_multiplier: 1.0,
+            #
+            ease_again: -0.2,
+            ease_hard: -0.15,
+            ease_good: 0.0,
+            ease_easy: 0.15,
             #
             max_review_interval: Duration.parse!("P100Y"),
             min_review_interval: Duration.parse!("P1D"),

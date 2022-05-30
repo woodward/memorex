@@ -33,22 +33,26 @@ defmodule Memorex.CardStateMachine do
 
   def answer_card(%Card{card_type: :review} = card, :again, config) do
     interval = Duration.scale(card.interval, config.lapse_multiplier)
-    %{ease_factor: card.ease_factor - 0.2, card_type: :relearn, remaining_steps: 0, interval: interval}
+    ease_factor = card.ease_factor + config.ease_again
+    %{ease_factor: ease_factor, card_type: :relearn, remaining_steps: 0, interval: interval}
   end
 
   def answer_card(%Card{card_type: :review} = card, :hard, config) do
     scale = card.ease_factor * config.hard_multiplier * config.interval_multiplier
-    %{ease_factor: card.ease_factor - 0.15, interval: Duration.scale(card.interval, scale)}
+    ease_factor = card.ease_factor + config.ease_hard
+    %{ease_factor: ease_factor, interval: Duration.scale(card.interval, scale)}
   end
 
   def answer_card(%Card{card_type: :review} = card, :good, config) do
     scale = card.ease_factor * config.interval_multiplier
-    %{interval: Duration.scale(card.interval, scale)}
+    ease_factor = card.ease_factor + config.ease_good
+    %{ease_factor: ease_factor, interval: Duration.scale(card.interval, scale)}
   end
 
   def answer_card(%Card{card_type: :review} = card, :easy, config) do
     scale = card.ease_factor * config.interval_multiplier * config.easy_multiplier
-    %{ease_factor: card.ease_factor + 0.15, interval: Duration.scale(card.interval, scale)}
+    ease_factor = card.ease_factor + config.ease_easy
+    %{ease_factor: ease_factor, interval: Duration.scale(card.interval, scale)}
   end
 
   # --------------- Re-Learn Cards -------------------------------------------------------------------------------------

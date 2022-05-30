@@ -55,45 +55,45 @@ defmodule Memorex.CardStateMachineTest do
 
   describe "review cards" do
     test "answer: 'again'" do
-      config = %Config{lapse_multiplier: 0.5}
+      config = %Config{lapse_multiplier: 0.5, ease_again: -0.3}
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D"), remaining_steps: 3}
 
       changes = CardStateMachine.answer_card(card, :again, config)
 
-      assert changes == %{ease_factor: 2.3, card_type: :relearn, remaining_steps: 0, interval: Duration.parse!("P2D")}
+      assert changes == %{ease_factor: 2.2, card_type: :relearn, remaining_steps: 0, interval: Duration.parse!("P2D")}
     end
 
     test "answer: 'hard'" do
-      config = %Config{interval_multiplier: 1.1, hard_multiplier: 1.25}
+      config = %Config{interval_multiplier: 1.1, hard_multiplier: 1.25, ease_hard: -0.25}
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
 
       changes = CardStateMachine.answer_card(card, :hard, config)
       scale = 2.5 * 1.1 * 1.25
       new_interval = Duration.parse!("P4D") |> Timex.Duration.scale(scale)
 
-      assert changes == %{ease_factor: 2.35, interval: new_interval}
+      assert changes == %{ease_factor: 2.25, interval: new_interval}
     end
 
     test "answer: 'good'" do
-      config = %Config{interval_multiplier: 1.1}
+      config = %Config{interval_multiplier: 1.1, ease_good: 0.1}
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
 
       changes = CardStateMachine.answer_card(card, :good, config)
       scale = 2.5 * 1.1
       new_interval = Duration.parse!("P4D") |> Timex.Duration.scale(scale)
 
-      assert changes == %{interval: new_interval}
+      assert changes == %{ease_factor: 2.6, interval: new_interval}
     end
 
     test "answer: 'easy'" do
-      config = %Config{interval_multiplier: 1.1, easy_multiplier: 1.3}
+      config = %Config{interval_multiplier: 1.1, easy_multiplier: 1.3, ease_easy: 0.2}
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
 
       changes = CardStateMachine.answer_card(card, :easy, config)
       scale = 2.5 * 1.1 * 1.3
       new_interval = Duration.parse!("P4D") |> Timex.Duration.scale(scale)
 
-      assert changes == %{ease_factor: 2.65, interval: new_interval}
+      assert changes == %{ease_factor: 2.7, interval: new_interval}
     end
   end
 
