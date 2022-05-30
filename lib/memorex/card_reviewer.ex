@@ -5,9 +5,8 @@ defmodule Memorex.CardReviewer do
   alias Memorex.{CardStateMachine, Config, Repo}
   alias Memorex.Cards.{Card, CardLog}
 
-  @spec answer_card_and_create_log(Card.t(), Card.answer_choice(), DateTime.t(), Config.t()) :: :ok
-  def answer_card_and_create_log(card_before, answer, start_time, config) do
-    time_now = Timex.now()
+  @spec answer_card_and_create_log_entry(Card.t(), Card.answer_choice(), DateTime.t(), DateTime.t(), Config.t()) :: :ok
+  def answer_card_and_create_log_entry(card_before, answer, start_time, time_now, config) do
     card_after = answer_card(card_before, answer, time_now, config)
     time_to_answer = time_to_answer(start_time, time_now, config)
 
