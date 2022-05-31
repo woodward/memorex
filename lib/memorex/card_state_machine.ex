@@ -35,6 +35,8 @@ defmodule Memorex.CardStateMachine do
 
   def answer_card(%Card{card_type: :review} = card, :again, config) do
     interval = Duration.scale(card.interval, config.lapse_multiplier)
+    # Or should interval = first relearn step???
+
     ease_factor = card.ease_factor + config.ease_again
     remaining_steps = length(config.relearn_steps)
     lapses = card.lapses + 1
@@ -69,16 +71,19 @@ defmodule Memorex.CardStateMachine do
     %{}
   end
 
-  def answer_card(%Card{card_type: :relearn, remaining_steps: 0} = _card, :good, config) do
-    %{card_type: :review, interval: config.min_review_interval}
+  def answer_card(%Card{card_type: :relearn, remaining_steps: 1} = _card, :good, config) do
+    %{card_type: :review, interval: config.min_review_interval, remaining_steps: 0}
   end
 
-  def answer_card(%Card{card_type: :relearn} = card, :good, _config) do
-    %{remaining_steps: card.remaining_steps - 1}
+  def answer_card(%Card{card_type: :relearn} = card, :good, config) do
+    remaining_steps = card.remaining_steps - 1
+    {interval, _rest} = config.relearn_steps |> Enum.reverse() |> List.pop_at(remaining_steps - 1)
+
+    %{remaining_steps: remaining_steps, interval: interval}
   end
 
   def answer_card(%Card{card_type: :relearn} = _card, :easy, config) do
     interval = Duration.add(config.min_review_interval, config.relearn_easy_adj)
-    %{card_type: :review, interval: interval}
+    %{card_type: :review, interval: interval, remaining_steps: 0}
   end
 end

@@ -122,21 +122,21 @@ defmodule Memorex.CardStateMachineTest do
     end
 
     test "answer: 'good' - no more remaining steps" do
-      config = %Config{min_review_interval: Duration.parse!("P3D")}
-      card = %Card{card_type: :relearn, remaining_steps: 0}
-
-      changes = CardStateMachine.answer_card(card, :good, config)
-
-      assert changes == %{card_type: :review, interval: Duration.parse!("P3D")}
-    end
-
-    test "answer: 'good' - there are remaining steps" do
-      config = %Config{}
+      config = %Config{min_review_interval: Duration.parse!("P3D"), relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")]}
       card = %Card{card_type: :relearn, remaining_steps: 1}
 
       changes = CardStateMachine.answer_card(card, :good, config)
 
-      assert changes == %{remaining_steps: 0}
+      assert changes == %{card_type: :review, interval: Duration.parse!("P3D"), remaining_steps: 0}
+    end
+
+    test "answer: 'good' - there are remaining steps" do
+      config = %Config{relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")]}
+      card = %Card{card_type: :relearn, remaining_steps: 2}
+
+      changes = CardStateMachine.answer_card(card, :good, config)
+
+      assert changes == %{remaining_steps: 1, interval: Duration.parse!("PT20M")}
     end
 
     test "answer: 'easy'" do
@@ -145,7 +145,7 @@ defmodule Memorex.CardStateMachineTest do
 
       changes = CardStateMachine.answer_card(card, :easy, config)
 
-      assert changes == %{card_type: :review, interval: Duration.parse!("P5D")}
+      assert changes == %{card_type: :review, interval: Duration.parse!("P5D"), remaining_steps: 0}
     end
   end
 end

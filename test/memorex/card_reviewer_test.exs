@@ -192,10 +192,26 @@ defmodule Memorex.CardReviewerTest do
       assert card.card_type == :relearn
       # assert card.card_queue == :learn
       assert card.remaining_steps == 2
+
+      # This is what it would be if it were the first releaning step:
+      # assert card.interval == Duration.parse!("PT10M")
       assert card.interval == Duration.parse!("PT0S")
+
       assert card.due == ~U[2022-01-03 12:00:00Z]
       assert_in_delta(card.ease_factor, 2.05, 0.00001)
       assert card.reps == 9
+
+      # -------- Answer :good
+      config = %{config | relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")]}
+      card = CardReviewer.answer_card(card, :good, ~U[2022-01-03 12:00:00Z], config)
+
+      assert card.card_type == :relearn
+      # assert card.card_queue == :learn
+      assert card.remaining_steps == 1
+      assert card.interval == Duration.parse!("PT20M")
+      assert card.due == ~U[2022-01-03 12:20:00Z]
+      assert_in_delta(card.ease_factor, 2.05, 0.00001)
+      assert card.reps == 10
     end
   end
 end
