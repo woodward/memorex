@@ -312,7 +312,31 @@ defmodule Memorex.CardReviewerTest do
 
     # ======================== Relearn Cards ===========================================================================
     test "relearn card - answer :again" do
-      # Fill in this test!
+      config = %Config{relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")]}
+
+      card =
+        %Card{
+          # card_queue: :review,
+          card_type: :relearn,
+          due: ~U[2022-01-01 12:00:00Z],
+          ease_factor: 2.5,
+          interval: Duration.parse!("PT10M"),
+          lapses: 0,
+          remaining_steps: 1,
+          reps: 3
+        }
+        |> Repo.insert!()
+
+      card = CardReviewer.answer_card(card, :again, ~U[2022-01-01 12:00:00Z], config)
+
+      # assert card.card_queue == :review
+      assert card.card_type == :relearn
+      assert card.due == ~U[2022-01-01 12:10:00Z]
+      assert card.ease_factor == 2.5
+      assert card.interval == Duration.parse!("PT10M")
+      assert card.lapses == 0
+      assert card.remaining_steps == 2
+      assert card.reps == 4
     end
 
     test "relearn card - answer :hard" do
@@ -372,7 +396,31 @@ defmodule Memorex.CardReviewerTest do
     end
 
     test "relearn card - answer :easy - become a review card again" do
-      # Fill in this test!
+      config = %Config{relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")], min_review_interval: Duration.parse!("P1D")}
+
+      card =
+        %Card{
+          # card_queue: :review,
+          card_type: :relearn,
+          due: ~U[2022-01-01 12:00:00Z],
+          ease_factor: 2.5,
+          interval: Duration.parse!("PT10M"),
+          lapses: 0,
+          remaining_steps: 1,
+          reps: 3
+        }
+        |> Repo.insert!()
+
+      card = CardReviewer.answer_card(card, :easy, ~U[2022-01-01 12:00:00Z], config)
+
+      # assert card.card_queue == :review
+      assert card.card_type == :review
+      assert card.due == ~U[2022-01-03 12:00:00Z]
+      assert card.ease_factor == 2.5
+      assert card.interval == Duration.parse!("P2D")
+      assert card.lapses == 0
+      assert card.remaining_steps == 0
+      assert card.reps == 4
     end
   end
 end
