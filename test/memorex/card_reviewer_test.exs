@@ -57,7 +57,7 @@ defmodule Memorex.CardReviewerTest do
     test "answers the card, and creates a log entry" do
       card = %Card{card_type: :review, interval: Duration.parse!("PT4M"), ease_factor: 2.5, reps: 3}
       card = Repo.insert!(card)
-      config = %Config{interval_multiplier: 1.0, ease_good: 0.0}
+      config = %Config{interval_multiplier: 1.0, ease_good: 0.0, max_time_to_answer: Duration.parse!("PT1M")}
       start_time = ~U[2022-01-01 12:02:00Z]
       time_now = ~U[2022-01-01 12:04:00Z]
 
@@ -199,7 +199,7 @@ defmodule Memorex.CardReviewerTest do
 
     # ======================== Review Cards ============================================================================
     test "review card - answer :again" do
-      config = %Config{ease_again: -0.2, relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")]}
+      config = %Config{ease_again: -0.2, relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")], lapse_multiplier: 0.0}
 
       card =
         %Card{
@@ -227,7 +227,7 @@ defmodule Memorex.CardReviewerTest do
     end
 
     test "review card - answer :hard" do
-      config = %Config{interval_multiplier: 1.1, ease_hard: -0.15}
+      config = %Config{interval_multiplier: 1.1, ease_hard: -0.15, hard_multiplier: 1.2}
 
       card =
         %Card{
@@ -344,7 +344,7 @@ defmodule Memorex.CardReviewerTest do
     end
 
     test "relearn card - answer :good - one remaining step" do
-      config = %Config{relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")]}
+      config = %Config{relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")], min_review_interval: Duration.parse!("P1D")}
 
       card =
         %Card{
