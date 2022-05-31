@@ -60,7 +60,7 @@ defmodule Memorex.Cards.Card do
   @spec changeset(Ecto.Changeset.t() | t(), map()) :: Ecto.Changeset.t()
   def changeset(card, params \\ %{}) do
     card
-    |> cast(params, [:ease_factor, :card_queue, :card_type, :interval])
+    |> cast(params, [:ease_factor, :card_queue, :card_type, :interval, :remaining_steps])
   end
 
   @spec set_due_field_in_changeset(Ecto.Changeset.t() | t(), DateTime.t()) :: Ecto.Changeset.t()
