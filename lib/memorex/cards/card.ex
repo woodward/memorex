@@ -78,4 +78,12 @@ defmodule Memorex.Cards.Card do
     Repo.insert!(card1)
     Repo.insert!(card2)
   end
+
+  @spec increment_reps(Ecto.Changeset.t()) :: Ecto.Changeset.t()
+  def increment_reps(changeset) do
+    reps = Ecto.Changeset.get_field(changeset, :reps)
+
+    changeset
+    |> cast(%{reps: reps + 1}, [:reps])
+  end
 end

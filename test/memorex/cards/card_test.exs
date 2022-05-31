@@ -100,4 +100,13 @@ defmodule Memorex.Cards.CardTest do
       assert changes.due == ~U[2022-05-31 15:44:00Z]
     end
   end
+
+  describe "increment_reps" do
+    test "increments the reps value" do
+      card = %Card{reps: 3}
+      changeset = Card.changeset(card, %{})
+      changeset = Card.increment_reps(changeset)
+      assert changeset.changes.reps == 4
+    end
+  end
 end

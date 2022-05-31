@@ -9,6 +9,7 @@ defmodule Memorex.Cards do
     card
     |> Card.changeset(changes)
     |> Card.set_due_field_in_changeset(time)
+    |> Card.increment_reps()
     |> Repo.update!()
   end
 
