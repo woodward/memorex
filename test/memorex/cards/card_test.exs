@@ -57,7 +57,8 @@ defmodule Memorex.Cards.CardTest do
       card_type: :relearn,
       interval: Duration.parse!("PT33S"),
       ease_factor: 2.5,
-      remaining_steps: 7
+      remaining_steps: 7,
+      lapses: 2
     }
 
     card_changeset =
@@ -66,7 +67,8 @@ defmodule Memorex.Cards.CardTest do
         card_type: :review,
         interval: Duration.parse!("PT47S"),
         ease_factor: 2.4,
-        remaining_steps: 2
+        remaining_steps: 2,
+        lapses: 3
       })
 
     changes = card_changeset.changes
@@ -76,6 +78,7 @@ defmodule Memorex.Cards.CardTest do
     assert changes.card_type == :review
     assert changes.interval == Duration.parse!("PT47S")
     assert changes.remaining_steps == 2
+    assert changes.lapses == 3
   end
 
   describe "set_due_field_in_changeset" do

@@ -168,6 +168,22 @@ defmodule Memorex.CardReviewerTest do
       assert card.due == ~U[2022-01-12 08:38:24Z]
       assert card.ease_factor == old_ease_factor + 0.15
       assert card.reps == 7
+
+      # -------- Answer :again
+
+      config = %{config | ease_again: -0.3, interval_multiplier: 1.0, relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")]}
+      card = CardReviewer.answer_card(card, :again, ~U[2022-01-09 12:00:00Z], config)
+
+      assert card.card_type == :relearn
+      # assert card.card_queue == :learn
+      assert card.remaining_steps == 2
+      assert card.interval == Duration.parse!("PT0S")
+      assert card.due == ~U[2022-01-09 12:00:00Z]
+      assert_in_delta(card.ease_factor, 2.05, 0.00001)
+      assert card.reps == 8
+      assert card.lapses == 1
+
+      # ------- Relearn cards ------------------------------------------------------------------------------------------
     end
   end
 end

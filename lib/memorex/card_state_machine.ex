@@ -37,7 +37,8 @@ defmodule Memorex.CardStateMachine do
     interval = Duration.scale(card.interval, config.lapse_multiplier)
     ease_factor = card.ease_factor + config.ease_again
     remaining_steps = length(config.relearn_steps)
-    %{card_type: :relearn, ease_factor: ease_factor, remaining_steps: remaining_steps, interval: interval}
+    lapses = card.lapses + 1
+    %{card_type: :relearn, lapses: lapses, ease_factor: ease_factor, remaining_steps: remaining_steps, interval: interval}
   end
 
   def answer_card(%Card{card_type: :review} = card, :hard, config) do

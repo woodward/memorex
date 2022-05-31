@@ -61,11 +61,11 @@ defmodule Memorex.CardStateMachineTest do
   describe "review cards" do
     test "answer: 'again'" do
       config = %Config{lapse_multiplier: 0.5, ease_again: -0.3, relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT1H")]}
-      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D"), remaining_steps: 3}
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D"), remaining_steps: 3, lapses: 3}
 
       changes = CardStateMachine.answer_card(card, :again, config)
 
-      assert changes == %{ease_factor: 2.2, card_type: :relearn, remaining_steps: 2, interval: Duration.parse!("P2D")}
+      assert changes == %{ease_factor: 2.2, card_type: :relearn, remaining_steps: 2, interval: Duration.parse!("P2D"), lapses: 4}
     end
 
     test "answer: 'hard'" do
