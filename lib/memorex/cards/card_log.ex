@@ -24,7 +24,7 @@ defmodule Memorex.Cards.CardLog do
 
   schema "card_logs" do
     field :card_type, Ecto.Enum, values: [:new, :learn, :review, :relearn]
-    field :answer_choice, Ecto.Enum, values: [:again, :hard, :ok, :easy]
+    field :answer_choice, Ecto.Enum, values: [:again, :hard, :good, :easy]
     field :interval, EctoTimexDuration
     field :last_interval, EctoTimexDuration
     field :ease_factor, :float

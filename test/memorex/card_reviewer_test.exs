@@ -53,6 +53,36 @@ defmodule Memorex.CardReviewerTest do
     end
   end
 
+  describe "answer_card_and_create_log_entry" do
+    test "answers the card, and creates a log entry" do
+      card = %Card{card_type: :review, interval: Duration.parse!("PT4M"), ease_factor: 2.5, reps: 3}
+      card = Repo.insert!(card)
+      config = %Config{interval_multiplier: 1.0, ease_good: 0.0}
+      start_time = ~U[2022-01-01 12:02:00Z]
+      time_now = ~U[2022-01-01 12:04:00Z]
+
+      card_log = CardReviewer.answer_card_and_create_log_entry(card, :good, start_time, time_now, config)
+
+      assert card_log.answer_choice == :good
+      assert card_log.card_id == card.id
+      assert card_log.card_type == :review
+      assert card_log.ease_factor == 2.5
+      assert card_log.interval == Duration.parse!("PT10M")
+      assert card_log.last_interval == Duration.parse!("PT4M")
+      assert card_log.time_to_answer == Duration.parse!("PT60S")
+
+      card = Repo.get!(Card, card.id)
+
+      # assert card.card_queue == :review
+      assert card.card_type == :review
+      assert card.due == ~U[2022-01-01 12:14:00Z]
+      assert card.ease_factor == 2.5
+      assert card.interval == Duration.parse!("PT10M")
+      assert card.remaining_steps == nil
+      assert card.reps == 4
+    end
+  end
+
   describe "answer_card" do
     test "answers the card" do
       config = %Config{
