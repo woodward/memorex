@@ -212,36 +212,6 @@ defmodule Memorex.CardReviewerTest do
       assert_in_delta(card.ease_factor, 2.05, 0.00001)
       assert card.reps == 8
       assert card.lapses == 1
-
-      # ------- Relearn cards ------------------------------------------------------------------------------------------
-
-      # -------- Answer :hard
-      config = %{config | relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")]}
-      card = CardReviewer.answer_card(card, :hard, ~U[2022-01-03 12:00:00Z], config)
-
-      assert card.card_type == :relearn
-      # assert card.card_queue == :learn
-      assert card.remaining_steps == 2
-
-      # This is what it would be if it were the first releaning step:
-      # assert card.interval == Duration.parse!("PT10M")
-      assert card.interval == Duration.parse!("PT0S")
-
-      assert card.due == ~U[2022-01-03 12:00:00Z]
-      assert_in_delta(card.ease_factor, 2.05, 0.00001)
-      assert card.reps == 9
-
-      # -------- Answer :good
-      config = %{config | relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")]}
-      card = CardReviewer.answer_card(card, :good, ~U[2022-01-03 12:00:00Z], config)
-
-      assert card.card_type == :relearn
-      # assert card.card_queue == :learn
-      assert card.remaining_steps == 1
-      assert card.interval == Duration.parse!("PT20M")
-      assert card.due == ~U[2022-01-03 12:20:00Z]
-      assert_in_delta(card.ease_factor, 2.05, 0.00001)
-      assert card.reps == 10
     end
   end
 
@@ -277,6 +247,34 @@ defmodule Memorex.CardReviewerTest do
       assert card.interval == Duration.parse!("PT10M")
       assert card.lapses == 0
       assert card.remaining_steps == 1
+      assert card.reps == 4
+    end
+
+    test "relearn card - answer :good - one remaining step" do
+      config = %Config{relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")]}
+
+      card =
+        %Card{
+          # card_queue: :review,
+          card_type: :relearn,
+          due: ~U[2022-01-01 12:00:00Z],
+          ease_factor: 2.5,
+          interval: Duration.parse!("PT10M"),
+          lapses: 0,
+          remaining_steps: 1,
+          reps: 3
+        }
+        |> Repo.insert!()
+
+      card = CardReviewer.answer_card(card, :good, ~U[2022-01-01 12:00:00Z], config)
+
+      # assert card.card_queue == :review
+      assert card.card_type == :review
+      assert card.due == ~U[2022-01-02 12:00:00Z]
+      assert card.ease_factor == 2.5
+      assert card.interval == Duration.parse!("P1D")
+      assert card.lapses == 0
+      assert card.remaining_steps == 0
       assert card.reps == 4
     end
   end
