@@ -18,13 +18,13 @@ defmodule Memorex.Cards do
     first_learn_step = config.learn_steps |> List.first()
 
     updates = [
-      interval: first_learn_step,
-      remaining_steps: length(config.learn_steps),
-      card_type: :learn,
-      lapses: 0,
-      reps: 0,
       card_queue: :learn,
-      due: Timex.shift(time_now, duration: first_learn_step)
+      card_type: :learn,
+      due: Timex.shift(time_now, duration: first_learn_step),
+      interval: first_learn_step,
+      lapses: 0,
+      remaining_steps: length(config.learn_steps),
+      reps: 0
     ]
 
     Repo.update_all(queryable, [set: updates], opts)
