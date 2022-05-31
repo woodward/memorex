@@ -6,6 +6,7 @@ defmodule Memorex.CardStateMachineTest do
   alias Memorex.{CardStateMachine, Config}
   alias Timex.Duration
 
+  # ======================== Learn Cards ===============================================================================
   describe "learn cards" do
     test "answer: 'again'" do
       config = %Config{learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")]}
@@ -58,6 +59,7 @@ defmodule Memorex.CardStateMachineTest do
     end
   end
 
+  # ======================== Review Cards ==============================================================================
   describe "review cards" do
     test "answer: 'again'" do
       config = %Config{lapse_multiplier: 0.5, ease_again: -0.3, relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT1H")]}
@@ -102,6 +104,7 @@ defmodule Memorex.CardStateMachineTest do
     end
   end
 
+  # ======================== Relearn Cards =============================================================================
   describe "relearn cards" do
     test "answer: 'again'" do
       config = %Config{relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT1H")]}
