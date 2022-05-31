@@ -184,6 +184,18 @@ defmodule Memorex.CardReviewerTest do
       assert card.lapses == 1
 
       # ------- Relearn cards ------------------------------------------------------------------------------------------
+
+      # -------- Answer :hard
+      config = %{config | relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")]}
+      card = CardReviewer.answer_card(card, :hard, ~U[2022-01-03 12:00:00Z], config)
+
+      assert card.card_type == :relearn
+      # assert card.card_queue == :learn
+      assert card.remaining_steps == 2
+      assert card.interval == Duration.parse!("PT0S")
+      assert card.due == ~U[2022-01-03 12:00:00Z]
+      assert_in_delta(card.ease_factor, 2.05, 0.00001)
+      assert card.reps == 9
     end
   end
 end
