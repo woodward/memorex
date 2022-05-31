@@ -83,7 +83,7 @@ defmodule Memorex.CardReviewerTest do
     end
   end
 
-  describe "answer_card" do
+  describe "answer_card - old" do
     test "answers the card" do
       config = %Config{
         learn_steps: [Duration.parse!("PT2M"), Duration.parse!("PT15M"), Duration.parse!("PT30M")],
@@ -242,6 +242,42 @@ defmodule Memorex.CardReviewerTest do
       assert card.due == ~U[2022-01-03 12:20:00Z]
       assert_in_delta(card.ease_factor, 2.05, 0.00001)
       assert card.reps == 10
+    end
+  end
+
+  describe "answer_card/4" do
+    # ======================== Learn Cards =============================================================================
+    # ======================== Review Cards ============================================================================
+    # ======================== Relearn Cards ===========================================================================
+    test "relearn card - answer :again" do
+    end
+
+    test "relearn card - answer :hard" do
+      config = %Config{relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")]}
+
+      card =
+        %Card{
+          # card_queue: :review,
+          card_type: :relearn,
+          due: ~U[2022-01-01 12:00:00Z],
+          ease_factor: 2.5,
+          interval: Duration.parse!("PT10M"),
+          lapses: 0,
+          remaining_steps: 1,
+          reps: 3
+        }
+        |> Repo.insert!()
+
+      card = CardReviewer.answer_card(card, :hard, ~U[2022-01-01 12:00:00Z], config)
+
+      # assert card.card_queue == :review
+      assert card.card_type == :relearn
+      assert card.due == ~U[2022-01-01 12:10:00Z]
+      assert card.ease_factor == 2.5
+      assert card.interval == Duration.parse!("PT10M")
+      assert card.lapses == 0
+      assert card.remaining_steps == 1
+      assert card.reps == 4
     end
   end
 end
