@@ -20,7 +20,6 @@ defmodule Memorex.Cards do
       interval: first_learn_step,
       remaining_steps: length(config.learn_steps),
       card_type: :learn,
-      ease_factor: config.initial_ease,
       lapses: 0,
       reps: 0,
       card_queue: :learn,

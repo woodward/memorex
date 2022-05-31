@@ -73,7 +73,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.remaining_steps == 3
       assert card.interval == Duration.parse!("PT2M")
       assert card.due == ~U[2022-01-01 12:02:00Z]
-      assert card.ease_factor == 2.4
+      assert card.ease_factor == nil
       # assert card.reps == 0
 
       # -------- Answer :again - don't advance any steps
@@ -84,7 +84,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.remaining_steps == 3
       assert card.interval == Duration.parse!("PT2M")
       assert card.due == ~U[2022-01-01 12:02:00Z]
-      assert card.ease_factor == 2.4
+      assert card.ease_factor == nil
       # assert card.reps == 0
 
       # -------- Answer :good - advance one step
@@ -95,7 +95,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.remaining_steps == 2
       assert card.interval == Duration.parse!("PT15M")
       assert card.due == ~U[2022-01-01 12:16:00Z]
-      assert card.ease_factor == 2.4
+      assert card.ease_factor == nil
       # assert card.reps == 0
 
       # -------- Answer :good - advance one step
@@ -106,7 +106,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.remaining_steps == 1
       assert card.interval == Duration.parse!("PT30M")
       assert card.due == ~U[2022-01-01 12:46:00Z]
-      assert card.ease_factor == 2.4
+      assert card.ease_factor == nil
       # assert card.reps == 0
 
       # -------- Answer :good - become a review card

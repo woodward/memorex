@@ -38,7 +38,6 @@ defmodule Memorex.CardsTest do
       assert card1.remaining_steps == 2
       assert card1.card_type == :learn
       assert card1.card_queue == :learn
-      assert card1.ease_factor == 2.25
       assert card1.lapses == 0
       assert card1.reps == 0
       assert card1.due == ~U[2022-02-01 12:02:00Z]
