@@ -66,6 +66,7 @@ defmodule Memorex.CardReviewerTest do
       time_now = ~U[2022-01-01 12:00:00Z]
       Cards.update_new_cards_to_learn_cards(Card, config, time_now)
       card = Repo.get!(Card, card.id)
+      # ------- Learn cards --------------------------------------------------------------------------------------------
 
       # -------- Initial :learn card
       assert card.card_type == :learn
@@ -121,6 +122,51 @@ defmodule Memorex.CardReviewerTest do
       assert card.due == ~U[2022-01-03 12:46:00Z]
       assert card.ease_factor == 2.4
       assert card.reps == 4
+      old_interval = card.interval
+      old_ease_factor = card.ease_factor
+
+      # -------- Answer :hard
+      config = %{config | hard_multiplier: 1.2, interval_multiplier: 1.1, ease_hard: -0.15}
+      card = CardReviewer.answer_card(card, :hard, ~U[2022-01-03 12:00:00Z], config)
+
+      assert card.card_type == :review
+      # assert card.card_queue == :learn
+      assert card.remaining_steps == 0
+      expected_interval = Duration.scale(old_interval, 1.2 * 1.1 * old_ease_factor)
+      assert card.interval == expected_interval
+      assert card.due == ~U[2022-01-09 20:03:50Z]
+      assert card.ease_factor == 2.25
+      assert card.reps == 5
+      old_interval = card.interval
+      old_ease_factor = card.ease_factor
+
+      # -------- Answer :good
+      config = %{config | interval_multiplier: 1.2}
+      card = CardReviewer.answer_card(card, :good, ~U[2022-01-09 12:00:00Z], config)
+
+      assert card.card_type == :review
+      # assert card.card_queue == :learn
+      assert card.remaining_steps == 0
+      expected_interval = Duration.scale(old_interval, 1.2 * old_ease_factor)
+      assert card.interval == expected_interval
+      assert card.due == ~U[2022-01-26 14:34:22Z]
+      assert card.ease_factor == old_ease_factor
+      assert card.reps == 6
+      old_interval = card.interval
+      old_ease_factor = card.ease_factor
+
+      # -------- Answer :easy
+      # config = %{config | interval_multiplier: 1.0, easy_multiplier: 1.3, ease_easy: 0.15}
+      # card = CardReviewer.answer_card(card, :good, ~U[2022-01-09 12:00:00Z], config)
+
+      # assert card.card_type == :review
+      # # assert card.card_queue == :learn
+      # assert card.remaining_steps == 0
+      # expected_interval = Duration.scale(old_interval, 1.0 * 1.3 * old_ease_factor)
+      # assert card.interval == expected_interval
+      # assert card.due == ~U[2022-01-26 14:34:22Z]
+      # assert card.ease_factor == old_ease_factor + 0.15
+      # assert card.reps == 7
     end
   end
 end
