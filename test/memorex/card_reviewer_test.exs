@@ -152,21 +152,22 @@ defmodule Memorex.CardReviewerTest do
       assert card.due == ~U[2022-01-26 14:34:22Z]
       assert card.ease_factor == old_ease_factor
       assert card.reps == 6
-      old_interval = card.interval
-      old_ease_factor = card.ease_factor
+      old_interval = Duration.parse!("P1D")
+      old_ease_factor = 2.2
+      card = card |> Card.changeset(%{interval: old_interval, ease_factor: old_ease_factor}) |> Repo.update!()
 
       # -------- Answer :easy
-      # config = %{config | interval_multiplier: 1.0, easy_multiplier: 1.3, ease_easy: 0.15}
-      # card = CardReviewer.answer_card(card, :good, ~U[2022-01-09 12:00:00Z], config)
+      config = %{config | interval_multiplier: 1.0, easy_multiplier: 1.3, ease_easy: 0.15}
+      card = CardReviewer.answer_card(card, :easy, ~U[2022-01-09 12:00:00Z], config)
 
-      # assert card.card_type == :review
-      # # assert card.card_queue == :learn
-      # assert card.remaining_steps == 0
-      # expected_interval = Duration.scale(old_interval, 1.0 * 1.3 * old_ease_factor)
-      # assert card.interval == expected_interval
-      # assert card.due == ~U[2022-01-26 14:34:22Z]
-      # assert card.ease_factor == old_ease_factor + 0.15
-      # assert card.reps == 7
+      assert card.card_type == :review
+      # assert card.card_queue == :learn
+      assert card.remaining_steps == 0
+      expected_interval = Duration.scale(old_interval, 1.0 * 1.3 * old_ease_factor)
+      assert card.interval == expected_interval
+      assert card.due == ~U[2022-01-12 08:38:24Z]
+      assert card.ease_factor == old_ease_factor + 0.15
+      assert card.reps == 7
     end
   end
 end
