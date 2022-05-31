@@ -17,12 +17,14 @@ defmodule Memorex.CardStateMachine do
     %{}
   end
 
-  def answer_card(%Card{card_type: :learn, remaining_steps: 0} = _card, :good, config) do
-    %{card_type: :review, ease_factor: config.initial_ease, interval: config.graduating_interval_good}
+  def answer_card(%Card{card_type: :learn, remaining_steps: 1} = _card, :good, config) do
+    %{card_type: :review, remaining_steps: 0, ease_factor: config.initial_ease, interval: config.graduating_interval_good}
   end
 
-  def answer_card(%Card{card_type: :learn} = card, :good, _config) do
-    %{remaining_steps: card.remaining_steps - 1}
+  def answer_card(%Card{card_type: :learn} = card, :good, config) do
+    remaining_steps = card.remaining_steps - 1
+    {interval, _rest} = config.learn_steps |> Enum.reverse() |> List.pop_at(remaining_steps - 1)
+    %{remaining_steps: remaining_steps, interval: interval}
   end
 
   def answer_card(%Card{card_type: :learn} = _card, :easy, config) do

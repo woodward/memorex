@@ -56,26 +56,71 @@ defmodule Memorex.CardReviewerTest do
   describe "answer_card" do
     test "answers the card" do
       config = %Config{
-        learn_steps: [Duration.parse!("PT2M"), Duration.parse!("PT15M")],
-        initial_ease: 2.4
+        learn_steps: [Duration.parse!("PT2M"), Duration.parse!("PT15M"), Duration.parse!("PT30M")],
+        initial_ease: 2.4,
+        graduating_interval_good: Duration.parse!("P2D")
       }
 
       card = Repo.insert!(%Card{card_type: :new})
 
-      time_now = ~U[2022-01-02 12:00:00Z]
+      time_now = ~U[2022-01-01 12:00:00Z]
       Cards.update_new_cards_to_learn_cards(Card, config, time_now)
       card = Repo.get!(Card, card.id)
 
+      # -------- Initial :learn card
+      assert card.card_type == :learn
+      assert card.card_queue == :learn
+      assert card.remaining_steps == 3
+      assert card.interval == Duration.parse!("PT2M")
+      assert card.due == ~U[2022-01-01 12:02:00Z]
+      assert card.ease_factor == 2.4
+      # assert card.reps == 0
+
+      # -------- Answer :again - don't advance any steps
       card = CardReviewer.answer_card(card, :again, time_now, config)
 
       assert card.card_type == :learn
       assert card.card_queue == :learn
-      assert card.remaining_steps == 2
-      assert card.due == ~U[2022-01-02 12:02:00Z]
+      assert card.remaining_steps == 3
       assert card.interval == Duration.parse!("PT2M")
+      assert card.due == ~U[2022-01-01 12:02:00Z]
       assert card.ease_factor == 2.4
+      # assert card.reps == 0
+
+      # -------- Answer :good - advance one step
+      card = CardReviewer.answer_card(card, :good, ~U[2022-01-01 12:01:00Z], config)
+
+      assert card.card_type == :learn
+      assert card.card_queue == :learn
       assert card.remaining_steps == 2
-      # assert card1.reps == 0
+      assert card.interval == Duration.parse!("PT15M")
+      assert card.due == ~U[2022-01-01 12:16:00Z]
+      assert card.ease_factor == 2.4
+      # assert card.reps == 0
+
+      # -------- Answer :good - advance one step
+      card = CardReviewer.answer_card(card, :good, ~U[2022-01-01 12:16:00Z], config)
+
+      assert card.card_type == :learn
+      assert card.card_queue == :learn
+      assert card.remaining_steps == 1
+      assert card.interval == Duration.parse!("PT30M")
+      assert card.due == ~U[2022-01-01 12:46:00Z]
+      assert card.ease_factor == 2.4
+      # assert card.reps == 0
+
+      # -------- Answer :good - become a review card
+      card = CardReviewer.answer_card(card, :good, ~U[2022-01-01 12:46:00Z], config)
+
+      # ------- Review cards -------------------------------------------------------------------------------------------
+
+      assert card.card_type == :review
+      # assert card.card_queue == :review
+      assert card.remaining_steps == 0
+      assert card.interval == Duration.parse!("P2D")
+      assert card.due == ~U[2022-01-03 12:46:00Z]
+      assert card.ease_factor == 2.4
+      # assert card.reps == 0
     end
   end
 end
