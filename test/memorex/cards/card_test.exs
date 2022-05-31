@@ -55,30 +55,38 @@ defmodule Memorex.Cards.CardTest do
     card = %Card{
       card_queue: :day_learn,
       card_type: :relearn,
-      interval: Duration.parse!("PT33S"),
       ease_factor: 2.5,
-      remaining_steps: 7,
-      lapses: 2
+      interval: Duration.parse!("PT33S"),
+      lapses: 2,
+      remaining_steps: 7
     }
 
     card_changeset =
       Card.changeset(card, %{
         card_queue: :learn,
         card_type: :review,
-        interval: Duration.parse!("PT47S"),
+        due: ~U[2022-05-30 15:44:00Z],
         ease_factor: 2.4,
+        interval: Duration.parse!("PT47S"),
+        lapses: 3,
+        note_answer_index: 3,
+        note_question_index: 4,
         remaining_steps: 2,
-        lapses: 3
+        reps: 36
       })
 
     changes = card_changeset.changes
 
-    assert changes.ease_factor == 2.4
     assert changes.card_queue == :learn
     assert changes.card_type == :review
+    assert changes.due == ~U[2022-05-30 15:44:00Z]
+    assert changes.ease_factor == 2.4
     assert changes.interval == Duration.parse!("PT47S")
-    assert changes.remaining_steps == 2
     assert changes.lapses == 3
+    assert changes.note_answer_index == 3
+    assert changes.note_question_index == 4
+    assert changes.remaining_steps == 2
+    assert changes.reps == 36
   end
 
   describe "set_due_field_in_changeset" do
