@@ -77,4 +77,65 @@ defmodule Memorex.ParserTest do
       assert Repo.all(Note) |> length() == 1
     end
   end
+
+  test "parse_line/1" do
+    line = " one ⮂   two  "
+    note = Parser.parse_line(line)
+    assert note == %Note{content: ["one", "two"], id: "b6db891e-d142-51fa-9e0a-7100b0843d78", in_latest_parse?: true}
+  end
+
+  describe "parse_file_contents/1" do
+    test "reads in the note contents" do
+      assert Repo.all(Note) |> length() == 0
+
+      file_contents = """
+      one ⮂   two
+
+      three ⮂   four
+
+      something else
+
+      five ⮂   six
+
+      """
+
+      Parser.parse_file_contents(file_contents)
+
+      assert Repo.all(Note) |> length() == 3
+      assert Repo.all(Card) |> length() == 6
+    end
+
+    test "can read in existing notes" do
+      assert Repo.all(Note) |> length() == 0
+
+      file_contents = """
+      one ⮂  one
+      """
+
+      Parser.parse_file_contents(file_contents)
+
+      all_notes = Repo.all(Note)
+      assert length(all_notes) == 1
+
+      Parser.parse_file_contents(file_contents)
+
+      assert Repo.all(Note) |> length() == 1
+      assert Repo.all(Card) |> length() == 2
+    end
+
+    test "associates a deck with the notes if one is provided" do
+      assert Repo.all(Note) |> length() == 0
+      deck = Repo.insert!(%Deck{name: "My Deck"})
+
+      file_contents = """
+      one ⮂ one
+      """
+
+      Parser.parse_file_contents(file_contents, deck)
+
+      note = Repo.all(Note) |> Repo.preload(:deck) |> List.first()
+      assert note.deck.id == deck.id
+      assert note.deck.name == "My Deck"
+    end
+  end
 end

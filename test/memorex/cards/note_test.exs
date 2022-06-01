@@ -2,8 +2,8 @@ defmodule Memorex.Cards.NoteTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.Repo
-  alias Memorex.Cards.{Card, CardLog, Deck, Note}
+  alias Memorex.{Parser, Repo}
+  alias Memorex.Cards.{Card, CardLog, Note}
   alias Timex.Duration
 
   # From: https://stackoverflow.com/questions/136505/searching-for-uuids-in-text-with-regex
@@ -58,67 +58,6 @@ defmodule Memorex.Cards.NoteTest do
     assert Note.sha1_to_uuid(sha) == "950db789-4f02-593f-a046-5fdc94d0cdaf"
   end
 
-  test "parse_line/1" do
-    line = " one ⮂   two  "
-    note = Note.parse_line(line)
-    assert note == %Note{content: ["one", "two"], id: "b6db891e-d142-51fa-9e0a-7100b0843d78", in_latest_parse?: true}
-  end
-
-  describe "parse_file_contents/1" do
-    test "reads in the note contents" do
-      assert Repo.all(Note) |> length() == 0
-
-      file_contents = """
-      one ⮂   two
-
-      three ⮂   four
-
-      something else
-
-      five ⮂   six
-
-      """
-
-      Note.parse_file_contents(file_contents)
-
-      assert Repo.all(Note) |> length() == 3
-      assert Repo.all(Card) |> length() == 6
-    end
-
-    test "can read in existing notes" do
-      assert Repo.all(Note) |> length() == 0
-
-      file_contents = """
-      one ⮂  one
-      """
-
-      Note.parse_file_contents(file_contents)
-
-      all_notes = Repo.all(Note)
-      assert length(all_notes) == 1
-
-      Note.parse_file_contents(file_contents)
-
-      assert Repo.all(Note) |> length() == 1
-      assert Repo.all(Card) |> length() == 2
-    end
-
-    test "associates a deck with the notes if one is provided" do
-      assert Repo.all(Note) |> length() == 0
-      deck = Repo.insert!(%Deck{name: "My Deck"})
-
-      file_contents = """
-      one ⮂ one
-      """
-
-      Note.parse_file_contents(file_contents, deck)
-
-      note = Repo.all(Note) |> Repo.preload(:deck) |> List.first()
-      assert note.deck.id == deck.id
-      assert note.deck.name == "My Deck"
-    end
-  end
-
   describe ":in_latest_parse? flag operations" do
     test "deletes notes that are no longer present and leaves existing notes" do
       assert Repo.all(Note) |> length() == 0
@@ -128,7 +67,7 @@ defmodule Memorex.Cards.NoteTest do
       two ⮂ two
       """
 
-      Note.parse_file_contents(file_contents)
+      Parser.parse_file_contents(file_contents)
 
       assert Repo.all(Note) |> length() == 2
       assert Repo.all(Card) |> length() == 4
@@ -139,7 +78,7 @@ defmodule Memorex.Cards.NoteTest do
       """
 
       Note.clear_parse_flags()
-      Note.parse_file_contents(new_file_contents)
+      Parser.parse_file_contents(new_file_contents)
       Note.delete_notes_without_flag_set()
 
       assert Repo.all(Note) |> length() == 2

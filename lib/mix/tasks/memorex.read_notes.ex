@@ -7,7 +7,7 @@ defmodule Mix.Tasks.Memorex.ReadNotes do
   ```
   """
 
-  alias Memorex.Cards.Deck
+  alias Memorex.Parser
 
   @shortdoc "Reads the notes from the notes dirs"
   use Mix.Task
@@ -15,6 +15,6 @@ defmodule Mix.Tasks.Memorex.ReadNotes do
   @impl Mix.Task
   def run(_args) do
     Mix.Task.run("app.start")
-    Deck.read_note_dirs()
+    Parser.read_note_dirs()
   end
 end

@@ -2,13 +2,13 @@ defmodule Memorex.Parser do
   @moduledoc false
 
   alias Memorex.Repo
-  alias Memorex.Cards.{Deck, Note}
+  alias Memorex.Cards.{Card, Deck, Note}
 
   @spec read_file(String.t(), Deck.t() | nil) :: :ok
   def read_file(filename, deck \\ nil) do
     filename
     |> File.read!()
-    |> Note.parse_file_contents(deck)
+    |> parse_file_contents(deck)
   end
 
   @spec read_dir(String.t()) :: :ok
@@ -48,4 +48,33 @@ defmodule Memorex.Parser do
 
     Note.delete_notes_without_flag_set()
   end
+
+  @spec parse_file_contents(String.t(), Deck.t() | nil) :: :ok
+  def parse_file_contents(contents, deck \\ nil) do
+    contents
+    |> String.split("\n")
+    |> Enum.each(fn line ->
+      if String.match?(line, ~r/#{bidirectional_note_delimitter()}/) do
+        note = line |> parse_line()
+        note_from_db = Repo.get(Note, note.id)
+
+        if note_from_db do
+          note_from_db |> Note.set_parse_flag()
+        else
+          %{note | deck: deck}
+          |> Repo.insert!(on_conflict: :nothing)
+          |> Card.create_bidirectional_from_note()
+        end
+      end
+    end)
+  end
+
+  @spec parse_line(String.t()) :: Note.t()
+  def parse_line(line) do
+    content = line |> String.split(bidirectional_note_delimitter()) |> Enum.map(&String.trim(&1))
+    Note.new(content: content)
+  end
+
+  @spec bidirectional_note_delimitter() :: String.t()
+  def bidirectional_note_delimitter, do: Application.get_env(:memorex, Memorex.Note)[:bidirectional_note_delimitter]
 end
