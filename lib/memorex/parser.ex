@@ -37,11 +37,13 @@ defmodule Memorex.Parser do
 
         case file_stat.type do
           :regular ->
-            deck = Decks.find_or_create!(Path.rootname(file_or_dir))
-            read_file(pathname, deck)
+            if !String.starts_with?(file_or_dir, ".") do
+              deck = Decks.find_or_create!(Path.rootname(file_or_dir))
+              read_file(pathname, deck)
+            end
 
           :directory ->
-            read_dir(pathname)
+            if !String.starts_with?(file_or_dir, "."), do: read_dir(pathname)
         end
       end)
     end)

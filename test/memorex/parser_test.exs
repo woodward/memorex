@@ -41,7 +41,7 @@ defmodule Memorex.ParserTest do
   end
 
   describe "read_multiple_dirs" do
-    test "reads in notes from the multiple dirs in the config" do
+    test "reads in notes from the multiple dirs in the config excluding filenames that start with a dot" do
       Parser.read_note_dirs()
 
       decks = Repo.all(Deck)
