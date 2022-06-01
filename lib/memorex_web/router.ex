@@ -17,7 +17,8 @@ defmodule MemorexWeb.Router do
   scope "/", MemorexWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", DecksLive, :home
+    get "/page", PageController, :index
   end
 
   # Other scopes may use custom stacks.
