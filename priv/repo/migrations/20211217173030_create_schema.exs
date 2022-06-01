@@ -4,13 +4,13 @@ defmodule Memorex.Repo.Migrations.CreateSchema do
 
   def change do
     create table("decks") do
-      add :name, :binary
+      add :name, :text
 
       timestamps()
     end
 
     create table("notes") do
-      add :content, {:array, :binary}
+      add :content, {:array, :text}
       add :in_latest_parse?, :boolean, default: false, null: false
 
       add :deck_id, references(:decks, on_delete: :delete_all)
@@ -19,8 +19,8 @@ defmodule Memorex.Repo.Migrations.CreateSchema do
     end
 
     create table("cards") do
-      add :card_queue, :string
-      add :card_type, :string
+      add :card_queue, :text
+      add :card_type, :text
       add :due, :utc_datetime
       add :ease_factor, :float
       add :interval, :integer
@@ -36,8 +36,8 @@ defmodule Memorex.Repo.Migrations.CreateSchema do
     end
 
     create table("card_logs") do
-      add :answer_choice, :string
-      add :card_type, :string
+      add :answer_choice, :text
+      add :card_type, :text
       add :ease_factor, :float, null: false
       add :interval, :integer, null: false
       add :last_interval, :integer, null: false
