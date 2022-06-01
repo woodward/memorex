@@ -7,6 +7,9 @@ These are the tooltip values that show up when you hover on the "i" icon next to
 copied/pasted from the file [deck-config.ftl](https://github.com/ankitects/anki/blob/main/ftl/core/deck-config.ftl)
 
 This [manual page](https://docs.ankiweb.net/deck-options.html) also talks about the various deck settings.
+This [Anki page](https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html) is also useful.  Read 
+(here about the Anki 2.1 scheduler)[https://faqs.ankiweb.net/the-anki-2.1-scheduler.html], and 
+(here about the 2021 scheduler)[https://faqs.ankiweb.net/the-2021-scheduler.html]. 
 
 
 ## Daily Limits
