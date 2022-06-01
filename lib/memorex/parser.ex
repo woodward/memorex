@@ -1,4 +1,4 @@
-defmodule Memorex.DeckParser do
+defmodule Memorex.Parser do
   @moduledoc false
 
   alias Memorex.Repo

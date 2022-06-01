@@ -1,13 +1,13 @@
-defmodule Memorex.DeckParserTest do
+defmodule Memorex.ParserTest do
   @moduledoc false
   use Memorex.DataCase
 
   alias Memorex.Cards.{Card, Deck, Note}
-  alias Memorex.DeckParser
+  alias Memorex.Parser
 
   describe "read_file" do
     test "a file gets converted into notes" do
-      DeckParser.read_file("test/fixtures/deck1.md")
+      Parser.read_file("test/fixtures/deck1.md")
 
       assert Repo.all(Note) |> length() == 3
       assert Repo.all(Card) |> length() == 6
@@ -15,7 +15,7 @@ defmodule Memorex.DeckParserTest do
 
     test "can take an optional deck" do
       deck = Repo.insert!(%Deck{name: "My Deck"})
-      DeckParser.read_file("test/fixtures/deck1.md", deck)
+      Parser.read_file("test/fixtures/deck1.md", deck)
 
       deck = Repo.all(Deck) |> Repo.preload(:notes) |> Repo.preload(:cards) |> List.first()
 
@@ -27,7 +27,7 @@ defmodule Memorex.DeckParserTest do
 
   describe "read_dir" do
     test "all of the files in a directory get incorporated into the deck" do
-      DeckParser.read_dir("test/fixtures/deck")
+      Parser.read_dir("test/fixtures/deck")
 
       deck = Repo.all(Deck) |> List.first()
       assert deck.name == "deck"
@@ -42,7 +42,7 @@ defmodule Memorex.DeckParserTest do
 
   describe "read_multiple_dirs" do
     test "reads in notes from the multiple dirs in the config" do
-      DeckParser.read_note_dirs()
+      Parser.read_note_dirs()
 
       decks = Repo.all(Deck)
       deck_names = decks |> Enum.map(& &1.name) |> Enum.sort()
@@ -64,7 +64,7 @@ defmodule Memorex.DeckParserTest do
 
       File.write!(notes_file, file_contents)
 
-      DeckParser.read_note_dirs([notes_dir])
+      Parser.read_note_dirs([notes_dir])
       assert Repo.all(Note) |> length() == 1
 
       edited_file_contents = """
@@ -73,7 +73,7 @@ defmodule Memorex.DeckParserTest do
 
       File.write!(notes_file, edited_file_contents)
 
-      DeckParser.read_note_dirs([notes_dir])
+      Parser.read_note_dirs([notes_dir])
       assert Repo.all(Note) |> length() == 1
     end
   end
