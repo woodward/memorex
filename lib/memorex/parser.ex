@@ -1,7 +1,7 @@
 defmodule Memorex.Parser do
   @moduledoc false
 
-  alias Memorex.Repo
+  alias Memorex.{Decks, Repo}
   alias Memorex.Cards.{Card, Deck, Note}
 
   @spec read_file(String.t(), Deck.t() | nil) :: :ok
@@ -14,7 +14,7 @@ defmodule Memorex.Parser do
   @spec read_dir(String.t()) :: :ok
   def read_dir(dirname) do
     deck_name = Path.basename(dirname)
-    deck = Repo.insert!(%Deck{name: deck_name})
+    deck = Decks.find_or_create!(deck_name)
 
     Path.wildcard(dirname <> "/*.md")
     |> Enum.each(&read_file(&1, deck))
@@ -37,7 +37,7 @@ defmodule Memorex.Parser do
 
         case file_stat.type do
           :regular ->
-            deck = Repo.insert!(%Deck{name: Path.rootname(file_or_dir)})
+            deck = Decks.find_or_create!(Path.rootname(file_or_dir))
             read_file(pathname, deck)
 
           :directory ->

@@ -52,6 +52,14 @@ defmodule Memorex.ParserTest do
       assert Repo.all(Card) |> length() == 26
     end
 
+    test "does not create decks again if the directory is read a 2nd time" do
+      Parser.read_note_dirs()
+      assert Repo.all(Deck) |> length() == 6
+
+      Parser.read_note_dirs()
+      assert Repo.all(Deck) |> length() == 6
+    end
+
     test "deletes notes that are no longer present in the files" do
       notes_dir = "test/tmp"
       File.mkdir(notes_dir)
