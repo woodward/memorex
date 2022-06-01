@@ -18,6 +18,7 @@ defmodule MemorexWeb.Router do
     pipe_through :browser
 
     live "/", DecksLive, :home
+    live "/review", ReviewLive, :home
     get "/page", PageController, :index
   end
 
