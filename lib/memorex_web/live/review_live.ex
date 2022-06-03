@@ -33,11 +33,11 @@ defmodule MemorexWeb.ReviewLive do
       <table>
         <tr>
           <td> Question </td>
-          <td> <%= Card.question(@prior_card_at_end) %> </td>
+          <td> <%= Card.question(@prior_card_end_state) %> </td>
         </tr>
         <tr>
           <td> Answer </td>
-          <td> <%= Card.answer(@prior_card_at_end) %> </td>
+          <td> <%= Card.answer(@prior_card_end_state) %> </td>
         </tr>
         <tr>
           <td> Answer Choice </td>
@@ -58,18 +58,18 @@ defmodule MemorexWeb.ReviewLive do
         <tbody>
           <tr>
             <td> Card Type </td>
-            <td> <%= @prior_card_at_start.card_type %> </td>
-            <td> <%= @prior_card_at_end.card_type %> </td>
+            <td> <%= @prior_card_starting_state.card_type %> </td>
+            <td> <%= @prior_card_end_state.card_type %> </td>
           </tr>
           <tr>
             <td> Interval </td>
-            <td> <%= format(@prior_card_at_start.interval) %> </td>
-            <td> <%= format(@prior_card_at_end.interval) %> </td>
+            <td> <%= format(@prior_card_starting_state.interval) %> </td>
+            <td> <%= format(@prior_card_end_state.interval) %> </td>
           </tr>
           <tr>
             <td> Due </td>
-            <td> <%= format(@prior_card_at_start.due) %> </td>
-            <td> <%= format(@prior_card_at_end.due) %> </td>
+            <td> <%= format(@prior_card_starting_state.due) %> </td>
+            <td> <%= format(@prior_card_end_state.due) %> </td>
           </tr>
         </tbody>
       </table>
@@ -104,8 +104,8 @@ defmodule MemorexWeb.ReviewLive do
      |> assign(
        deck: deck,
        card: card,
-       prior_card_at_start: card,
-       prior_card_at_end: card
+       prior_card_starting_state: card,
+       prior_card_end_state: card
      )}
   end
 
@@ -123,7 +123,7 @@ defmodule MemorexWeb.ReviewLive do
     IO.puts("--------------------------")
     answer_choice = String.to_atom(answer_choice)
     IO.inspect(answer_choice, label: "answer_choice")
-    prior_card_at_end = card
+    prior_card_end_state = card
 
     end_time = Timex.now()
     new_card = Cards.get_one_random_due_card(deck.id, end_time)
@@ -136,8 +136,8 @@ defmodule MemorexWeb.ReviewLive do
        card: new_card,
        start_time: end_time,
        time_to_answer: time_to_answer,
-       prior_card_at_start: new_card,
-       prior_card_at_end: prior_card_at_end,
+       prior_card_starting_state: new_card,
+       prior_card_end_state: prior_card_end_state,
        last_answer_choice: answer_choice
      )}
   end
