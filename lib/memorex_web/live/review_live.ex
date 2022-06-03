@@ -9,7 +9,24 @@ defmodule MemorexWeb.ReviewLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <h1> Deck <%= @deck.name %> </h1>
+    <h1> Deck: <%= @deck.name %> </h1>
+
+    <table class="deck-stats">
+      <thead>
+        <th> Total </th>
+        <th> New </th>
+        <th> Learn </th>
+        <th> Review </th>
+      </thead>
+      <tbody>
+        <tr>
+          <td> <%= @deck_stats.total %> </td>
+          <td> <%= @deck_stats.new %> </td>
+          <td> <%= @deck_stats.learn %> </td>
+          <td> <%= @deck_stats.review %> </td>
+        </tr>
+      </tbody>
+    </table>
 
     <h3> <%= Card.question(@card) %> </h3>
 
@@ -105,7 +122,8 @@ defmodule MemorexWeb.ReviewLive do
        deck: deck,
        card: card,
        prior_card_starting_state: card,
-       prior_card_end_state: card
+       prior_card_end_state: card,
+       deck_stats: deck_stats(deck.id)
      )}
   end
 
@@ -138,13 +156,26 @@ defmodule MemorexWeb.ReviewLive do
        time_to_answer: card_log.time_to_answer,
        prior_card_starting_state: new_card,
        prior_card_end_state: prior_card_end_state,
-       last_answer_choice: answer_choice
+       last_answer_choice: answer_choice,
+       deck_stats: deck_stats(deck.id)
      )}
   end
 
+  @spec format(Duration.t() | DateTime.t()) :: String.t()
   def format(%Duration{} = duration), do: Timex.Format.Duration.Formatters.Humanized.format(duration)
   def format(%DateTime{} = datetime), do: inspect(datetime)
   # def format(%DateTime{} = datetime), do: Timex.Format.DateTime.Formatters.Humanized.format(datetime)
 
+  @spec deck_stats(Ecto.UUID.t()) :: map()
+  def deck_stats(deck_id) do
+    %{
+      total: Cards.count(deck_id),
+      new: Cards.count(deck_id, :new),
+      learn: Cards.count(deck_id, :learn),
+      review: Cards.count(deck_id, :review)
+    }
+  end
+
+  @spec debug_mode?() :: boolean()
   def debug_mode?(), do: Application.get_env(:memorex, MemorexWeb.ReviewLive)[:debug_mode?]
 end
