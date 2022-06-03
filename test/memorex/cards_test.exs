@@ -136,4 +136,33 @@ defmodule Memorex.CardsTest do
       assert random_due_card.note.content == ["First", "Second"]
     end
   end
+
+  describe "count/1" do
+    test "returns the number of total cards for this deck" do
+      deck1 = Repo.insert!(%Deck{})
+      note1 = Repo.insert!(%Note{deck: deck1})
+      _card1 = Repo.insert!(%Card{note: note1})
+
+      deck2 = Repo.insert!(%Deck{})
+      note1_deck2 = Repo.insert!(%Note{deck: deck2})
+      _card1 = Repo.insert!(%Card{note: note1_deck2})
+
+      assert Cards.count(deck1.id) == 1
+    end
+  end
+
+  describe "count/2" do
+    test "returns the number of cards of a certain type for this deck" do
+      deck1 = Repo.insert!(%Deck{})
+      note1 = Repo.insert!(%Note{deck: deck1})
+      _card1 = Repo.insert!(%Card{note: note1, card_type: :learn})
+      _card2 = Repo.insert!(%Card{note: note1, card_type: :review})
+
+      deck2 = Repo.insert!(%Deck{})
+      note1_deck2 = Repo.insert!(%Note{deck: deck2})
+      _card1_deck2 = Repo.insert!(%Card{note: note1_deck2})
+
+      assert Cards.count(deck1.id, :review) == 1
+    end
+  end
 end

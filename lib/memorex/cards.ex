@@ -74,4 +74,19 @@ defmodule Memorex.Cards do
     |> preload(:note)
     |> Repo.one()
   end
+
+  @spec count(Ecto.UUID.t()) :: non_neg_integer()
+  def count(deck_id) do
+    deck_id
+    |> cards_for_deck()
+    |> Repo.aggregate(:count, :id)
+  end
+
+  @spec count(Ecto.UUID.t(), Card.card_type()) :: non_neg_integer()
+  def count(deck_id, card_type) do
+    deck_id
+    |> cards_for_deck()
+    |> where(card_type: ^card_type)
+    |> Repo.aggregate(:count, :id)
+  end
 end

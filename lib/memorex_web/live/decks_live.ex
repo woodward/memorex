@@ -14,6 +14,10 @@ defmodule MemorexWeb.DecksLive do
       <%= for deck <- @decks do %>
         <li>
           <%=  live_patch deck.name, to: Routes.review_path(@socket, :home, %{deck: deck}) %>
+          (Total: <%= Cards.count(deck.id) %>,
+          New: <%= Cards.count(deck.id, :new) %>,
+          Learn: <%= Cards.count(deck.id, :learn) %>,
+          Review: <%= Cards.count(deck.id, :review) %> )
           <button phx-click="add-new-batch-of-learn-cards" phx-value-deck_id={ deck.id }> Add New Batch of Cards </button>
         </li>
       <% end %>
