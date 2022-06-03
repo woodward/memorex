@@ -10,7 +10,6 @@ defmodule MemorexWeb.ReviewLive do
   def render(assigns) do
     ~H"""
     <h1> Deck <%= @deck.name %> </h1>
-    <h2> Time to answer: <%= Timex.Format.Duration.Formatters.Humanized.format(@time_to_answer) %> </h2>
 
     <h3> <%= Card.question(@card) %> </h3>
 
@@ -25,6 +24,17 @@ defmodule MemorexWeb.ReviewLive do
       <button phx-click="rate-difficulty" phx-value-answer_choice="good"> Good </button>
       <button phx-click="rate-difficulty" phx-value-answer_choice="easy"> Easy </button>
     <% end %>
+
+    <%= if @debug? do %>
+      <hr>
+      <h2> Time to answer last card: <%= format(@time_to_answer) %> </h2>
+      <h3> Last question: <%= Card.question(@prior_card_at_end) %> </h3>
+      <h3> Last answer: <%= Card.answer(@prior_card_at_end) %> </h3>
+      <h3> Last answer choice: <%= @last_answer_choice %> </h3>
+      <h3> Card type:  Start: <%= @prior_card_at_start.card_type %>, End: <%= @prior_card_at_end.card_type %> </h3>
+      <h3> Interval:  Start: <%= format(@prior_card_at_start.interval) %>, End: <%= format(@prior_card_at_end.interval) %> </h3>
+      <h3> Due:  Start: <%= format(@prior_card_at_start.due) %>, End: <%= format(@prior_card_at_end.due) %> </h3>
+    <% end %>
     """
   end
 
@@ -37,9 +47,11 @@ defmodule MemorexWeb.ReviewLive do
      socket
      |> assign(
        config: config,
+       debug?: true,
        display: :show_question,
        start_time: time_now,
-       time_to_answer: Duration.parse!("PT0S")
+       time_to_answer: Duration.parse!("PT0S"),
+       last_answer_choice: nil
      )}
   end
 
@@ -53,7 +65,9 @@ defmodule MemorexWeb.ReviewLive do
      socket
      |> assign(
        deck: deck,
-       card: card
+       card: card,
+       prior_card_at_start: card,
+       prior_card_at_end: card
      )}
   end
 
@@ -66,15 +80,31 @@ defmodule MemorexWeb.ReviewLive do
   def handle_event(
         "rate-difficulty",
         %{"answer_choice" => answer_choice} = _params,
-        %{assigns: %{deck: deck, start_time: start_time}} = socket
+        %{assigns: %{deck: deck, start_time: start_time, card: card}} = socket
       ) do
     IO.puts("--------------------------")
+    answer_choice = String.to_atom(answer_choice)
     IO.inspect(answer_choice, label: "answer_choice")
+    prior_card_at_end = card
 
     end_time = Timex.now()
-    card = Cards.get_one_random_due_card(deck.id, end_time)
+    new_card = Cards.get_one_random_due_card(deck.id, end_time)
     time_to_answer = Timex.diff(start_time, end_time, :duration)
 
-    {:noreply, socket |> assign(display: :show_question, card: card, start_time: end_time, time_to_answer: time_to_answer)}
+    {:noreply,
+     socket
+     |> assign(
+       display: :show_question,
+       card: new_card,
+       start_time: end_time,
+       time_to_answer: time_to_answer,
+       prior_card_at_start: new_card,
+       prior_card_at_end: prior_card_at_end,
+       last_answer_choice: answer_choice
+     )}
   end
+
+  def format(%Duration{} = duration), do: Timex.Format.Duration.Formatters.Humanized.format(duration)
+  def format(%DateTime{} = datetime), do: inspect(datetime)
+  # def format(%DateTime{} = datetime), do: Timex.Format.DateTime.Formatters.Humanized.format(datetime)
 end
