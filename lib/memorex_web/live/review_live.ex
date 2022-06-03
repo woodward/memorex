@@ -25,7 +25,7 @@ defmodule MemorexWeb.ReviewLive do
       <button phx-click="rate-difficulty" phx-value-answer_choice="easy"> Easy </button>
     <% end %>
 
-    <%= if @debug? do %>
+    <%= if debug_mode?() do %>
       <hr>
       <h2> Time to answer last card: <%= format(@time_to_answer) %> </h2>
       <h3> Last question: <%= Card.question(@prior_card_at_end) %> </h3>
@@ -107,4 +107,6 @@ defmodule MemorexWeb.ReviewLive do
   def format(%Duration{} = duration), do: Timex.Format.Duration.Formatters.Humanized.format(duration)
   def format(%DateTime{} = datetime), do: inspect(datetime)
   # def format(%DateTime{} = datetime), do: Timex.Format.DateTime.Formatters.Humanized.format(datetime)
+
+  def debug_mode?(), do: Application.get_env(:memorex, MemorexWeb.ReviewLive)[:debug_mode?]
 end

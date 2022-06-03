@@ -25,6 +25,8 @@ config :memorex, MemorexWeb.Endpoint,
   pubsub_server: Memorex.PubSub,
   live_view: [signing_salt: "EgDTB8ge"]
 
+config :memorex, MemorexWeb.ReviewLive, debug_mode?: true
+
 config :dart_sass,
   version: "1.49.11",
   default: [
