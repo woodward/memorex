@@ -27,13 +27,52 @@ defmodule MemorexWeb.ReviewLive do
 
     <%= if debug_mode?() do %>
       <hr>
-      <h2> Time to answer last card: <%= format(@time_to_answer) %> </h2>
-      <h3> Last question: <%= Card.question(@prior_card_at_end) %> </h3>
-      <h3> Last answer: <%= Card.answer(@prior_card_at_end) %> </h3>
-      <h3> Last answer choice: <%= @last_answer_choice %> </h3>
-      <h3> Card type:  Start: <%= @prior_card_at_start.card_type %>, End: <%= @prior_card_at_end.card_type %> </h3>
-      <h3> Interval:  Start: <%= format(@prior_card_at_start.interval) %>, End: <%= format(@prior_card_at_end.interval) %> </h3>
-      <h3> Due:  Start: <%= format(@prior_card_at_start.due) %>, End: <%= format(@prior_card_at_end.due) %> </h3>
+
+      <h3> Last Card </h3>
+
+      <table>
+        <tr>
+          <td> Question </td>
+          <td> <%= Card.question(@prior_card_at_end) %> </td>
+        </tr>
+        <tr>
+          <td> Answer </td>
+          <td> <%= Card.answer(@prior_card_at_end) %> </td>
+        </tr>
+        <tr>
+          <td> Answer Choice </td>
+          <td> <%= @last_answer_choice %> </td>
+        </tr>
+        <tr>
+          <td> Time to Answer </td>
+          <td> <%= format(@time_to_answer) %> </td>
+        </tr>
+      </table>
+
+      <table>
+        <thead>
+          <th> </th>
+          <th> Start </th>
+          <th> End </th>
+        </thead>
+        <tbody>
+          <tr>
+            <td> Card Type </td>
+            <td> <%= @prior_card_at_start.card_type %> </td>
+            <td> <%= @prior_card_at_end.card_type %> </td>
+          </tr>
+          <tr>
+            <td> Interval </td>
+            <td> <%= format(@prior_card_at_start.interval) %> </td>
+            <td> <%= format(@prior_card_at_end.interval) %> </td>
+          </tr>
+          <tr>
+            <td> Due </td>
+            <td> <%= format(@prior_card_at_start.due) %> </td>
+            <td> <%= format(@prior_card_at_end.due) %> </td>
+          </tr>
+        </tbody>
+      </table>
     <% end %>
     """
   end
