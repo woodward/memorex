@@ -38,7 +38,7 @@ defmodule Memorex.Repo.Migrations.CreateSchema do
     create table("card_logs") do
       add :answer_choice, :text
       add :card_type, :text
-      add :ease_factor, :float, null: false
+      add :ease_factor, :float
       add :interval, :integer, null: false
       add :last_interval, :integer, null: false
       add :time_to_answer, :integer, null: false
