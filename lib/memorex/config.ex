@@ -4,6 +4,9 @@ defmodule Memorex.Config do
   alias Timex.Duration
 
   @type t() :: %__MODULE__{
+          new_cards_per_day: non_neg_integer(),
+          max_reviews_per_day: non_neg_integer(),
+          #
           learn_ahead_time_interval: Duration.t(),
           #
           learn_steps: [Duration.t()],
@@ -14,7 +17,6 @@ defmodule Memorex.Config do
           #
           initial_ease: float(),
           #
-          max_reviews_per_day: non_neg_integer(),
           easy_multiplier: float(),
           hard_multiplier: float(),
           lapse_multiplier: float(),
@@ -39,7 +41,10 @@ defmodule Memorex.Config do
           timezone: String.t()
         }
 
-  defstruct learn_ahead_time_interval: Duration.parse!("PT20M"),
+  defstruct new_cards_per_day: 20,
+            max_reviews_per_day: 200,
+            #
+            learn_ahead_time_interval: Duration.parse!("PT20M"),
             #
             learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")],
             graduating_interval_good: Duration.parse!("P1D"),
@@ -49,7 +54,6 @@ defmodule Memorex.Config do
             #
             initial_ease: 2.5,
             #
-            max_reviews_per_day: 9999,
             easy_multiplier: 1.3,
             hard_multiplier: 1.2,
             lapse_multiplier: 0.0,

@@ -21,9 +21,8 @@ defmodule MemorexWeb.ReviewLive do
   def handle_params(params, _uri, socket) do
     deck = Repo.get!(Deck, params["deck"])
     config = %Config{}
-    limit = 20
     time_now = Timex.now()
-    Cards.set_new_cards_in_deck_to_learn_cards(deck.id, config, time_now, limit: limit)
+    Cards.set_new_cards_in_deck_to_learn_cards(deck.id, config, time_now, limit: config.new_cards_per_day)
     {:noreply, socket |> assign(deck: deck, config: config)}
   end
 end
