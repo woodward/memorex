@@ -114,4 +114,14 @@ defmodule Memorex.Cards.Card do
 
     changeset(card, updates)
   end
+
+  @spec question(t()) :: String.t()
+  def question(card) do
+    card.note.content |> List.pop_at(card.note_question_index) |> elem(0)
+  end
+
+  @spec answer(t()) :: String.t()
+  def answer(card) do
+    card.note.content |> List.pop_at(card.note_answer_index) |> elem(0)
+  end
 end

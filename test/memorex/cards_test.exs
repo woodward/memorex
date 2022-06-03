@@ -61,7 +61,7 @@ defmodule Memorex.CardsTest do
       assert card.id == card1.id
     end
 
-    test "can pass in optional opts" do
+    test "can pass in optional limit option" do
       deck1 = Repo.insert!(%Deck{})
       note1 = Repo.insert!(%Note{deck: deck1})
       _card1 = Repo.insert!(%Card{note: note1})
@@ -71,6 +71,23 @@ defmodule Memorex.CardsTest do
 
       cards = Repo.all(Cards.cards_for_deck(deck1.id, limit: 1))
       assert length(cards) == 1
+    end
+
+    @tag :skip
+    test "can pass in optional order_by option" do
+      deck1 = Repo.insert!(%Deck{})
+      note1 = Repo.insert!(%Note{deck: deck1})
+      _card1 = Repo.insert!(%Card{note: note1, note_question_index: 2})
+
+      note2 = Repo.insert!(%Note{deck: deck1})
+      _card2 = Repo.insert!(%Card{note: note2, note_question_index: 1})
+
+      cards = Repo.all(Cards.cards_for_deck(deck1.id, order_by: :note_question_index))
+      assert length(cards) == 2
+      [retrieved_card1, retrieved_card2] = cards
+
+      assert retrieved_card1.note_question_index == 1
+      assert retrieved_card2.note_question_index == 2
     end
   end
 
@@ -93,6 +110,30 @@ defmodule Memorex.CardsTest do
       assert length(learn_cards) == 1
       [learn_card] = learn_cards
       assert learn_card.card_type == :learn
+    end
+  end
+
+  describe "get_one_random_due_card/2" do
+    test "returns one random due card for a deck" do
+      time_now = ~U[2022-02-01 12:00:00Z]
+      due = ~U[2022-02-01 11:59:00Z]
+      not_due = ~U[2022-02-01 12:01:00Z]
+
+      deck1 = Repo.insert!(%Deck{})
+      note1 = Repo.insert!(%Note{deck: deck1, content: ["First", "Second"]})
+      card1 = Repo.insert!(%Card{note: note1, due: due})
+
+      deck2 = Repo.insert!(%Deck{})
+      note1_deck2 = Repo.insert!(%Note{deck: deck2})
+      _card1 = Repo.insert!(%Card{note: note1_deck2, due: due})
+
+      note2 = Repo.insert!(%Note{deck: deck1})
+      _card2 = Repo.insert!(%Card{note: note2, due: not_due})
+
+      random_due_card = Cards.get_one_random_due_card(deck1.id, time_now)
+
+      assert random_due_card.id == card1.id
+      assert random_due_card.note.content == ["First", "Second"]
     end
   end
 end

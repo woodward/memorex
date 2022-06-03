@@ -144,4 +144,26 @@ defmodule Memorex.Cards.CardTest do
       assert changes.interval == Duration.parse!("PT2M")
     end
   end
+
+  describe "question/1" do
+    test "returns the question from the note" do
+      note = %Note{content: ["First", "Second"]}
+      card1 = %Card{note: note, note_question_index: 0}
+      assert Card.question(card1) == "First"
+
+      card2 = %Card{note: note, note_question_index: 1}
+      assert Card.question(card2) == "Second"
+    end
+  end
+
+  describe "answer/1" do
+    test "returns the answer from the note" do
+      note = %Note{content: ["First", "Second"]}
+      card1 = %Card{note: note, note_answer_index: 0}
+      assert Card.answer(card1) == "First"
+
+      card2 = %Card{note: note, note_answer_index: 1}
+      assert Card.answer(card2) == "Second"
+    end
+  end
 end

@@ -65,4 +65,13 @@ defmodule Memorex.Cards do
       |> Repo.update!()
     end)
   end
+
+  @spec get_one_random_due_card(Ecto.UUID.t(), DateTime.t()) :: Card.t()
+  def get_one_random_due_card(deck_id, time_now) do
+    cards_for_deck(deck_id, limit: 1)
+    |> where([c], c.due < ^time_now)
+    |> order_by(fragment("RANDOM()"))
+    |> preload(:note)
+    |> Repo.one()
+  end
 end
