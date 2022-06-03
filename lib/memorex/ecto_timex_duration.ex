@@ -23,6 +23,8 @@ defmodule Memorex.EctoTimexDuration do
   end
 
   @impl Ecto.Type
+  def equal?(nil, _duration2), do: false
+
   def equal?(duration1, duration2) do
     Duration.to_seconds(duration1) == Duration.to_seconds(duration2)
   end

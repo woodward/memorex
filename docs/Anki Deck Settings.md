@@ -33,9 +33,11 @@ are also supported.
 Graduating interval [default: 1] -  The number of days to wait before showing a card again, after the `Good` button is 
 pressed on the final learning step.
 
-Easy interval [default: 4] - The number of days to wait before showing a card again, after the `Easy` button is used to immediately remove a card from learning.
+Easy interval [default: 4] - The number of days to wait before showing a card again, after the `Easy` button is used to 
+immediately remove a card from learning.
 
-Insertion order [default: `Sequential (oldest cards first)`] - Controls the position (due #) new cards are assigned when you add new cards. Cards with a lower due number will be shown first when studying. Changing this option will automatically 
+Insertion order [default: `Sequential (oldest cards first)`] - Controls the position (due #) new cards are assigned when 
+you add new cards. Cards with a lower due number will be shown first when studying. Changing this option will automatically 
 update the existing position of new cards. (other value is `Random`)
 
 

@@ -5,7 +5,7 @@ defmodule Memorex.Cards.Card do
   import Ecto.Changeset
 
   alias Memorex.Cards.{CardLog, Note}
-  alias Memorex.{EctoTimexDuration, Repo}
+  alias Memorex.{Config, EctoTimexDuration, Repo}
   alias Timex.Duration
 
   @type card_queue :: :new | :learn | :review | :day_learn | :suspended | :buried
@@ -44,8 +44,8 @@ defmodule Memorex.Cards.Card do
     field :remaining_steps, :integer
     field :reps, :integer
 
-    # belongs_to :deck, Deck
     belongs_to :note, Note
+    # belongs_to :deck, Deck, through: Note
     has_many :card_logs, CardLog
 
     timestamps()
@@ -96,5 +96,22 @@ defmodule Memorex.Cards.Card do
 
     changeset
     |> cast(%{reps: reps + 1}, [:reps])
+  end
+
+  @spec learn_card_to_new_card_changeset(Ecto.Changeset.t() | t(), Config.t(), DateTime.t()) :: Ecto.Changeset.t()
+  def learn_card_to_new_card_changeset(card, config, time_now) do
+    first_learn_step = config.learn_steps |> List.first()
+
+    updates = %{
+      card_queue: :learn,
+      card_type: :learn,
+      due: Timex.shift(time_now, duration: first_learn_step),
+      interval: first_learn_step,
+      lapses: 0,
+      remaining_steps: length(config.learn_steps),
+      reps: 0
+    }
+
+    changeset(card, updates)
   end
 end

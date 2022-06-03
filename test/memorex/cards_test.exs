@@ -3,7 +3,7 @@ defmodule Memorex.CardsTest do
   use Memorex.DataCase
 
   alias Memorex.{Cards, Config, Repo}
-  alias Memorex.Cards.Card
+  alias Memorex.Cards.{Card, Deck, Note}
   alias Timex.Duration
 
   describe "update_card!" do
@@ -42,6 +42,57 @@ defmodule Memorex.CardsTest do
       assert card1.lapses == 0
       assert card1.reps == 0
       assert card1.due == ~U[2022-02-01 12:02:00Z]
+    end
+  end
+
+  describe "cards_for_deck/1" do
+    test "gets the cards associated with a particular deck" do
+      deck1 = Repo.insert!(%Deck{})
+      note1 = Repo.insert!(%Note{deck: deck1})
+      card1 = Repo.insert!(%Card{note: note1})
+
+      deck2 = Repo.insert!(%Deck{})
+      note2 = Repo.insert!(%Note{deck: deck2})
+      _card2 = Repo.insert!(%Card{note: note2})
+
+      cards = Repo.all(Cards.cards_for_deck(deck1.id))
+      assert length(cards) == 1
+      [card] = cards
+      assert card.id == card1.id
+    end
+
+    test "can pass in optional opts" do
+      deck1 = Repo.insert!(%Deck{})
+      note1 = Repo.insert!(%Note{deck: deck1})
+      _card1 = Repo.insert!(%Card{note: note1})
+
+      note2 = Repo.insert!(%Note{deck: deck1})
+      _card2 = Repo.insert!(%Card{note: note2})
+
+      cards = Repo.all(Cards.cards_for_deck(deck1.id, limit: 1))
+      assert length(cards) == 1
+    end
+  end
+
+  describe "set_new_cards_in_deck_to_learn_cards" do
+    test "works" do
+      deck1 = Repo.insert!(%Deck{})
+      note1 = Repo.insert!(%Note{deck: deck1})
+      _card1 = Repo.insert!(%Card{note: note1})
+
+      note2 = Repo.insert!(%Note{deck: deck1})
+      _card2 = Repo.insert!(%Card{note: note2})
+
+      config = %Config{}
+      time_now = ~U[2022-02-01 12:00:00Z]
+      Cards.set_new_cards_in_deck_to_learn_cards(deck1.id, config, time_now, limit: 1)
+
+      query = Ecto.Query.from(c in Card, where: c.card_type == :learn)
+      learn_cards = Repo.all(query)
+
+      assert length(learn_cards) == 1
+      [learn_card] = learn_cards
+      assert learn_card.card_type == :learn
     end
   end
 end

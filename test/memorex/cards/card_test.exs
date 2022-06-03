@@ -2,7 +2,7 @@ defmodule Memorex.Cards.CardTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.Repo
+  alias Memorex.{Config, Repo}
   alias Memorex.Cards.{Card, CardLog, Note}
   alias Timex.Duration
 
@@ -118,6 +118,30 @@ defmodule Memorex.Cards.CardTest do
       changeset = Card.changeset(card, %{})
       changeset = Card.increment_reps(changeset)
       assert changeset.changes.reps == 4
+    end
+  end
+
+  describe "learn_card_to_new_card_changeset/3" do
+    test "sets the values based on the config" do
+      config = %Config{
+        learn_steps: [Duration.parse!("PT2M"), Duration.parse!("PT15M")],
+        initial_ease: 2.25
+      }
+
+      card = %Card{card_type: :new, ease_factor: 2.15, lapses: 2, reps: 33, card_queue: :review}
+
+      time_now = ~U[2022-02-01 12:00:00Z]
+      changeset = Card.learn_card_to_new_card_changeset(card, config, time_now)
+
+      changes = changeset.changes
+
+      assert changes.remaining_steps == 2
+      assert changes.card_type == :learn
+      assert changes.card_queue == :learn
+      assert changes.lapses == 0
+      assert changes.reps == 0
+      assert changes.due == ~U[2022-02-01 12:02:00Z]
+      assert changes.interval == Duration.parse!("PT2M")
     end
   end
 end
