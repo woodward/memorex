@@ -6,12 +6,12 @@ defmodule Memorex.CardReviewer do
   alias Memorex.Cards.{Card, CardLog}
   alias Memorex.Cards
 
-  @spec answer_card_and_create_log_entry(Card.t(), Card.answer_choice(), DateTime.t(), DateTime.t(), Config.t()) :: Card.t()
+  @spec answer_card_and_create_log_entry(Card.t(), Card.answer_choice(), DateTime.t(), DateTime.t(), Config.t()) :: {Card.t(), CardLog.t()}
   def answer_card_and_create_log_entry(card_before, answer, start_time, time_now, config) do
     card_after = answer_card(card_before, answer, time_now, config)
     time_to_answer = time_to_answer(start_time, time_now, config)
-    CardLog.new(answer, card_before, card_after, time_to_answer) |> Repo.insert!()
-    card_after
+    card_log = CardLog.new(answer, card_before, card_after, time_to_answer) |> Repo.insert!()
+    {card_after, card_log}
   end
 
   @spec answer_card(Card.t(), Card.answer_choice(), DateTime.t(), Config.t()) :: Card.t()

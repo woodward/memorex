@@ -3,7 +3,7 @@ defmodule Memorex.CardReviewerTest do
   use Memorex.DataCase
 
   alias Memorex.{CardReviewer, Config}
-  alias Memorex.Cards.{Card, CardLog}
+  alias Memorex.Cards.Card
   alias Timex.Duration
 
   describe "bracket_time_to_answer/1" do
@@ -61,8 +61,7 @@ defmodule Memorex.CardReviewerTest do
       start_time = ~U[2022-01-01 12:02:00Z]
       time_now = ~U[2022-01-01 12:04:00Z]
 
-      card = CardReviewer.answer_card_and_create_log_entry(card, :good, start_time, time_now, config)
-      card_log = Repo.one(CardLog)
+      {card, card_log} = CardReviewer.answer_card_and_create_log_entry(card, :good, start_time, time_now, config)
 
       assert card_log.answer_choice == :good
       assert card_log.card_id == card.id

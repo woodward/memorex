@@ -2,7 +2,7 @@ defmodule MemorexWeb.ReviewLive do
   @moduledoc false
   use MemorexWeb, :live_view
 
-  alias Memorex.{Cards, Config, Repo}
+  alias Memorex.{Cards, CardReviewer, Config, Repo}
   alias Memorex.Cards.{Card, Deck}
   alias Timex.Duration
 
@@ -118,16 +118,16 @@ defmodule MemorexWeb.ReviewLive do
   def handle_event(
         "rate-difficulty",
         %{"answer_choice" => answer_choice} = _params,
-        %{assigns: %{deck: deck, start_time: start_time, card: card}} = socket
+        %{assigns: %{deck: deck, start_time: start_time, card: card, config: config}} = socket
       ) do
     IO.puts("--------------------------")
     answer_choice = String.to_atom(answer_choice)
     IO.inspect(answer_choice, label: "answer_choice")
-    prior_card_end_state = card
 
     end_time = Timex.now()
+    {prior_card_end_state, card_log} = CardReviewer.answer_card_and_create_log_entry(card, answer_choice, start_time, end_time, config)
+
     new_card = Cards.get_one_random_due_card(deck.id, end_time)
-    time_to_answer = Timex.diff(start_time, end_time, :duration)
 
     {:noreply,
      socket
@@ -135,7 +135,7 @@ defmodule MemorexWeb.ReviewLive do
        display: :show_question,
        card: new_card,
        start_time: end_time,
-       time_to_answer: time_to_answer,
+       time_to_answer: card_log.time_to_answer,
        prior_card_starting_state: new_card,
        prior_card_end_state: prior_card_end_state,
        last_answer_choice: answer_choice
