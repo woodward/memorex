@@ -56,9 +56,8 @@ defmodule MemorexWeb.ReviewLive do
   end
 
   @impl true
-  def handle_params(params, _uri, %{assigns: %{config: config, start_time: time_now}} = socket) do
+  def handle_params(params, _uri, %{assigns: %{start_time: time_now}} = socket) do
     deck = Repo.get!(Deck, params["deck"])
-    Cards.set_new_cards_in_deck_to_learn_cards(deck.id, config, time_now, limit: config.new_cards_per_day)
     card = Cards.get_one_random_due_card(deck.id, time_now)
 
     {:noreply,
