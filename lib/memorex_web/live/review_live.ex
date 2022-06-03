@@ -36,10 +36,26 @@ defmodule MemorexWeb.ReviewLive do
 
     <%= if @display == :show_question_and_answer do %>
       <h3> <%= Card.answer(@card) %> </h3>
-      <button phx-click="rate-difficulty" phx-value-answer_choice="again"> Again </button>
-      <button phx-click="rate-difficulty" phx-value-answer_choice="hard"> Hard </button>
-      <button phx-click="rate-difficulty" phx-value-answer_choice="good"> Good </button>
-      <button phx-click="rate-difficulty" phx-value-answer_choice="easy"> Easy </button>
+
+      <button class="answer-button again" phx-click="rate-difficulty" phx-value-answer_choice="again">
+        <span class="answer-choice"> Again </span>
+        <span class="answer-interval"> <%= format(@interval_choices[:again])  %> </span>
+      </button>
+
+      <button class="answer-button hard" phx-click="rate-difficulty" phx-value-answer_choice="hard">
+        <span class="answer-choice"> Hard </span>
+        <span class="answer-interval"> <%= format(@interval_choices[:hard])  %> </span>
+      </button>
+
+      <button class="answer-button good" phx-click="rate-difficulty" phx-value-answer_choice="good">
+        <span class="answer-choice"> Good </span>
+        <span class="answer-interval"> <%= format(@interval_choices[:good])  %> </span>
+      </button>
+
+      <button class="answer-button easy" phx-click="rate-difficulty" phx-value-answer_choice="easy">
+        <span class="answer-choice"> Easy </span>
+        <span class="answer-interval"> <%= format(@interval_choices[:easy])  %> </span>
+      </button>
     <% end %>
 
     <%= if debug_mode?() do %>
@@ -112,7 +128,7 @@ defmodule MemorexWeb.ReviewLive do
   end
 
   @impl true
-  def handle_params(params, _uri, %{assigns: %{start_time: time_now}} = socket) do
+  def handle_params(params, _uri, %{assigns: %{start_time: time_now, config: config}} = socket) do
     deck = Repo.get!(Deck, params["deck"])
     card = Cards.get_one_random_due_card(deck.id, time_now)
 
@@ -123,7 +139,8 @@ defmodule MemorexWeb.ReviewLive do
        card: card,
        prior_card_starting_state: card,
        prior_card_end_state: card,
-       deck_stats: deck_stats(deck.id)
+       deck_stats: deck_stats(deck.id),
+       interval_choices: Cards.get_interval_choices(card, config)
      )}
   end
 
@@ -157,7 +174,8 @@ defmodule MemorexWeb.ReviewLive do
        prior_card_starting_state: new_card,
        prior_card_end_state: prior_card_end_state,
        last_answer_choice: answer_choice,
-       deck_stats: deck_stats(deck.id)
+       deck_stats: deck_stats(deck.id),
+       interval_choices: Cards.get_interval_choices(new_card, config)
      )}
   end
 

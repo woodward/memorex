@@ -4,7 +4,8 @@ defmodule Memorex.Cards do
   import Ecto.Query
 
   alias Memorex.Cards.{Card, Deck, Note}
-  alias Memorex.{Config, Repo}
+  alias Memorex.{CardStateMachine, Config, Repo}
+  alias Timex.Duration
 
   @spec update_card!(Card.t(), map(), DateTime.t()) :: Card.t()
   def update_card!(card, changes, time) do
@@ -88,5 +89,26 @@ defmodule Memorex.Cards do
     |> cards_for_deck()
     |> where(card_type: ^card_type)
     |> Repo.aggregate(:count, :id)
+  end
+
+  # Get rid of nil in typespec when I figure out why this is being called with a nil value
+  @spec get_interval_choices(Card.t() | nil, Config.t()) :: [{Card.answer_choice(), Duration.t()}]
+  def get_interval_choices(nil, _config) do
+    IO.puts("---------------------------------------------------------------------------------------------------")
+    IO.puts("should never get here - why am I here??????  This is just here temporarily so things don't blow up.")
+
+    [:again, :hard, :good, :easy]
+    |> Enum.map(fn answer ->
+      {answer, Timex.Duration.parse!("PT10M")}
+    end)
+  end
+
+  def get_interval_choices(card, config) do
+    [:again, :hard, :good, :easy]
+    |> Enum.map(fn answer ->
+      changes = CardStateMachine.answer_card(card, answer, config)
+      interval = card |> Card.changeset(changes) |> Ecto.Changeset.get_field(:interval)
+      {answer, interval}
+    end)
   end
 end

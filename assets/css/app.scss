@@ -118,3 +118,31 @@
   0% { opacity: 1; }
   100% { opacity: 0; }
 }
+
+.answer-button {
+  height: 8rem;
+
+  &.again {
+    background-color: rgb(220, 38, 38);
+  }
+
+  &.hard {
+    background-color: rgb(181, 84, 9);
+  }
+
+  &.good {
+    background-color: rgb(67, 56, 203);
+  }
+
+  &.easy {
+    background-color: rgb(4, 120, 87);
+  }
+}
+
+.answer-choice {
+  display: block;
+}
+
+.answer-interval {
+  display: block;
+}
