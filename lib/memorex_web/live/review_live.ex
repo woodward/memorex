@@ -2,7 +2,7 @@ defmodule MemorexWeb.ReviewLive do
   @moduledoc false
   use MemorexWeb, :live_view
 
-  alias Memorex.{Cards, CardReviewer, Config, Repo}
+  alias Memorex.{Cards, CardReviewer, Config, Repo, TimeUtils}
   alias Memorex.Cards.{Card, Deck}
   alias Timex.Duration
 
@@ -118,7 +118,7 @@ defmodule MemorexWeb.ReviewLive do
   @impl true
   def mount(_params, _session, socket) do
     config = %Config{}
-    time_now = Timex.now()
+    time_now = TimeUtils.now()
 
     {:ok,
      socket
@@ -165,7 +165,7 @@ defmodule MemorexWeb.ReviewLive do
     answer_choice = String.to_atom(answer_choice)
     IO.inspect(answer_choice, label: "answer_choice")
 
-    end_time = Timex.now()
+    end_time = TimeUtils.now()
     {prior_card_end_state, card_log} = CardReviewer.answer_card_and_create_log_entry(card, answer_choice, start_time, end_time, config)
 
     new_card = Cards.get_one_random_due_card(deck.id, end_time)
@@ -188,8 +188,9 @@ defmodule MemorexWeb.ReviewLive do
 
   @spec format(Duration.t() | DateTime.t()) :: String.t()
   def format(%Duration{} = duration), do: Timex.Format.Duration.Formatters.Humanized.format(duration)
-  def format(%DateTime{} = datetime), do: inspect(datetime)
-  # def format(%DateTime{} = datetime), do: Timex.Format.DateTime.Formatters.Humanized.format(datetime)
+
+  # See: https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Strftime.html
+  def format(%DateTime{} = datetime), do: Timex.format!(datetime, "%a, %b %e, %Y, %l:%M %P", :strftime)
 
   @spec deck_stats(Ecto.UUID.t()) :: map()
   def deck_stats(deck_id) do

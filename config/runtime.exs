@@ -13,7 +13,10 @@ if System.get_env("PHX_SERVER") && System.get_env("RELEASE_NAME") do
 end
 
 if config_env() != :test do
+  config :memorex, timezone: System.get_env("MEMOREX_TIMEZONE") || raise("environment variable MEMOREX_TIMEZONE is missing")
+
   note_dirs = System.get_env("NOTE_DIRS") || raise "Environment variable NOTE_DIRS must be set!"
+
   note_dirs = note_dirs |> String.split(",") |> Enum.map(&String.trim(&1))
 
   bidirectional_note_delimitter =

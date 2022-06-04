@@ -24,6 +24,8 @@ config :memorex, MemorexWeb.Endpoint,
   secret_key_base: "dIEhnYcaalhIo+QHw0MxxRP7Ib8x5DURfqGo5WpebuAeXZb8ZYnLb3VtRV5qqSox",
   server: false
 
+config :memorex, timezone: "America/Los_Angeles"
+
 # Print only warnings and errors during test
 config :logger, level: :warn
 

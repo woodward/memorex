@@ -1,7 +1,7 @@
 defmodule MemorexWeb.DecksLive do
   @moduledoc false
   use MemorexWeb, :live_view
-  alias Memorex.{Cards, Config, Repo}
+  alias Memorex.{Cards, Config, Repo, TimeUtils}
   alias Memorex.Cards.Deck
   alias MemorexWeb.Router.Helpers, as: Routes
 
@@ -36,7 +36,7 @@ defmodule MemorexWeb.DecksLive do
   def handle_event("add-new-batch-of-learn-cards", %{"deck_id" => deck_id} = _params, %{assigns: %{config: config}} = socket) do
     IO.puts("======================")
 
-    Cards.set_new_cards_in_deck_to_learn_cards(deck_id, config, Timex.now(), limit: config.new_cards_per_day)
+    Cards.set_new_cards_in_deck_to_learn_cards(deck_id, config, TimeUtils.now(), limit: config.new_cards_per_day)
     {:noreply, socket}
   end
 end
