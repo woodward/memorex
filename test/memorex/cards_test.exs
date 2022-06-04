@@ -122,7 +122,7 @@ defmodule Memorex.CardsTest do
       deck1 = Repo.insert!(%Deck{})
       note1 = Repo.insert!(%Note{deck: deck1, content: ["First", "Second"]})
       card1 = Repo.insert!(%Card{note: note1, due: due})
-      card2 = Repo.insert!(%Card{note: note1, due: due})
+      card2 = Repo.insert!(%Card{note: note1, due: time_now})
 
       deck2 = Repo.insert!(%Deck{})
       note1_deck2 = Repo.insert!(%Note{deck: deck2})

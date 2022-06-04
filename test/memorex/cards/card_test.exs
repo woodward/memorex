@@ -140,7 +140,7 @@ defmodule Memorex.Cards.CardTest do
       assert changes.card_queue == :learn
       assert changes.lapses == 0
       assert changes.reps == 0
-      assert changes.due == ~U[2022-02-01 12:02:00Z]
+      assert changes.due == time_now
       assert changes.interval == Duration.parse!("PT2M")
     end
   end

@@ -70,7 +70,7 @@ defmodule Memorex.Cards do
   @spec where_due(Ecto.Query.t(), DateTime.t()) :: Ecto.Query.t()
   def where_due(query, time_now) do
     query
-    |> where([c], c.due < ^time_now)
+    |> where([c], c.due <= ^time_now)
   end
 
   @spec get_one_random_due_card(Schema.id(), DateTime.t()) :: Card.t() | nil

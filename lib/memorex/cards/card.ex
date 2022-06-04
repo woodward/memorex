@@ -105,7 +105,7 @@ defmodule Memorex.Cards.Card do
     updates = %{
       card_queue: :learn,
       card_type: :learn,
-      due: Timex.shift(time_now, duration: first_learn_step),
+      due: time_now,
       interval: first_learn_step,
       lapses: 0,
       remaining_steps: length(config.learn_steps),
