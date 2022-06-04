@@ -5,30 +5,12 @@ defmodule MemorexWeb.ReviewLive do
   alias Memorex.{Cards, CardReviewer, Config, Repo, Schema, TimeUtils}
   alias Memorex.Cards.{Card, Deck}
   alias Timex.Duration
+  alias Phoenix.LiveView.JS
 
   @impl true
   def render(assigns) do
     ~H"""
     <h1> Deck: <%= @deck.name %> </h1>
-
-    <table class="deck-stats">
-      <thead>
-        <th> Total </th>
-        <th> New </th>
-        <th> Learn </th>
-        <th> Review </th>
-        <th> Due </th>
-      </thead>
-      <tbody>
-        <tr>
-          <td> <%= @deck_stats.total %> </td>
-          <td> <%= @deck_stats.new %> </td>
-          <td> <%= @deck_stats.learn %> </td>
-          <td> <%= @deck_stats.review %> </td>
-          <td> <%= @deck_stats.due %> </td>
-        </tr>
-      </tbody>
-    </table>
 
     <%= if !@card do %>
       <h3> No cards to review </h3>
@@ -65,60 +47,86 @@ defmodule MemorexWeb.ReviewLive do
       <% end %>
     <% end %>
 
-    <%= if debug_mode?() && @prior_card_starting_state && @prior_card_end_state do %>
-      <hr>
+    <div id="debug-info" class={"debug-info " <> initially_show_debug_info?()}>
+      <img class="caret caret-down" src="/images/caret-down.svg" phx-click={hide_debug_info()} />
+      <img class="caret caret-right" src="/images/caret-right.svg" phx-click={show_debug_info()} />
 
-      <h3> Last Card </h3>
+      <div class="debug-contents">
+        <hr>
 
-      <table>
-        <tr>
-          <td> Question </td>
-          <td> <%= Card.question(@prior_card_end_state) %> </td>
-        </tr>
-        <tr>
-          <td> Answer </td>
-          <td> <%= Card.answer(@prior_card_end_state) %> </td>
-        </tr>
-        <tr>
-          <td> Answer Choice </td>
-          <td> <%= @last_answer_choice %> </td>
-        </tr>
-        <tr>
-          <td> Time to Answer </td>
-          <td> <%= format(@time_to_answer) %> </td>
-        </tr>
-      </table>
+        <table class="deck-stats">
+          <thead>
+            <th> Total </th>
+            <th> New </th>
+            <th> Learn </th>
+            <th> Review </th>
+            <th> Due </th>
+          </thead>
+          <tbody>
+            <tr>
+              <td> <%= @deck_stats.total %> </td>
+              <td> <%= @deck_stats.new %> </td>
+              <td> <%= @deck_stats.learn %> </td>
+              <td> <%= @deck_stats.review %> </td>
+              <td> <%= @deck_stats.due %> </td>
+            </tr>
+          </tbody>
+        </table>
 
-      <table>
-        <thead>
-          <th> </th>
-          <th> Start </th>
-          <th> End </th>
-        </thead>
-        <tbody>
-          <tr>
-            <td> Card Type </td>
-            <td> <%= @prior_card_starting_state.card_type %> </td>
-            <td> <%= @prior_card_end_state.card_type %> </td>
-          </tr>
-          <tr>
-            <td> Interval </td>
-            <td> <%= format(@prior_card_starting_state.interval) %> </td>
-            <td> <%= format(@prior_card_end_state.interval) %> </td>
-          </tr>
-          <tr>
-            <td> Ease Factor </td>
-            <td> <%= ease_factor(@prior_card_starting_state) %> </td>
-            <td> <%= ease_factor(@prior_card_end_state) %> </td>
-          </tr>
-          <tr>
-            <td> Due </td>
-            <td> <%= format(@prior_card_starting_state.due) %> </td>
-            <td> <%= format(@prior_card_end_state.due) %> </td>
-          </tr>
-        </tbody>
-      </table>
-    <% end %>
+        <%= if @prior_card_starting_state && @prior_card_end_state do %>
+          <h3> Last Card </h3>
+
+          <table>
+            <tr>
+              <td> Question </td>
+              <td> <%= Card.question(@prior_card_end_state) %> </td>
+            </tr>
+            <tr>
+              <td> Answer </td>
+              <td> <%= Card.answer(@prior_card_end_state) %> </td>
+            </tr>
+            <tr>
+              <td> Answer Choice </td>
+              <td> <%= @last_answer_choice %> </td>
+            </tr>
+            <tr>
+              <td> Time to Answer </td>
+              <td> <%= format(@time_to_answer) %> </td>
+            </tr>
+          </table>
+
+          <table>
+            <thead>
+              <th> </th>
+              <th> Start </th>
+              <th> End </th>
+            </thead>
+            <tbody>
+              <tr>
+                <td> Card Type </td>
+                <td> <%= @prior_card_starting_state.card_type %> </td>
+                <td> <%= @prior_card_end_state.card_type %> </td>
+              </tr>
+              <tr>
+                <td> Interval </td>
+                <td> <%= format(@prior_card_starting_state.interval) %> </td>
+                <td> <%= format(@prior_card_end_state.interval) %> </td>
+              </tr>
+              <tr>
+                <td> Ease Factor </td>
+                <td> <%= ease_factor(@prior_card_starting_state) %> </td>
+                <td> <%= ease_factor(@prior_card_end_state) %> </td>
+              </tr>
+              <tr>
+                <td> Due </td>
+                <td> <%= format(@prior_card_starting_state.due) %> </td>
+                <td> <%= format(@prior_card_end_state.due) %> </td>
+              </tr>
+            </tbody>
+          </table>
+        <% end %>
+      </div>
+    </div>
     """
   end
 
@@ -211,6 +219,25 @@ defmodule MemorexWeb.ReviewLive do
   @spec ease_factor(Card.t()) :: String.t()
   def ease_factor(%Card{ease_factor: nil}), do: "-"
   def ease_factor(%Card{ease_factor: ease_factor}), do: ease_factor
+
+  @spec show_debug_info(any()) :: any()
+  def show_debug_info(js \\ %JS{}) do
+    js
+    |> JS.add_class("expanded", to: "#debug-info")
+    |> JS.remove_class("collapsed", to: "#debug-info")
+  end
+
+  @spec hide_debug_info(any()) :: any()
+  def hide_debug_info(js \\ %JS{}) do
+    js
+    |> JS.add_class("collapsed", to: "#debug-info")
+    |> JS.remove_class("expanded", to: "#debug-info")
+  end
+
+  @spec initially_show_debug_info?() :: String.t()
+  def initially_show_debug_info?() do
+    if debug_mode?(), do: "expanded", else: "collapsed"
+  end
 
   @spec debug_mode?() :: boolean()
   def debug_mode?(), do: Application.get_env(:memorex, MemorexWeb.ReviewLive)[:debug_mode?]

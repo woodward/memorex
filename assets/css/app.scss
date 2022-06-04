@@ -146,3 +146,43 @@
 .answer-interval {
   display: block;
 }
+
+.debug-info {
+  &.expanded {
+    .caret-down {
+      display: block;
+    }
+
+    .caret-right {
+      display: none;
+    }
+
+    .debug-contents {
+      padding: 5px 20px;
+      background: #eeeeee;
+
+      .note-line {
+        margin: 5px 0;
+      }
+    }
+  }
+
+  &.collapsed {
+    .caret-down {
+      display: none;
+    }
+
+    .caret-right {
+      display: block;
+    }
+
+    .debug-contents {
+      display: none;
+    }
+  }
+
+  .caret {
+    height: 15px;
+    width: 15px;
+  }
+}
