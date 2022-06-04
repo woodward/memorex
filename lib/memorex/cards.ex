@@ -67,7 +67,7 @@ defmodule Memorex.Cards do
     end)
   end
 
-  @spec get_one_random_due_card(Ecto.UUID.t(), DateTime.t()) :: Card.t()
+  @spec get_one_random_due_card(Ecto.UUID.t(), DateTime.t()) :: Card.t() | nil
   def get_one_random_due_card(deck_id, time_now) do
     cards_for_deck(deck_id, limit: 1)
     |> where([c], c.due < ^time_now)
