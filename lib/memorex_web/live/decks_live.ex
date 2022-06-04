@@ -42,9 +42,7 @@ defmodule MemorexWeb.DecksLive do
 
   @impl true
   def handle_event("add-new-batch-of-learn-cards", %{"deck_id" => deck_id} = _params, %{assigns: %{config: config, decks: decks}} = socket) do
-    IO.puts("======================")
     time_now = TimeUtils.now()
-
     Cards.set_new_cards_in_deck_to_learn_cards(deck_id, config, time_now, limit: config.new_cards_per_day)
     decks = Map.put(decks, Repo.get(Deck, deck_id), MemorexWeb.ReviewLive.deck_stats(deck_id, time_now))
     {:noreply, socket |> assign(decks: decks)}

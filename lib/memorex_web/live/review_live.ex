@@ -163,10 +163,7 @@ defmodule MemorexWeb.ReviewLive do
         %{"answer_choice" => answer_choice} = _params,
         %{assigns: %{deck: deck, start_time: start_time, card: card, config: config}} = socket
       ) do
-    IO.puts("--------------------------")
     answer_choice = String.to_atom(answer_choice)
-    IO.inspect(answer_choice, label: "answer_choice")
-
     end_time = TimeUtils.now()
     {prior_card_end_state, card_log} = CardReviewer.answer_card_and_create_log_entry(card, answer_choice, start_time, end_time, config)
 
