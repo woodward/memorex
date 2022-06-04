@@ -3,10 +3,11 @@ defmodule Memorex.Cards.Deck do
 
   use Memorex.Schema
 
+  alias Memorex.Schema
   alias Memorex.Cards.Note
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t() | nil,
+          id: Schema.id() | nil,
           name: String.t(),
           #
           inserted_at: DateTime.t(),

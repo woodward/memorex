@@ -1,6 +1,8 @@
 defmodule Memorex.Schema do
   @moduledoc false
 
+  @type id :: Ecto.UUID.t()
+
   defmacro __using__(_) do
     quote do
       use Ecto.Schema

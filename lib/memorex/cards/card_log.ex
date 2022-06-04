@@ -3,15 +3,15 @@ defmodule Memorex.Cards.CardLog do
 
   use Memorex.Schema
 
-  alias Memorex.EctoTimexDuration
+  alias Memorex.{EctoTimexDuration, Schema}
   alias Memorex.Cards.Card
   alias Timex.Duration
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t() | nil,
+          id: Schema.id() | nil,
           #
           answer_choice: Card.answer_choice(),
-          card_id: Ecto.UUID.t(),
+          card_id: Schema.id(),
           card_type: Card.card_type(),
           ease_factor: float(),
           interval: Duration.t(),

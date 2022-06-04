@@ -2,7 +2,7 @@ defmodule MemorexWeb.ReviewLive do
   @moduledoc false
   use MemorexWeb, :live_view
 
-  alias Memorex.{Cards, CardReviewer, Config, Repo, TimeUtils}
+  alias Memorex.{Cards, CardReviewer, Config, Repo, Schema, TimeUtils}
   alias Memorex.Cards.{Card, Deck}
   alias Timex.Duration
 
@@ -195,7 +195,7 @@ defmodule MemorexWeb.ReviewLive do
   def format(%DateTime{} = datetime), do: datetime |> TimeUtils.to_timezone() |> Timex.format!("%a, %b %e, %Y, %l:%M %P", :strftime)
 
   # Move this somewhere else?  Memorex.DeckStats?
-  @spec deck_stats(Ecto.UUID.t(), DateTime.t()) :: map()
+  @spec deck_stats(Schema.id(), DateTime.t()) :: map()
   def deck_stats(deck_id, time_now) do
     %{
       total: Cards.count(deck_id),

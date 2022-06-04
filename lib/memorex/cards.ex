@@ -4,7 +4,7 @@ defmodule Memorex.Cards do
   import Ecto.Query
 
   alias Memorex.Cards.{Card, Deck, Note}
-  alias Memorex.{CardStateMachine, Config, Repo}
+  alias Memorex.{CardStateMachine, Config, Repo, Schema}
   alias Timex.Duration
 
   @spec update_card!(Card.t(), map(), DateTime.t()) :: Card.t()
@@ -33,7 +33,7 @@ defmodule Memorex.Cards do
     Repo.update_all(queryable, [set: updates], opts)
   end
 
-  @spec cards_for_deck(Ecto.UUID.t(), Keyword.t()) :: Ecto.Query.t()
+  @spec cards_for_deck(Schema.id(), Keyword.t()) :: Ecto.Query.t()
   def cards_for_deck(deck_id, opts \\ []) do
     query =
       from c in Card,
@@ -53,7 +53,7 @@ defmodule Memorex.Cards do
     # |> where([c, n, d], d.id == ^deck_id)
   end
 
-  @spec set_new_cards_in_deck_to_learn_cards(Ecto.UUID.t(), Config.t(), DateTime.t(), Keyword.t()) :: :ok
+  @spec set_new_cards_in_deck_to_learn_cards(Schema.id(), Config.t(), DateTime.t(), Keyword.t()) :: :ok
   def set_new_cards_in_deck_to_learn_cards(deck_id, config, time_now, opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
 
@@ -73,7 +73,7 @@ defmodule Memorex.Cards do
     |> where([c], c.due < ^time_now)
   end
 
-  @spec get_one_random_due_card(Ecto.UUID.t(), DateTime.t()) :: Card.t() | nil
+  @spec get_one_random_due_card(Schema.id(), DateTime.t()) :: Card.t() | nil
   def get_one_random_due_card(deck_id, time_now) do
     cards_for_deck(deck_id, limit: 1)
     |> where_due(time_now)
@@ -82,14 +82,14 @@ defmodule Memorex.Cards do
     |> Repo.one()
   end
 
-  @spec count(Ecto.UUID.t()) :: non_neg_integer()
+  @spec count(Schema.id()) :: non_neg_integer()
   def count(deck_id) do
     deck_id
     |> cards_for_deck()
     |> Repo.aggregate(:count, :id)
   end
 
-  @spec count(Ecto.UUID.t(), Card.card_type()) :: non_neg_integer()
+  @spec count(Schema.id(), Card.card_type()) :: non_neg_integer()
   def count(deck_id, card_type) do
     deck_id
     |> cards_for_deck()
@@ -97,7 +97,7 @@ defmodule Memorex.Cards do
     |> Repo.aggregate(:count, :id)
   end
 
-  @spec due_count(Ecto.UUID.t(), DateTime.t()) :: non_neg_integer()
+  @spec due_count(Schema.id(), DateTime.t()) :: non_neg_integer()
   def due_count(deck_id, time_now) do
     deck_id
     |> cards_for_deck()

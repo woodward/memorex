@@ -5,7 +5,7 @@ defmodule Memorex.Cards.Card do
   import Ecto.Changeset
 
   alias Memorex.Cards.{CardLog, Note}
-  alias Memorex.{Config, EctoTimexDuration, Repo}
+  alias Memorex.{Config, EctoTimexDuration, Repo, Schema}
   alias Timex.Duration
 
   @type card_queue :: :new | :learn | :review | :day_learn | :suspended | :buried
@@ -13,7 +13,7 @@ defmodule Memorex.Cards.Card do
   @type answer_choice :: :again | :hard | :good | :easy
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t() | nil,
+          id: Schema.id() | nil,
           #
           card_queue: card_queue(),
           card_type: card_type(),
@@ -82,7 +82,7 @@ defmodule Memorex.Cards.Card do
     |> cast(%{due: Timex.add(time, interval)}, [:due])
   end
 
-  @spec create_bidirectional_from_note(Note.t()) :: Ecto.Schema.t()
+  @spec create_bidirectional_from_note(Note.t()) :: Schema.id()
   def(create_bidirectional_from_note(note)) do
     card1 = %__MODULE__{note: note, note_question_index: 0, note_answer_index: 1}
     card2 = %__MODULE__{note: note, note_question_index: 1, note_answer_index: 0}

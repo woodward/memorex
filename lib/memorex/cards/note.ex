@@ -5,14 +5,14 @@ defmodule Memorex.Cards.Note do
   import Ecto.Changeset
   require Ecto.Query
 
-  alias Memorex.Repo
+  alias Memorex.{Repo, Schema}
   alias Memorex.Cards.{Card, Deck, Note}
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t() | nil,
+          id: Schema.id() | nil,
           content: [String.t()],
           in_latest_parse?: boolean(),
-          deck_id: Ecto.UUID.t() | nil,
+          deck_id: Schema.id() | nil,
           #
           inserted_at: DateTime.t() | nil,
           updated_at: DateTime.t() | nil
