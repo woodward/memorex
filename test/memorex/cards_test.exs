@@ -95,10 +95,12 @@ defmodule Memorex.CardsTest do
     test "works" do
       deck1 = Repo.insert!(%Deck{})
       note1 = Repo.insert!(%Note{deck: deck1})
-      _card1 = Repo.insert!(%Card{note: note1})
+      card1 = Repo.insert!(%Card{note: note1, card_type: :review})
+      card4 = Repo.insert!(%Card{note: note1, card_type: :relearn})
 
       note2 = Repo.insert!(%Note{deck: deck1})
-      _card2 = Repo.insert!(%Card{note: note2})
+      _card2 = Repo.insert!(%Card{note: note2, card_type: :new})
+      _card3 = Repo.insert!(%Card{note: note2, card_type: :new})
 
       config = %Config{}
       time_now = ~U[2022-02-01 12:00:00Z]
@@ -110,6 +112,8 @@ defmodule Memorex.CardsTest do
       assert length(learn_cards) == 1
       [learn_card] = learn_cards
       assert learn_card.card_type == :learn
+      assert learn_card.id != card1.id
+      assert learn_card.id != card4.id
     end
   end
 
@@ -142,6 +146,25 @@ defmodule Memorex.CardsTest do
       assert due_card1.id in ids_of_due_cards
       assert due_card2.id in ids_of_due_cards
       assert due_card3.id in ids_of_due_cards
+    end
+  end
+
+  describe "where_card_type/2" do
+    test "returns the cards of a certain type" do
+      deck1 = Repo.insert!(%Deck{})
+      note1 = Repo.insert!(%Note{deck: deck1, content: ["First", "Second"]})
+      _card1 = Repo.insert!(%Card{note: note1, card_type: :learn})
+      card2 = Repo.insert!(%Card{note: note1, card_type: :new})
+
+      deck2 = Repo.insert!(%Deck{})
+      note1_deck2 = Repo.insert!(%Note{deck: deck2})
+      _card3 = Repo.insert!(%Card{note: note1_deck2, card_type: :review})
+      _card4 = Repo.insert!(%Card{note: note1_deck2, card_type: :relearn})
+
+      new_cards = from(c in Card) |> Cards.where_card_type(:new) |> Repo.all()
+      assert length(new_cards) == 1
+      [new_card] = new_cards
+      assert new_card.id == card2.id
     end
   end
 

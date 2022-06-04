@@ -59,6 +59,7 @@ defmodule Memorex.Cards do
 
     deck_id
     |> cards_for_deck(limit: limit)
+    |> where_card_type(:new)
     |> Repo.all()
     |> Enum.each(fn card ->
       card
@@ -71,6 +72,12 @@ defmodule Memorex.Cards do
   def where_due(query, time_now) do
     query
     |> where([c], c.due <= ^time_now)
+  end
+
+  @spec where_card_type(Ecto.Query.t(), Card.card_type()) :: Ecto.Query.t()
+  def where_card_type(query, card_type) do
+    query
+    |> where([c], c.card_type == ^card_type)
   end
 
   @spec get_one_random_due_card(Schema.id(), DateTime.t()) :: Card.t() | nil
