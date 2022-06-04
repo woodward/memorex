@@ -190,7 +190,7 @@ defmodule MemorexWeb.ReviewLive do
   def format(%Duration{} = duration), do: Timex.Format.Duration.Formatters.Humanized.format(duration)
 
   # See: https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Strftime.html
-  def format(%DateTime{} = datetime), do: Timex.format!(datetime, "%a, %b %e, %Y, %l:%M %P", :strftime)
+  def format(%DateTime{} = datetime), do: datetime |> TimeUtils.to_timezone() |> Timex.format!("%a, %b %e, %Y, %l:%M %P", :strftime)
 
   @spec deck_stats(Ecto.UUID.t()) :: map()
   def deck_stats(deck_id) do
