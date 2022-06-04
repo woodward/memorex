@@ -91,18 +91,7 @@ defmodule Memorex.Cards do
     |> Repo.aggregate(:count, :id)
   end
 
-  # Get rid of nil in typespec when I figure out why this is being called with a nil value
-  @spec get_interval_choices(Card.t() | nil, Config.t()) :: [{Card.answer_choice(), Duration.t()}]
-  def get_interval_choices(nil, _config) do
-    IO.puts("---------------------------------------------------------------------------------------------------")
-    IO.puts("should never get here - why am I here??????  This is just here temporarily so things don't blow up.")
-
-    [:again, :hard, :good, :easy]
-    |> Enum.map(fn answer ->
-      {answer, Timex.Duration.parse!("PT10M")}
-    end)
-  end
-
+  @spec get_interval_choices(Card.t(), Config.t()) :: [{Card.answer_choice(), Duration.t()}]
   def get_interval_choices(card, config) do
     [:again, :hard, :good, :easy]
     |> Enum.map(fn answer ->
