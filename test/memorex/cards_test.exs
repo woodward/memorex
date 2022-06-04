@@ -55,7 +55,7 @@ defmodule Memorex.CardsTest do
       note2 = Repo.insert!(%Note{deck: deck2})
       _card2 = Repo.insert!(%Card{note: note2})
 
-      cards = Repo.all(Cards.cards_for_deck(deck1.id))
+      cards = Cards.cards_for_deck(deck1.id) |> Repo.all()
       assert length(cards) == 1
       [card] = cards
       assert card.id == card1.id
@@ -69,7 +69,7 @@ defmodule Memorex.CardsTest do
       note2 = Repo.insert!(%Note{deck: deck1})
       _card2 = Repo.insert!(%Card{note: note2})
 
-      cards = Repo.all(Cards.cards_for_deck(deck1.id, limit: 1))
+      cards = Cards.cards_for_deck(deck1.id, limit: 1) |> Repo.all()
       assert length(cards) == 1
     end
 
@@ -82,7 +82,7 @@ defmodule Memorex.CardsTest do
       note2 = Repo.insert!(%Note{deck: deck1})
       _card2 = Repo.insert!(%Card{note: note2, note_question_index: 1})
 
-      cards = Repo.all(Cards.cards_for_deck(deck1.id, order_by: :note_question_index))
+      cards = Cards.cards_for_deck(deck1.id, order_by: :note_question_index) |> Repo.all()
       assert length(cards) == 2
       [retrieved_card1, retrieved_card2] = cards
 
@@ -113,6 +113,38 @@ defmodule Memorex.CardsTest do
     end
   end
 
+  describe "where_due/2" do
+    test "returns the due cards" do
+      time_now = ~U[2022-02-01 12:00:00Z]
+      due = ~U[2022-02-01 11:59:00Z]
+      not_due = ~U[2022-02-01 12:01:00Z]
+
+      deck1 = Repo.insert!(%Deck{})
+      note1 = Repo.insert!(%Note{deck: deck1, content: ["First", "Second"]})
+      card1 = Repo.insert!(%Card{note: note1, due: due})
+      card2 = Repo.insert!(%Card{note: note1, due: due})
+
+      deck2 = Repo.insert!(%Deck{})
+      note1_deck2 = Repo.insert!(%Note{deck: deck2})
+      card3 = Repo.insert!(%Card{note: note1_deck2, due: due})
+      _card4 = Repo.insert!(%Card{note: note1_deck2, due: not_due})
+
+      note2 = Repo.insert!(%Note{deck: deck1})
+      _card5 = Repo.insert!(%Card{note: note2, due: not_due})
+
+      due_cards = from(c in Card) |> Cards.where_due(time_now) |> Repo.all()
+      assert length(due_cards) == 3
+
+      ids_of_due_cards = [card1, card2, card3] |> Enum.map(& &1.id)
+
+      [due_card1, due_card2, due_card3] = due_cards
+
+      assert due_card1.id in ids_of_due_cards
+      assert due_card2.id in ids_of_due_cards
+      assert due_card3.id in ids_of_due_cards
+    end
+  end
+
   describe "get_one_random_due_card/2" do
     test "returns one random due card for a deck" do
       time_now = ~U[2022-02-01 12:00:00Z]
@@ -134,6 +166,25 @@ defmodule Memorex.CardsTest do
 
       assert random_due_card.id == card1.id
       assert random_due_card.note.content == ["First", "Second"]
+    end
+  end
+
+  describe "due_count/1" do
+    test "returns the number of total cards for this deck that are due" do
+      time_now = ~U[2022-02-01 12:00:00Z]
+      due = ~U[2022-02-01 11:59:00Z]
+      not_due = ~U[2022-02-01 12:01:00Z]
+
+      deck1 = Repo.insert!(%Deck{})
+      note1 = Repo.insert!(%Note{deck: deck1})
+      _card1 = Repo.insert!(%Card{note: note1, due: due})
+      _card2 = Repo.insert!(%Card{note: note1, due: not_due})
+
+      deck2 = Repo.insert!(%Deck{})
+      note1_deck2 = Repo.insert!(%Note{deck: deck2})
+      _card1 = Repo.insert!(%Card{note: note1_deck2, due: due})
+
+      assert Cards.due_count(deck1.id, time_now) == 1
     end
   end
 

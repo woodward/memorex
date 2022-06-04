@@ -17,6 +17,7 @@ defmodule MemorexWeb.ReviewLive do
         <th> New </th>
         <th> Learn </th>
         <th> Review </th>
+        <th> Due </th>
       </thead>
       <tbody>
         <tr>
@@ -24,6 +25,7 @@ defmodule MemorexWeb.ReviewLive do
           <td> <%= @deck_stats.new %> </td>
           <td> <%= @deck_stats.learn %> </td>
           <td> <%= @deck_stats.review %> </td>
+          <td> <%= @deck_stats.due %> </td>
         </tr>
       </tbody>
     </table>
@@ -145,7 +147,7 @@ defmodule MemorexWeb.ReviewLive do
        card: card,
        prior_card_starting_state: card,
        prior_card_end_state: nil,
-       deck_stats: deck_stats(deck.id),
+       deck_stats: deck_stats(deck.id, time_now),
        interval_choices: interval_choices
      )}
   end
@@ -181,7 +183,7 @@ defmodule MemorexWeb.ReviewLive do
        prior_card_starting_state: new_card,
        prior_card_end_state: prior_card_end_state,
        last_answer_choice: answer_choice,
-       deck_stats: deck_stats(deck.id),
+       deck_stats: deck_stats(deck.id, end_time),
        interval_choices: interval_choices
      )}
   end
@@ -193,13 +195,14 @@ defmodule MemorexWeb.ReviewLive do
   def format(%DateTime{} = datetime), do: datetime |> TimeUtils.to_timezone() |> Timex.format!("%a, %b %e, %Y, %l:%M %P", :strftime)
 
   # Move this somewhere else?  Memorex.DeckStats?
-  @spec deck_stats(Ecto.UUID.t()) :: map()
-  def deck_stats(deck_id) do
+  @spec deck_stats(Ecto.UUID.t(), DateTime.t()) :: map()
+  def deck_stats(deck_id, time_now) do
     %{
       total: Cards.count(deck_id),
       new: Cards.count(deck_id, :new),
       learn: Cards.count(deck_id, :learn),
-      review: Cards.count(deck_id, :review)
+      review: Cards.count(deck_id, :review),
+      due: Cards.due_count(deck_id, time_now)
     }
   end
 

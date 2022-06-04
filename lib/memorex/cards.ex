@@ -67,10 +67,16 @@ defmodule Memorex.Cards do
     end)
   end
 
+  @spec where_due(Ecto.Query.t(), DateTime.t()) :: Ecto.Query.t()
+  def where_due(query, time_now) do
+    query
+    |> where([c], c.due < ^time_now)
+  end
+
   @spec get_one_random_due_card(Ecto.UUID.t(), DateTime.t()) :: Card.t() | nil
   def get_one_random_due_card(deck_id, time_now) do
     cards_for_deck(deck_id, limit: 1)
-    |> where([c], c.due < ^time_now)
+    |> where_due(time_now)
     |> order_by(fragment("RANDOM()"))
     |> preload(:note)
     |> Repo.one()
@@ -88,6 +94,14 @@ defmodule Memorex.Cards do
     deck_id
     |> cards_for_deck()
     |> where(card_type: ^card_type)
+    |> Repo.aggregate(:count, :id)
+  end
+
+  @spec due_count(Ecto.UUID.t(), DateTime.t()) :: non_neg_integer()
+  def due_count(deck_id, time_now) do
+    deck_id
+    |> cards_for_deck()
+    |> where_due(time_now)
     |> Repo.aggregate(:count, :id)
   end
 
