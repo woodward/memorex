@@ -107,6 +107,11 @@ defmodule MemorexWeb.ReviewLive do
             <td> <%= format(@prior_card_end_state.interval) %> </td>
           </tr>
           <tr>
+            <td> Ease Factor </td>
+            <td> <%= ease_factor(@prior_card_starting_state) %> </td>
+            <td> <%= ease_factor(@prior_card_end_state) %> </td>
+          </tr>
+          <tr>
             <td> Due </td>
             <td> <%= format(@prior_card_starting_state.due) %> </td>
             <td> <%= format(@prior_card_end_state.due) %> </td>
@@ -202,6 +207,10 @@ defmodule MemorexWeb.ReviewLive do
       due: Cards.due_count(deck_id, time_now)
     }
   end
+
+  @spec ease_factor(Card.t()) :: String.t()
+  def ease_factor(%Card{ease_factor: nil}), do: "-"
+  def ease_factor(%Card{ease_factor: ease_factor}), do: ease_factor
 
   @spec debug_mode?() :: boolean()
   def debug_mode?(), do: Application.get_env(:memorex, MemorexWeb.ReviewLive)[:debug_mode?]
