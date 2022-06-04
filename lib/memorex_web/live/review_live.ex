@@ -192,6 +192,7 @@ defmodule MemorexWeb.ReviewLive do
   # See: https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Strftime.html
   def format(%DateTime{} = datetime), do: datetime |> TimeUtils.to_timezone() |> Timex.format!("%a, %b %e, %Y, %l:%M %P", :strftime)
 
+  # Move this somewhere else?  Memorex.DeckStats?
   @spec deck_stats(Ecto.UUID.t()) :: map()
   def deck_stats(deck_id) do
     %{
