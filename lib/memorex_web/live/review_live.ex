@@ -128,9 +128,9 @@ defmodule MemorexWeb.ReviewLive do
        config: config,
        debug?: true,
        display: :show_question,
+       last_answer_choice: nil,
        start_time: time_now,
-       time_to_answer: Duration.parse!("PT0S"),
-       last_answer_choice: nil
+       time_to_answer: Duration.parse!("PT0S")
      )}
   end
 
@@ -143,12 +143,12 @@ defmodule MemorexWeb.ReviewLive do
     {:noreply,
      socket
      |> assign(
-       deck: deck,
        card: card,
-       prior_card_starting_state: card,
-       prior_card_end_state: nil,
        deck_stats: deck_stats(deck.id, time_now),
-       interval_choices: interval_choices
+       deck: deck,
+       interval_choices: interval_choices,
+       prior_card_end_state: nil,
+       prior_card_starting_state: card
      )}
   end
 
@@ -173,15 +173,15 @@ defmodule MemorexWeb.ReviewLive do
     {:noreply,
      socket
      |> assign(
-       display: :show_question,
        card: new_card,
-       start_time: end_time,
-       time_to_answer: card_log.time_to_answer,
-       prior_card_starting_state: new_card,
-       prior_card_end_state: prior_card_end_state,
-       last_answer_choice: answer_choice,
        deck_stats: deck_stats(deck.id, end_time),
-       interval_choices: interval_choices
+       display: :show_question,
+       interval_choices: interval_choices,
+       last_answer_choice: answer_choice,
+       prior_card_end_state: prior_card_end_state,
+       prior_card_starting_state: new_card,
+       start_time: end_time,
+       time_to_answer: card_log.time_to_answer
      )}
   end
 
