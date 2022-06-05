@@ -2,9 +2,8 @@ defmodule Memorex.CardReviewer do
   @moduledoc false
 
   alias Timex.Duration
-  alias Memorex.{CardStateMachine, Config, Repo}
+  alias Memorex.{Cards, CardStateMachine, Config, Repo}
   alias Memorex.Cards.{Card, CardLog}
-  alias Memorex.Cards
 
   @spec answer_card_and_create_log_entry(Card.t(), Card.answer_choice(), DateTime.t(), DateTime.t(), Config.t()) :: {Card.t(), CardLog.t()}
   def answer_card_and_create_log_entry(card_before, answer, start_time, time_now, config) do
