@@ -3,7 +3,7 @@ defmodule Memorex.CardReviewerTest do
   use Memorex.DataCase
 
   alias Memorex.{CardReviewer, Config}
-  alias Memorex.Cards.Card
+  alias Memorex.Cards.{Card, Note}
   alias Timex.Duration
 
   describe "bracket_time_to_answer/1" do
@@ -55,7 +55,8 @@ defmodule Memorex.CardReviewerTest do
 
   describe "answer_card_and_create_log_entry" do
     test "answers the card, and creates a log entry" do
-      card = %Card{card_type: :review, interval: Duration.parse!("PT4M"), ease_factor: 2.5, reps: 3}
+      note = %Note{content: ["First", "Second"]}
+      card = %Card{card_type: :review, interval: Duration.parse!("PT4M"), ease_factor: 2.5, reps: 3, note: note}
       card = Repo.insert!(card)
       config = %Config{interval_multiplier: 1.0, ease_good: 0.0, max_time_to_answer: Duration.parse!("PT1M")}
       start_time = ~U[2022-01-01 12:02:00Z]
@@ -70,6 +71,10 @@ defmodule Memorex.CardReviewerTest do
       assert card_log.interval == Duration.parse!("PT10M")
       assert card_log.last_interval == Duration.parse!("PT4M")
       assert card_log.time_to_answer == Duration.parse!("PT60S")
+
+      # Verify preload works:
+      assert card_log.card.ease_factor == 2.5
+      assert card_log.note.content == ["First", "Second"]
 
       # assert card.card_queue == :review
       assert card.card_type == :review

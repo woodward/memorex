@@ -3,7 +3,7 @@ defmodule Memorex.Cards.CardLogTest do
   use Memorex.DataCase
 
   alias Memorex.Repo
-  alias Memorex.Cards.{Card, CardLog}
+  alias Memorex.Cards.{Card, CardLog, Note}
   alias Timex.Duration
 
   test "new/4" do
@@ -52,5 +52,24 @@ defmodule Memorex.Cards.CardLogTest do
     assert card_log.time_to_answer == Duration.parse!("PT1M15S")
     assert card_log.interval == Duration.parse!("PT2S")
     assert card_log.last_interval == Duration.parse!("PT3S")
+  end
+
+  describe "note" do
+    test "has a note through the card" do
+      note = %Note{content: ["First", "Second"]} |> Repo.insert!()
+      card = %Card{note: note} |> Repo.insert!()
+
+      card_log =
+        %CardLog{
+          card: card,
+          interval: Duration.parse!("PT1S"),
+          last_interval: Duration.parse!("PT1S"),
+          time_to_answer: Duration.parse!("PT1S")
+        }
+        |> Repo.insert!()
+        |> Repo.preload([:card, :note])
+
+      assert card_log.note.content == ["First", "Second"]
+    end
   end
 end

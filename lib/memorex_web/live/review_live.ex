@@ -73,25 +73,25 @@ defmodule MemorexWeb.ReviewLive do
           </tbody>
         </table>
 
-        <%= if @prior_card_end_state && @prior_card_log do %>
+        <%= if @prior_card_log do %>
           <h3> Last Card </h3>
 
           <table>
             <tr>
               <td> Question </td>
-              <td> <%= Card.question(@prior_card_end_state) %> </td>
+              <td> <%= Card.question(@prior_card_log.card) %> </td>
             </tr>
             <tr>
               <td> Answer </td>
-              <td> <%= Card.answer(@prior_card_end_state) %> </td>
+              <td> <%= Card.answer(@prior_card_log.card) %> </td>
             </tr>
             <tr>
               <td> Answer Choice </td>
-              <td> <%= @last_answer_choice %> </td>
+              <td> <%= @prior_card_log.answer_choice %> </td>
             </tr>
             <tr>
               <td> Time to Answer </td>
-              <td> <%= format(@time_to_answer) %> </td>
+              <td> <%= format(@prior_card_log.time_to_answer) %> </td>
             </tr>
           </table>
 
@@ -105,22 +105,22 @@ defmodule MemorexWeb.ReviewLive do
               <tr>
                 <td> Card Type </td>
                 <td> <%= @prior_card_log.last_card_type %> </td>
-                <td> <%= @prior_card_end_state.card_type %> </td>
+                <td> <%= @prior_card_log.card_type %> </td>
               </tr>
               <tr>
                 <td> Interval </td>
                 <td> <%= format(@prior_card_log.last_interval) %> </td>
-                <td> <%= format(@prior_card_end_state.interval) %> </td>
+                <td> <%= format(@prior_card_log.interval) %> </td>
               </tr>
               <tr>
                 <td> Ease Factor </td>
                 <td> <%= ease_factor(@prior_card_log.last_ease_factor) %> </td>
-                <td> <%= ease_factor(@prior_card_end_state.ease_factor) %> </td>
+                <td> <%= ease_factor(@prior_card_log.ease_factor) %> </td>
               </tr>
               <tr>
                 <td> Due </td>
                 <td> <%= format(@prior_card_log.last_due) %> </td>
-                <td> <%= format(@prior_card_end_state.due) %> </td>
+                <td> <%= format(@prior_card_log.due) %> </td>
               </tr>
             </tbody>
           </table>
@@ -139,11 +139,8 @@ defmodule MemorexWeb.ReviewLive do
      socket
      |> assign(
        config: config,
-       debug?: true,
        display: :show_question,
-       last_answer_choice: nil,
-       start_time: time_now,
-       time_to_answer: Duration.parse!("PT0S")
+       start_time: time_now
      )}
   end
 
@@ -160,7 +157,6 @@ defmodule MemorexWeb.ReviewLive do
        deck_stats: DeckStats.new(deck.id, time_now),
        deck: deck,
        interval_choices: interval_choices,
-       prior_card_end_state: nil,
        prior_card_log: nil
      )}
   end
@@ -178,7 +174,7 @@ defmodule MemorexWeb.ReviewLive do
       ) do
     answer_choice = String.to_atom(answer_choice)
     end_time = TimeUtils.now()
-    {prior_card_end_state, card_log} = CardReviewer.answer_card_and_create_log_entry(card, answer_choice, start_time, end_time, config)
+    {_card_end_state, card_log} = CardReviewer.answer_card_and_create_log_entry(card, answer_choice, start_time, end_time, config)
 
     new_card = Cards.get_one_random_due_card(deck.id, end_time)
     interval_choices = if new_card, do: Cards.get_interval_choices(new_card, config)
@@ -187,15 +183,11 @@ defmodule MemorexWeb.ReviewLive do
      socket
      |> assign(
        card: new_card,
-       current_card_log: card_log,
        deck_stats: DeckStats.new(deck.id, end_time),
        display: :show_question,
        interval_choices: interval_choices,
-       last_answer_choice: answer_choice,
-       prior_card_end_state: prior_card_end_state,
        prior_card_log: card_log,
-       start_time: end_time,
-       time_to_answer: card_log.time_to_answer
+       start_time: end_time
      )}
   end
 

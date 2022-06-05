@@ -39,6 +39,7 @@ defmodule Memorex.Cards.CardLog do
     field :time_to_answer, EctoTimexDuration
 
     belongs_to :card, Card
+    has_one :note, through: [:card, :note]
 
     timestamps()
   end
