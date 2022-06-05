@@ -19,7 +19,7 @@ defmodule MemorexWeb.DecksLive do
           Learn: <%= deck_stats.learn %>,
           Review: <%= deck_stats.review %>,
           Due: <%= deck_stats.due %> )
-          <button phx-click="add-new-batch-of-learn-cards" phx-value-deck_id={ deck.id }> Add New Batch of Cards </button>
+          <button phx-click="add-new-batch-of-learn-cards" phx-value-deck_id={ deck.id }> Add New Batch of Cards to Learn </button>
         </li>
       <% end %>
     </ul>

@@ -21,10 +21,8 @@ defmodule Memorex.Parser do
   end
 
   @spec read_note_dirs([String.t()] | nil) :: :ok
-  def read_note_dirs(note_dirs \\ nil) do
+  def read_note_dirs(note_dirs \\ Application.get_env(:memorex, Memorex.Note)[:note_dirs]) do
     Note.clear_parse_flags()
-
-    note_dirs = if note_dirs, do: note_dirs, else: Application.get_env(:memorex, Memorex.Note)[:note_dirs]
 
     note_dirs
     |> Enum.each(fn dir ->
@@ -32,18 +30,18 @@ defmodule Memorex.Parser do
 
       files_and_dirs
       |> Enum.map(fn file_or_dir ->
-        pathname = Path.join(dir, file_or_dir)
-        {:ok, file_stat} = File.stat(pathname)
+        if does_not_start_with_dot(file_or_dir) do
+          pathname = Path.join(dir, file_or_dir)
+          {:ok, file_stat} = File.stat(pathname)
 
-        case file_stat.type do
-          :regular ->
-            if !String.starts_with?(file_or_dir, ".") do
+          case file_stat.type do
+            :regular ->
               deck = Decks.find_or_create!(Path.rootname(file_or_dir))
               read_file(pathname, deck)
-            end
 
-          :directory ->
-            if !String.starts_with?(file_or_dir, "."), do: read_dir(pathname)
+            :directory ->
+              read_dir(pathname)
+          end
         end
       end)
     end)
@@ -51,12 +49,15 @@ defmodule Memorex.Parser do
     Note.delete_notes_without_flag_set()
   end
 
+  @spec does_not_start_with_dot(String.t()) :: boolean()
+  defp does_not_start_with_dot(file_or_dir), do: !String.starts_with?(file_or_dir, ".")
+
   @spec parse_file_contents(String.t(), Deck.t() | nil) :: :ok
   def parse_file_contents(contents, deck \\ nil) do
     contents
     |> String.split("\n")
     |> Enum.each(fn line ->
-      if String.match?(line, ~r/#{bidirectional_note_delimitter()}/) do
+      if is_note_line?(line) do
         note = line |> parse_line()
         note_from_db = Repo.get(Note, note.id)
 
@@ -70,6 +71,9 @@ defmodule Memorex.Parser do
       end
     end)
   end
+
+  @spec is_note_line?(String.t()) :: boolean()
+  defp is_note_line?(line), do: String.match?(line, ~r/#{bidirectional_note_delimitter()}/)
 
   @spec parse_line(String.t()) :: Note.t()
   def parse_line(line) do
