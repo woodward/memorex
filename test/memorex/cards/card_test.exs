@@ -141,7 +141,7 @@ defmodule Memorex.Cards.CardTest do
       assert changes.lapses == 0
       assert changes.reps == 0
       assert changes.due == time_now
-      assert changes.interval == Duration.parse!("PT2M")
+      assert changes.interval == Duration.parse!("PT0S")
     end
   end
 

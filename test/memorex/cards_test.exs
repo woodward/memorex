@@ -35,13 +35,13 @@ defmodule Memorex.CardsTest do
 
       card1 = Repo.get!(Card, card1.id)
 
-      assert card1.interval == Duration.parse!("PT2M")
+      assert card1.interval == Duration.parse!("PT0S")
       assert card1.remaining_steps == 2
       assert card1.card_type == :learn
       assert card1.card_queue == :learn
       assert card1.lapses == 0
       assert card1.reps == 0
-      assert card1.due == ~U[2022-02-01 12:02:00Z]
+      assert card1.due == ~U[2022-02-01 12:00:00Z]
     end
   end
 
