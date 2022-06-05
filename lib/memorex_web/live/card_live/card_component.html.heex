@@ -46,8 +46,8 @@
       </tr>
       <tr>
         <td> Due </td>
-        <td> <%= format(@card_log.last_due) %> </td>
-        <td> <%= format(@card_log.due) %> </td>
+        <td> <%= format_datetime(@card_log.last_due) %> </td>
+        <td> <%= format_datetime(@card_log.due) %> </td>
       </tr>
     </tbody>
   </table>

@@ -96,6 +96,7 @@ defmodule MemorexWeb do
       import Phoenix.View
 
       import MemorexWeb.ErrorHelpers
+      import MemorexWeb.SharedViewHelpers
       import MemorexWeb.Gettext
       alias MemorexWeb.Router.Helpers, as: Routes
     end

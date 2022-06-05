@@ -4,7 +4,6 @@ defmodule MemorexWeb.ReviewLive do
 
   alias Memorex.{Cards, CardReviewer, Config, DeckStats, Repo, TimeUtils}
   alias Memorex.Cards.{Card, Deck}
-  alias Timex.Duration
   alias Phoenix.LiveView.JS
 
   @impl true
@@ -142,10 +141,6 @@ defmodule MemorexWeb.ReviewLive do
        start_time: end_time
      )}
   end
-
-  # This function is shared with CardLive.CardComponent - factor it out into some place that's shared
-  @spec format(Duration.t() | DateTime.t()) :: String.t()
-  def format(%Duration{} = duration), do: Timex.Format.Duration.Formatters.Humanized.format(duration)
 
   @spec show_debug_info(any()) :: any()
   def show_debug_info(js \\ %JS{}) do
