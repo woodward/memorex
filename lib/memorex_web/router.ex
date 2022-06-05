@@ -19,7 +19,6 @@ defmodule MemorexWeb.Router do
 
     live "/", DecksLive, :home
     live "/review", ReviewLive, :home
-    get "/page", PageController, :index
   end
 
   # Other scopes may use custom stacks.
