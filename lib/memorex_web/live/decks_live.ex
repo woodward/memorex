@@ -19,6 +19,7 @@ defmodule MemorexWeb.DecksLive do
           Learn: <%= deck_stats.learn %>,
           Review: <%= deck_stats.review %>,
           Due: <%= deck_stats.due %> )
+          <%=  live_patch "Review", to: Routes.review_path(@socket, :home, %{deck: deck}) %>
           <button phx-click="add-new-batch-of-learn-cards" phx-value-deck_id={ deck.id }> Add New Batch of Cards to Learn </button>
         </li>
       <% end %>
