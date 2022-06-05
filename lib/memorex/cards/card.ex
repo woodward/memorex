@@ -50,7 +50,7 @@ defmodule Memorex.Cards.Card do
 
     belongs_to :note, Note
     # belongs_to :deck, Deck, through: Note
-    has_many :card_logs, CardLog
+    has_many :card_logs, CardLog, preload_order: [desc: :inserted_at]
 
     timestamps()
   end

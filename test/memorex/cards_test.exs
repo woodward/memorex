@@ -3,7 +3,7 @@ defmodule Memorex.CardsTest do
   use Memorex.DataCase
 
   alias Memorex.{Cards, Config, Repo}
-  alias Memorex.Cards.{Card, Deck, Note}
+  alias Memorex.Cards.{Card, CardLog, Deck, Note}
   alias Timex.Duration
 
   describe "update_card!" do
@@ -92,13 +92,37 @@ defmodule Memorex.CardsTest do
   end
 
   describe "get_card!/1" do
-    test "retrieves the card via the ID" do
+    test "retrieves the card via the ID and preloads the card logs" do
       card1 = Repo.insert!(%Card{card_type: :review})
       _card2 = Repo.insert!(%Card{card_type: :relearn})
+
+      _card_log_older =
+        %CardLog{
+          card: card1,
+          interval: Duration.parse!("PT1S"),
+          last_interval: Duration.parse!("PT1S"),
+          time_to_answer: Duration.parse!("PT1S")
+        }
+        |> Repo.insert!()
+
+      # This timer sleep is super gross, but I don't know how else to get around it (?)
+      :timer.sleep(400)
+
+      _card_log_newer =
+        %CardLog{
+          card: card1,
+          interval: Duration.parse!("PT9S"),
+          last_interval: Duration.parse!("PT9S"),
+          time_to_answer: Duration.parse!("PT9S")
+        }
+        |> Repo.insert!()
 
       retrieved_card1 = Cards.get_card!(card1.id)
 
       assert retrieved_card1.card_type == :review
+
+      [first_card_log | _rest] = retrieved_card1.card_logs
+      assert first_card_log.interval == Duration.parse!("PT9S")
     end
   end
 
