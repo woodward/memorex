@@ -12,6 +12,13 @@ defmodule MemorexWeb.CardLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    {:noreply, socket |> assign(:card, Cards.get_card!(id))}
+    card = Cards.get_card!(id)
+
+    {:noreply,
+     socket
+     |> assign(
+       card: card,
+       card_log: card.card_logs |> List.first()
+     )}
   end
 end

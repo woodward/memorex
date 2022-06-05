@@ -92,9 +92,10 @@ defmodule Memorex.CardsTest do
   end
 
   describe "get_card!/1" do
-    test "retrieves the card via the ID and preloads the card logs" do
-      card1 = Repo.insert!(%Card{card_type: :review})
-      _card2 = Repo.insert!(%Card{card_type: :relearn})
+    test "retrieves the card via the ID and preloads the card logs and the note" do
+      note = %Note{content: ["First", "Second"]}
+      card1 = Repo.insert!(%Card{card_type: :review, note: note})
+      _card2 = Repo.insert!(%Card{card_type: :relearn, note: note})
 
       _card_log_older =
         %CardLog{
@@ -106,7 +107,7 @@ defmodule Memorex.CardsTest do
         |> Repo.insert!()
 
       # This timer sleep is super gross, but I don't know how else to get around it (?)
-      :timer.sleep(400)
+      :timer.sleep(800)
 
       _card_log_newer =
         %CardLog{
@@ -118,6 +119,7 @@ defmodule Memorex.CardsTest do
         |> Repo.insert!()
 
       retrieved_card1 = Cards.get_card!(card1.id)
+      assert retrieved_card1.note.content == ["First", "Second"]
 
       assert retrieved_card1.card_type == :review
 

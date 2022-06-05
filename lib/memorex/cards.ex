@@ -18,7 +18,7 @@ defmodule Memorex.Cards do
 
   @spec get_card!(Schema.id()) :: Card.t()
   def get_card!(card_id) do
-    Repo.get!(Card, card_id) |> Repo.preload([:card_logs])
+    Repo.get!(Card, card_id) |> Repo.preload([:card_logs, :note])
   end
 
   # Not currently in use

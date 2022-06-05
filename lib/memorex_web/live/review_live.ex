@@ -75,55 +75,7 @@ defmodule MemorexWeb.ReviewLive do
 
         <%= if @prior_card_log do %>
           <h3> <%= live_patch "Last Card - ID #{@prior_card_log.card_id}", to: Routes.card_show_path(@socket, :show, @prior_card_log.card_id) %> </h3>
-
-          <table>
-            <tr>
-              <td> Question </td>
-              <td> <%= Card.question(@prior_card_log.card) %> </td>
-            </tr>
-            <tr>
-              <td> Answer </td>
-              <td> <%= Card.answer(@prior_card_log.card) %> </td>
-            </tr>
-            <tr>
-              <td> Answer Choice </td>
-              <td> <%= @prior_card_log.answer_choice %> </td>
-            </tr>
-            <tr>
-              <td> Time to Answer </td>
-              <td> <%= format(@prior_card_log.time_to_answer) %> </td>
-            </tr>
-          </table>
-
-          <table>
-            <thead>
-              <th> </th>
-              <th> Start </th>
-              <th> End </th>
-            </thead>
-            <tbody>
-              <tr>
-                <td> Card Type </td>
-                <td> <%= @prior_card_log.last_card_type %> </td>
-                <td> <%= @prior_card_log.card_type %> </td>
-              </tr>
-              <tr>
-                <td> Interval </td>
-                <td> <%= format(@prior_card_log.last_interval) %> </td>
-                <td> <%= format(@prior_card_log.interval) %> </td>
-              </tr>
-              <tr>
-                <td> Ease Factor </td>
-                <td> <%= ease_factor(@prior_card_log.last_ease_factor) %> </td>
-                <td> <%= ease_factor(@prior_card_log.ease_factor) %> </td>
-              </tr>
-              <tr>
-                <td> Due </td>
-                <td> <%= format(@prior_card_log.last_due) %> </td>
-                <td> <%= format(@prior_card_log.due) %> </td>
-              </tr>
-            </tbody>
-          </table>
+          <.live_component module={MemorexWeb.CardLive.CardComponent} id={@prior_card_log.card.id} card={@prior_card_log.card} card_log={@prior_card_log} />
         <% end %>
       </div>
     </div>
@@ -191,15 +143,9 @@ defmodule MemorexWeb.ReviewLive do
      )}
   end
 
+  # This function is shared with CardLive.CardComponent - factor it out into some place that's shared
   @spec format(Duration.t() | DateTime.t()) :: String.t()
   def format(%Duration{} = duration), do: Timex.Format.Duration.Formatters.Humanized.format(duration)
-
-  # See: https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Strftime.html
-  def format(%DateTime{} = datetime), do: datetime |> TimeUtils.to_timezone() |> Timex.format!("%a, %b %e, %Y, %l:%M %P", :strftime)
-
-  @spec ease_factor(float() | nil) :: String.t()
-  def ease_factor(nil), do: "-"
-  def ease_factor(ease_factor), do: ease_factor
 
   @spec show_debug_info(any()) :: any()
   def show_debug_info(js \\ %JS{}) do
