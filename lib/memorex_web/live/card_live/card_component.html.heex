@@ -12,44 +12,70 @@
       <td> Answer </td>
       <td> <%= Card.answer(@card) %> </td>
     </tr>
-    <tr>
-      <td> Answer Choice </td>
-      <td> <%= @card_log.answer_choice %> </td>
-    </tr>
-    <tr>
-      <td> Time to Answer </td>
-      <td> <%= format(@card_log.time_to_answer) %> </td>
-    </tr>
-  </table>
 
-  <table>
-    <thead>
-      <th> </th>
-      <th> Start </th>
-      <th> End </th>
-    </thead>
-    <tbody>
+    <%= if @card_log do %>
+      <tr>
+        <td> Answer Choice </td>
+        <td> <%= @card_log.answer_choice %> </td>
+      </tr>
+      <tr>
+        <td> Time to Answer </td>
+        <td> <%= format(@card_log.time_to_answer) %> </td>
+      </tr>
+
+    <% else %>  
       <tr>
         <td> Card Type </td>
-        <td> <%= @card_log.last_card_type %> </td>
-        <td> <%= @card_log.card_type %> </td>
+        <td> :<%=@card.card_type %> </td>
       </tr>
       <tr>
         <td> Interval </td>
-        <td> <%= format(@card_log.last_interval) %> </td>
-        <td> <%= format(@card_log.interval) %> </td>
+        <td> <%= format(@card.interval) %> </td>
       </tr>
       <tr>
         <td> Ease Factor </td>
-        <td> <%= ease_factor(@card_log.last_ease_factor) %> </td>
-        <td> <%= ease_factor(@card_log.ease_factor) %> </td>
+        <td> <%= ease_factor(@card.ease_factor) %> </td>
       </tr>
       <tr>
         <td> Due </td>
-        <td> <%= format_datetime(@card_log.last_due) %> </td>
-        <td> <%= format_datetime(@card_log.due) %> </td>
+        <td> <%= format_datetime(@card.due) %> </td>
       </tr>
-    </tbody>
+    <% end %>
   </table>
+
+  <%= if !@card_log do %>
+    <h2> This card has never been answered </h2>
+  <% else %>
+    <table>
+      <thead>
+        <th> </th>
+        <th> Start </th>
+        <th> End </th>
+      </thead>
+      <tbody>
+        <tr>
+          <td> Card Type </td>
+          <td> :<%= @card_log.last_card_type %> </td>
+          <td> :<%= @card_log.card_type %> </td>
+        </tr>
+        <tr>
+          <td> Interval </td>
+          <td> <%= format(@card_log.last_interval) %> </td>
+          <td> <%= format(@card_log.interval) %> </td>
+        </tr>
+        <tr>
+          <td> Ease Factor </td>
+          <td> <%= ease_factor(@card_log.last_ease_factor) %> </td>
+          <td> <%= ease_factor(@card_log.ease_factor) %> </td>
+        </tr>
+        <tr>
+          <td> Due </td>
+          <td> <%= format_datetime(@card_log.last_due) %> </td>
+          <td> <%= format_datetime(@card_log.due) %> </td>
+        </tr>
+      </tbody>
+    </table>
+  <% end %>
+
 
 </div>
