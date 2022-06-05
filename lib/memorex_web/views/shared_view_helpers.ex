@@ -9,52 +9,24 @@ defmodule MemorexWeb.SharedViewHelpers do
   def format(nil), do: "-"
   def format(%Duration{} = duration), do: Timex.Format.Duration.Formatters.Humanized.format(duration)
 
-  def truncate(text, options \\ []) do
-    # From: https://github.com/ikeikeikeike/phoenix_html_simplified_helpers/blob/master/lib/phoenix_html_simplified_helpers/truncate.ex#L2
-    len = options[:length] || 30
-    omi = options[:omission] || "..."
+  @spec truncate(String.t(), Keyword.t()) :: String.t()
+  def truncate(text, options \\ [])
 
-    cond do
-      !String.valid?(text) ->
-        text
+  def truncate(text, options) when is_binary(text) do
+    desired_text_length = options[:length] || 30
+    omission_chars = options[:omission] || "..."
 
-      String.length(text) < len ->
-        text
-
-      true ->
-        len_with_omi = len - String.length(omi)
-
-        stop =
-          if options[:separator] do
-            rindex(text, options[:separator], len_with_omi) || len_with_omi
-          else
-            len_with_omi
-          end
-
-        "#{String.slice(text, 0, stop)}#{omi}"
+    if String.length(text) < desired_text_length do
+      text
+    else
+      length_with_omission = desired_text_length - String.length(omission_chars)
+      "#{String.slice(text, 0, length_with_omission)}#{omission_chars}"
     end
   end
 
-  defp rindex(text, str, offset) do
-    text =
-      if offset do
-        String.slice(text, 0, offset)
-      else
-        text
-      end
+  def truncate(text, _options), do: text
 
-    revesed = text |> String.reverse()
-    matchword = String.reverse(str)
-
-    case :binary.match(revesed, matchword) do
-      {at, strlen} ->
-        String.length(text) - at - strlen
-
-      :nomatch ->
-        nil
-    end
-  end
-
+  @spec page_id(atom()) :: String.t()
   def page_id(socket_view) do
     socket_view
     |> Atom.to_string()
