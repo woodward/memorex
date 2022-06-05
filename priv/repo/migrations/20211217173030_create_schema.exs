@@ -45,6 +45,8 @@ defmodule Memorex.Repo.Migrations.CreateSchema do
       add :last_due, :utc_datetime
       add :last_ease_factor, :float
       add :last_interval, :integer, null: false
+      add :last_remaining_steps, :integer
+      add :remaining_steps, :integer
       add :time_to_answer, :integer, null: false
 
       add :card_id, references(:cards, on_delete: :delete_all)

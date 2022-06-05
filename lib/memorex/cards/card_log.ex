@@ -20,6 +20,8 @@ defmodule Memorex.Cards.CardLog do
           last_due: DateTime.t(),
           last_ease_factor: float(),
           last_interval: Duration.t(),
+          last_remaining_steps: non_neg_integer(),
+          remaining_steps: non_neg_integer(),
           time_to_answer: Duration.t(),
           #
           inserted_at: DateTime.t() | nil,
@@ -36,6 +38,8 @@ defmodule Memorex.Cards.CardLog do
     field :last_due, :utc_datetime
     field :last_ease_factor, :float
     field :last_interval, EctoTimexDuration
+    field :last_remaining_steps, :integer
+    field :remaining_steps, :integer
     field :time_to_answer, EctoTimexDuration
 
     belongs_to :card, Card
@@ -57,6 +61,8 @@ defmodule Memorex.Cards.CardLog do
       last_due: card_before.due,
       last_ease_factor: card_before.ease_factor,
       last_interval: card_before.interval,
+      last_remaining_steps: card_before.remaining_steps,
+      remaining_steps: card_after.remaining_steps,
       time_to_answer: time_to_answer
     }
   end
