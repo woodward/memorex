@@ -74,7 +74,7 @@ defmodule MemorexWeb.ReviewLive do
         </table>
 
         <%= if @prior_card_log do %>
-          <h3> Last Card </h3>
+          <h3> <%= live_patch "Last Card - ID #{@prior_card_log.card_id}", to: Routes.card_show_path(@socket, :show, @prior_card_log.card_id) %> </h3>
 
           <table>
             <tr>
