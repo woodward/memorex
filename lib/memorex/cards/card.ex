@@ -10,7 +10,11 @@ defmodule Memorex.Cards.Card do
 
   @type card_queue :: :new | :learn | :review | :day_learn | :suspended | :buried
   @type card_type :: :new | :learn | :review | :relearn
+
   @type answer_choice :: :again | :hard | :good | :easy
+  @answer_choices [:again, :hard, :good, :easy]
+  @spec answer_choices() :: [answer_choice()]
+  def answer_choices(), do: @answer_choices
 
   @type t :: %__MODULE__{
           id: Schema.id() | nil,
