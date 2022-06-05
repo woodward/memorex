@@ -73,7 +73,7 @@ defmodule MemorexWeb.ReviewLive do
           </tbody>
         </table>
 
-        <%= if @prior_card_starting_state && @prior_card_end_state do %>
+        <%= if @prior_card_end_state && @prior_card_log do %>
           <h3> Last Card </h3>
 
           <table>
@@ -104,22 +104,22 @@ defmodule MemorexWeb.ReviewLive do
             <tbody>
               <tr>
                 <td> Card Type </td>
-                <td> <%= @prior_card_starting_state.card_type %> </td>
+                <td> <%= @prior_card_log.last_card_type %> </td>
                 <td> <%= @prior_card_end_state.card_type %> </td>
               </tr>
               <tr>
                 <td> Interval </td>
-                <td> <%= format(@prior_card_starting_state.interval) %> </td>
+                <td> <%= format(@prior_card_log.last_interval) %> </td>
                 <td> <%= format(@prior_card_end_state.interval) %> </td>
               </tr>
               <tr>
                 <td> Ease Factor </td>
-                <td> <%= ease_factor(@prior_card_starting_state) %> </td>
-                <td> <%= ease_factor(@prior_card_end_state) %> </td>
+                <td> <%= ease_factor(@prior_card_log.last_ease_factor) %> </td>
+                <td> <%= ease_factor(@prior_card_end_state.ease_factor) %> </td>
               </tr>
               <tr>
                 <td> Due </td>
-                <td> <%= format(@prior_card_starting_state.due) %> </td>
+                <td> <%= format(@prior_card_log.last_due) %> </td>
                 <td> <%= format(@prior_card_end_state.due) %> </td>
               </tr>
             </tbody>
@@ -161,7 +161,7 @@ defmodule MemorexWeb.ReviewLive do
        deck: deck,
        interval_choices: interval_choices,
        prior_card_end_state: nil,
-       prior_card_starting_state: card
+       prior_card_log: nil
      )}
   end
 
@@ -187,12 +187,13 @@ defmodule MemorexWeb.ReviewLive do
      socket
      |> assign(
        card: new_card,
+       current_card_log: card_log,
        deck_stats: DeckStats.new(deck.id, end_time),
        display: :show_question,
        interval_choices: interval_choices,
        last_answer_choice: answer_choice,
        prior_card_end_state: prior_card_end_state,
-       prior_card_starting_state: new_card,
+       prior_card_log: card_log,
        start_time: end_time,
        time_to_answer: card_log.time_to_answer
      )}
@@ -204,9 +205,9 @@ defmodule MemorexWeb.ReviewLive do
   # See: https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Strftime.html
   def format(%DateTime{} = datetime), do: datetime |> TimeUtils.to_timezone() |> Timex.format!("%a, %b %e, %Y, %l:%M %P", :strftime)
 
-  @spec ease_factor(Card.t()) :: String.t()
-  def ease_factor(%Card{ease_factor: nil}), do: "-"
-  def ease_factor(%Card{ease_factor: ease_factor}), do: ease_factor
+  @spec ease_factor(float() | nil) :: String.t()
+  def ease_factor(nil), do: "-"
+  def ease_factor(ease_factor), do: ease_factor
 
   @spec show_debug_info(any()) :: any()
   def show_debug_info(js \\ %JS{}) do
