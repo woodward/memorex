@@ -73,7 +73,7 @@ defmodule Memorex.Parser do
   end
 
   @spec is_note_line?(String.t()) :: boolean()
-  defp is_note_line?(line), do: String.match?(line, ~r/#{bidirectional_note_delimitter()}/)
+  def is_note_line?(line), do: String.match?(line, ~r/#{bidirectional_note_delimitter()}/)
 
   @spec parse_line(String.t()) :: Note.t()
   def parse_line(line) do

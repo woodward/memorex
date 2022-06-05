@@ -146,4 +146,16 @@ defmodule Memorex.ParserTest do
       assert note.deck.name == "My Deck"
     end
   end
+
+  describe "is_note_line?/1" do
+    test "returns true if the line contains the note character" do
+      line = "Blah blah ⮂ foo foo"
+      assert Parser.is_note_line?(line) == true
+    end
+
+    test "returns false if the line does not contain the note character" do
+      line = "Blah blah foo foo"
+      assert Parser.is_note_line?(line) == false
+    end
+  end
 end
