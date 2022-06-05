@@ -1,4 +1,6 @@
 defmodule MemorexWeb.LayoutViewTest do
+  @moduledoc false
+
   use MemorexWeb.ConnCase, async: true
 
   # When testing helpers, you may want to import Phoenix.HTML and

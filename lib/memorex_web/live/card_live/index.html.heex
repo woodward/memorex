@@ -1,1 +1,30 @@
-<h1> Cards </h1>
+<div>
+  <h1> Cards </h1>
+  <table>
+    <thead>
+      <th> ID </th>
+      <th> Note ID </th>
+      <th> Due </th>
+      <th> Interval </th>
+      <th> Type </th>
+      <th> Question </th>
+      <th> Answer </th>
+    </thead>
+
+    <% length_of_question_and_answer = 50 %>
+
+    <tbody>
+      <%= for card <- @cards do %> 
+        <tr>
+          <td><%= live_patch truncate(card.id, length: 12), to: Routes.card_show_path(@socket, :show, card.id) %>  </td>
+          <td> <%= truncate(card.note_id, length: 12) %> </td>
+          <td> <%= format_iso_datetime(card.due) %> </td>
+          <td> <%= format(card.interval) %> </td>
+          <td> :<%= card.card_type %> </td>
+          <td> <%= truncate(Card.question(card), length: length_of_question_and_answer) %> </td>
+          <td> <%= truncate(Card.answer(card), length: length_of_question_and_answer) %> </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

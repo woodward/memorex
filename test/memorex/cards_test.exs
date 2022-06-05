@@ -107,7 +107,7 @@ defmodule Memorex.CardsTest do
         |> Repo.insert!()
 
       # This timer sleep is super gross, but I don't know how else to get around it (?)
-      :timer.sleep(800)
+      :timer.sleep(1000)
 
       _card_log_newer =
         %CardLog{
