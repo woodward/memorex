@@ -101,6 +101,7 @@ defmodule Memorex.Cards.Card do
   @spec learn_card_to_new_card_changeset(Ecto.Changeset.t() | t(), Config.t(), DateTime.t()) :: Ecto.Changeset.t()
   def learn_card_to_new_card_changeset(card, config, time_now) do
     first_learn_step = config.learn_steps |> List.first()
+    # or should this be first_learn_step = Duration.parse!("PT0S")
 
     updates = %{
       card_queue: :learn,

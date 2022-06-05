@@ -2,7 +2,7 @@ defmodule MemorexWeb.ReviewLive do
   @moduledoc false
   use MemorexWeb, :live_view
 
-  alias Memorex.{Cards, CardReviewer, Config, Repo, Schema, TimeUtils}
+  alias Memorex.{Cards, CardReviewer, Config, DeckStats, Repo, TimeUtils}
   alias Memorex.Cards.{Card, Deck}
   alias Timex.Duration
   alias Phoenix.LiveView.JS
@@ -157,7 +157,7 @@ defmodule MemorexWeb.ReviewLive do
      socket
      |> assign(
        card: card,
-       deck_stats: deck_stats(deck.id, time_now),
+       deck_stats: DeckStats.new(deck.id, time_now),
        deck: deck,
        interval_choices: interval_choices,
        prior_card_end_state: nil,
@@ -187,7 +187,7 @@ defmodule MemorexWeb.ReviewLive do
      socket
      |> assign(
        card: new_card,
-       deck_stats: deck_stats(deck.id, end_time),
+       deck_stats: DeckStats.new(deck.id, end_time),
        display: :show_question,
        interval_choices: interval_choices,
        last_answer_choice: answer_choice,
@@ -203,18 +203,6 @@ defmodule MemorexWeb.ReviewLive do
 
   # See: https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Strftime.html
   def format(%DateTime{} = datetime), do: datetime |> TimeUtils.to_timezone() |> Timex.format!("%a, %b %e, %Y, %l:%M %P", :strftime)
-
-  # Move this somewhere else?  Memorex.DeckStats?
-  @spec deck_stats(Schema.id(), DateTime.t()) :: map()
-  def deck_stats(deck_id, time_now) do
-    %{
-      total: Cards.count(deck_id),
-      new: Cards.count(deck_id, :new),
-      learn: Cards.count(deck_id, :learn),
-      review: Cards.count(deck_id, :review),
-      due: Cards.due_count(deck_id, time_now)
-    }
-  end
 
   @spec ease_factor(Card.t()) :: String.t()
   def ease_factor(%Card{ease_factor: nil}), do: "-"

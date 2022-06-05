@@ -1,7 +1,7 @@
 defmodule MemorexWeb.DecksLive do
   @moduledoc false
   use MemorexWeb, :live_view
-  alias Memorex.{Cards, Config, Repo, TimeUtils}
+  alias Memorex.{Cards, Config, DeckStats, Repo, TimeUtils}
   alias Memorex.Cards.Deck
   alias MemorexWeb.Router.Helpers, as: Routes
 
@@ -34,7 +34,7 @@ defmodule MemorexWeb.DecksLive do
     decks =
       decks
       |> Enum.reduce(%{}, fn deck, acc ->
-        Map.put(acc, deck, MemorexWeb.ReviewLive.deck_stats(deck.id, TimeUtils.now()))
+        Map.put(acc, deck, DeckStats.new(deck.id, TimeUtils.now()))
       end)
 
     {:ok, socket |> assign(decks: decks, config: config)}
@@ -44,7 +44,7 @@ defmodule MemorexWeb.DecksLive do
   def handle_event("add-new-batch-of-learn-cards", %{"deck_id" => deck_id} = _params, %{assigns: %{config: config, decks: decks}} = socket) do
     time_now = TimeUtils.now()
     Cards.set_new_cards_in_deck_to_learn_cards(deck_id, config, time_now, limit: config.new_cards_per_day)
-    decks = Map.put(decks, Repo.get(Deck, deck_id), MemorexWeb.ReviewLive.deck_stats(deck_id, time_now))
+    decks = Map.put(decks, Repo.get(Deck, deck_id), DeckStats.new(deck_id, time_now))
     {:noreply, socket |> assign(decks: decks)}
   end
 end
