@@ -1,18 +1,8 @@
-defmodule Memorex.Scheduler do
+defmodule Memorex.SchedulerCurrentlyUnused do
   @moduledoc false
 
   alias Memorex.Cards.Card
   alias Memorex.Config
-
-  # I'm not sure what is up with this spec...
-  # @spec answer_card(Card.t(), Card.answer_choice(), __MODULE__.Config.t()) :: Card.t()
-  def answer_card(card, answer_choice, config) do
-    if is_card_due?(card, answer_choice, config) do
-      %{card | card_queue: :learn, card_type: :learn, due: Timex.now()}
-    else
-      card
-    end
-  end
 
   @spec is_card_due?(Card.t(), Config.t(), DateTime.t() | nil) :: boolean()
   def is_card_due?(%Card{card_queue: :new} = _card, _config, _now), do: true
