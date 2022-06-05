@@ -16,6 +16,7 @@ defmodule Memorex.Cards do
     |> Repo.update!()
   end
 
+  # Not currently in use
   @spec update_new_cards_to_learn_cards(Ecto.Queryable.t(), Config.t(), DateTime.t(), Keyword.t()) :: :ok
   def update_new_cards_to_learn_cards(queryable, config, time_now, opts \\ []) do
     first_learn_step = config.learn_steps |> List.first()
