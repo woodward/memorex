@@ -16,6 +16,11 @@ defmodule Memorex.Cards do
     |> Repo.update!()
   end
 
+  @spec get_card!(Schema.id()) :: Card.t()
+  def get_card!(card_id) do
+    Repo.get!(Card, card_id)
+  end
+
   # Not currently in use
   @spec update_new_cards_to_learn_cards(Ecto.Queryable.t(), Config.t(), DateTime.t(), Keyword.t()) :: :ok
   def update_new_cards_to_learn_cards(queryable, config, time_now, opts \\ []) do

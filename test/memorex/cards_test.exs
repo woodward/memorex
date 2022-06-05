@@ -91,6 +91,17 @@ defmodule Memorex.CardsTest do
     end
   end
 
+  describe "get_card!/1" do
+    test "retrieves the card via the ID" do
+      card1 = Repo.insert!(%Card{card_type: :review})
+      _card2 = Repo.insert!(%Card{card_type: :relearn})
+
+      retrieved_card1 = Cards.get_card!(card1.id)
+
+      assert retrieved_card1.card_type == :review
+    end
+  end
+
   describe "set_new_cards_in_deck_to_learn_cards" do
     test "works" do
       deck1 = Repo.insert!(%Deck{})
