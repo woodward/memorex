@@ -2,6 +2,7 @@ defmodule Memorex.Cards.DeckTest do
   @moduledoc false
   use Memorex.DataCase
 
+  alias Memorex.Config
   alias Memorex.Cards.{Card, CardLog, Deck, Note}
   alias Timex.Duration
 
@@ -44,6 +45,19 @@ defmodule Memorex.Cards.DeckTest do
       retrieved_deck = Repo.get!(Deck, deck.id)
 
       assert retrieved_deck.config["new_cards_per_day"] == 20
+    end
+
+    test "the config is merged with the standard config, and overrides values there" do
+      deck = %Deck{config: %{new_cards_per_day: 40}} |> Repo.insert!()
+
+      retrieved_deck = Repo.get!(Deck, deck.id)
+
+      default_config = %Config{new_cards_per_day: 30, max_reviews_per_day: 200}
+      retrieved_deck_config = Deck.config(retrieved_deck, default_config)
+
+      assert retrieved_deck_config.new_cards_per_day == 40
+      assert retrieved_deck_config.max_reviews_per_day == 200
+      assert retrieved_deck_config.__struct__ == Memorex.Config
     end
   end
 end
