@@ -25,7 +25,8 @@ defmodule Memorex.Cards.CardLogTest do
       interval: Duration.parse!("PT47S"),
       ease_factor: 2.4,
       due: ~U[2022-01-01 12:02:00Z],
-      remaining_steps: 2
+      remaining_steps: 2,
+      reps: 5
     }
 
     time_to_answer = Duration.parse!("PT1M15S")
@@ -45,6 +46,7 @@ defmodule Memorex.Cards.CardLogTest do
     assert card_log.ease_factor == 2.4
     assert card_log.last_remaining_steps == 3
     assert card_log.remaining_steps == 2
+    assert card_log.reps == 5
   end
 
   test "Timex.Duration fields are stored in the database as ints" do
