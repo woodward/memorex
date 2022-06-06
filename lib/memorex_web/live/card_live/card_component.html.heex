@@ -47,6 +47,12 @@
         <td> <%=@card.remaining_steps %> </td>
       </tr>
     <% end %>
+    
+    <tr>
+      <td> Lapses </td>
+      <td> <%=@card.lapses %> </td>
+    </tr>
+
   </table>
 
   <%= if !@card_log do %>
