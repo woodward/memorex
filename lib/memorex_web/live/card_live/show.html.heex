@@ -5,7 +5,8 @@
 <table>
   <thead>
     <th> Created At </th>
-    <th> Card Type </th>
+    <th> Card Type (Before) </th>
+    <th> Card Type (After) </th>
     <th> Answer Choice </th>
     <th> Due </th>
     <th> Interval </th>
@@ -17,6 +18,7 @@
     <%= for card_log <- @card.card_logs do %>
       <tr>
         <td> <%= format_iso_datetime(card_log.inserted_at) %> </td>
+        <td> :<%= card_log.last_card_type %> </td>
         <td> :<%= card_log.card_type %> </td>
         <td> :<%= card_log.answer_choice %> </td>
         <td> <%= format_iso_datetime(card_log.due) %> </td>
