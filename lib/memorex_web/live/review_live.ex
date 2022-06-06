@@ -132,6 +132,8 @@ defmodule MemorexWeb.ReviewLive do
     new_card = if card_id, do: card_end_state, else: Cards.get_one_random_due_card(deck.id, end_time)
     interval_choices = if new_card, do: Cards.get_interval_choices(new_card, config)
 
+    Phoenix.PubSub.broadcast_from(Memorex.PubSub, self(), "card:#{new_card.id}", :updated_card)
+
     {:noreply,
      socket
      |> assign(
