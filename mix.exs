@@ -57,6 +57,7 @@ defmodule Memorex.MixProject do
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:timex, "~> 3.7"},
+      {:toml, "~> 0.6"},
       {:uuid, "~> 1.1"}
     ]
   end
