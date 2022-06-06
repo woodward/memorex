@@ -3,6 +3,7 @@ defmodule MemorexWeb.SharedViewHelpers do
 
   use Phoenix.HTML
 
+  alias Memorex.TimeUtils
   alias Timex.Duration
 
   @spec format(Duration.t() | DateTime.t() | nil) :: String.t()
@@ -35,5 +36,21 @@ defmodule MemorexWeb.SharedViewHelpers do
     |> String.replace("_", "-")
     |> String.replace("/", "-")
     |> String.downcase()
+  end
+
+  def format_datetime(%DateTime{} = datetime) do
+    # See: https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Strftime.html
+    datetime |> TimeUtils.to_timezone() |> Timex.format!("%a, %b %e, %Y, %l:%M %P", :strftime)
+  end
+
+  @spec ease_factor(float() | nil) :: String.t()
+  def ease_factor(nil), do: "-"
+  def ease_factor(ease_factor), do: ease_factor
+
+  def format_iso_datetime(nil), do: "-"
+
+  def format_iso_datetime(%DateTime{} = datetime) do
+    # See: https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Strftime.html
+    datetime |> TimeUtils.to_timezone() |> Timex.format!("%Y-%m-%d %I:%M %P (%a)", :strftime)
   end
 end
