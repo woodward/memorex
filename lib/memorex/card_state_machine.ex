@@ -46,19 +46,22 @@ defmodule Memorex.CardStateMachine do
   def answer_card(%Card{card_type: :review} = card, :hard, config) do
     scale = card.ease_factor * config.hard_multiplier * config.interval_multiplier
     ease_factor = card.ease_factor + config.ease_hard
-    %{ease_factor: ease_factor, interval: Duration.scale(card.interval, scale)}
+    interval = Duration.scale(card.interval, scale) |> cap_duration(config.max_review_interval)
+    %{ease_factor: ease_factor, interval: interval}
   end
 
   def answer_card(%Card{card_type: :review} = card, :good, config) do
     scale = card.ease_factor * config.interval_multiplier
     ease_factor = card.ease_factor + config.ease_good
-    %{ease_factor: ease_factor, interval: Duration.scale(card.interval, scale)}
+    interval = Duration.scale(card.interval, scale) |> cap_duration(config.max_review_interval)
+    %{ease_factor: ease_factor, interval: interval}
   end
 
   def answer_card(%Card{card_type: :review} = card, :easy, config) do
     scale = card.ease_factor * config.interval_multiplier * config.easy_multiplier
     ease_factor = card.ease_factor + config.ease_easy
-    %{ease_factor: ease_factor, interval: Duration.scale(card.interval, scale)}
+    interval = Duration.scale(card.interval, scale) |> cap_duration(config.max_review_interval)
+    %{ease_factor: ease_factor, interval: interval}
   end
 
   # --------------- Re-Learn Cards -------------------------------------------------------------------------------------
@@ -85,5 +88,16 @@ defmodule Memorex.CardStateMachine do
   def answer_card(%Card{card_type: :relearn} = _card, :easy, config) do
     interval = Duration.add(config.min_review_interval, config.relearn_easy_adj)
     %{card_type: :review, interval: interval, remaining_steps: 0}
+  end
+
+  # --------------- Utilities ------------------------------------------------------------------------------------------
+
+  @spec cap_duration(Duration.t(), Duration.t()) :: Duration.t()
+  def cap_duration(duration, max_duration) do
+    if Duration.to_seconds(duration) <= Duration.to_seconds(max_duration) do
+      duration
+    else
+      max_duration
+    end
   end
 end

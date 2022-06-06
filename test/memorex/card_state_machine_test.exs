@@ -81,6 +81,15 @@ defmodule Memorex.CardStateMachineTest do
       assert changes == %{ease_factor: 2.25, interval: new_interval}
     end
 
+    test "answer: 'hard' - interval stays below max interval" do
+      config = %Config{interval_multiplier: 1.1, hard_multiplier: 1.25, ease_hard: -0.25, max_review_interval: Duration.parse!("P5D")}
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
+
+      changes = CardStateMachine.answer_card(card, :hard, config)
+
+      assert changes == %{ease_factor: 2.25, interval: Duration.parse!("P5D")}
+    end
+
     test "answer: 'good'" do
       config = %Config{interval_multiplier: 1.1, ease_good: 0.1}
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
@@ -92,6 +101,15 @@ defmodule Memorex.CardStateMachineTest do
       assert changes == %{ease_factor: 2.6, interval: new_interval}
     end
 
+    test "answer: 'good' - interval stays below max interval" do
+      config = %Config{interval_multiplier: 1.1, ease_good: 0.1, max_review_interval: Duration.parse!("P5D")}
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
+
+      changes = CardStateMachine.answer_card(card, :good, config)
+
+      assert changes == %{ease_factor: 2.6, interval: Duration.parse!("P5D")}
+    end
+
     test "answer: 'easy'" do
       config = %Config{interval_multiplier: 1.1, easy_multiplier: 1.3, ease_easy: 0.2}
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
@@ -101,6 +119,15 @@ defmodule Memorex.CardStateMachineTest do
       new_interval = Duration.parse!("P4D") |> Timex.Duration.scale(scale)
 
       assert changes == %{ease_factor: 2.7, interval: new_interval}
+    end
+
+    test "answer: 'easy' - interval stays below max_interval" do
+      config = %Config{interval_multiplier: 1.1, easy_multiplier: 1.3, ease_easy: 0.2, max_review_interval: Duration.parse!("P1M")}
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P15D")}
+
+      changes = CardStateMachine.answer_card(card, :easy, config)
+
+      assert changes == %{ease_factor: 2.7, interval: Duration.parse!("P1M")}
     end
   end
 
@@ -149,6 +176,30 @@ defmodule Memorex.CardStateMachineTest do
       changes = CardStateMachine.answer_card(card, :easy, config)
 
       assert changes == %{card_type: :review, interval: Duration.parse!("P5D"), remaining_steps: 0}
+    end
+  end
+
+  # ======================== Utilities =================================================================================
+
+  describe "cap_duration" do
+    setup do
+      one_month = Duration.parse!("P1M")
+      [max: one_month]
+    end
+
+    test "returns the duration if it's less than the max", %{max: one_month} do
+      fifteen_days = Duration.parse!("P15D")
+      assert CardStateMachine.cap_duration(fifteen_days, one_month) == fifteen_days
+    end
+
+    test "caps the duration at the max if it's more than the max", %{max: one_month} do
+      forty_five_days = Duration.parse!("P45D")
+      assert CardStateMachine.cap_duration(forty_five_days, one_month) == one_month
+    end
+
+    test "returns the duration if it's equal to the max", %{max: one_month} do
+      one_month_2 = Duration.parse!("P1M")
+      assert CardStateMachine.cap_duration(one_month_2, one_month) == one_month
     end
   end
 end
