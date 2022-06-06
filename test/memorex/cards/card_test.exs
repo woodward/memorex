@@ -3,7 +3,7 @@ defmodule Memorex.Cards.CardTest do
   use Memorex.DataCase
 
   alias Memorex.{Config, Repo}
-  alias Memorex.Cards.{Card, CardLog, Note}
+  alias Memorex.Cards.{Card, CardLog, Deck, Note}
   alias Timex.Duration
 
   test "deletes card logs when deleted" do
@@ -164,6 +164,16 @@ defmodule Memorex.Cards.CardTest do
 
       card2 = %Card{note: note, note_answer_index: 1}
       assert Card.answer(card2) == "Second"
+    end
+  end
+
+  describe "deck" do
+    test "can get the deck through the note" do
+      deck = %Deck{name: "foobar"} |> Repo.insert!()
+      note = %Note{deck: deck} |> Repo.insert!()
+      card = %Card{note: note} |> Repo.insert!() |> Repo.preload([:note, :deck])
+
+      assert card.deck.name == "foobar"
     end
   end
 end

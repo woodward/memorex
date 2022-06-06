@@ -49,7 +49,7 @@ defmodule Memorex.Cards.Card do
     field :reps, :integer
 
     belongs_to :note, Note
-    # belongs_to :deck, Deck, through: Note
+    has_one :deck, through: [:note, :deck]
     has_many :card_logs, CardLog, preload_order: [desc: :inserted_at]
 
     timestamps()
