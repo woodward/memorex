@@ -93,7 +93,8 @@ defmodule Memorex.CardsTest do
 
   describe "get_card!/1" do
     test "retrieves the card via the ID and preloads the card logs and the note" do
-      note = %Note{content: ["First", "Second"]}
+      deck = %Deck{} |> Repo.insert!()
+      note = %Note{content: ["First", "Second"], deck: deck}
       card1 = Repo.insert!(%Card{card_type: :review, note: note})
       _card2 = Repo.insert!(%Card{card_type: :relearn, note: note})
 
@@ -120,6 +121,7 @@ defmodule Memorex.CardsTest do
 
       retrieved_card1 = Cards.get_card!(card1.id)
       assert retrieved_card1.note.content == ["First", "Second"]
+      assert retrieved_card1.note.deck_id == deck.id
 
       assert retrieved_card1.card_type == :review
 

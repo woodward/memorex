@@ -3,6 +3,8 @@
 
   Card ID: <%= @card.id %>
 
+  <h3> <%= live_patch "Drill Card", to: Routes.review_path(@socket, :home, %{deck: @card.note.deck_id, card_id: @card.id}) %> </h3>
+
   <table>
     <tr>
       <td> Question </td>

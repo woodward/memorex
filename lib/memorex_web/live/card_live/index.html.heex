@@ -16,7 +16,7 @@
     <tbody>
       <%= for card <- @cards do %> 
         <tr>
-          <td><%= live_patch truncate(card.id, length: 12), to: Routes.card_show_path(@socket, :show, card.id) %>  </td>
+          <td> <%= live_patch truncate(card.id, length: 12), to: Routes.card_show_path(@socket, :show, card.id) %>  </td>
           <td> <%= truncate(card.note_id, length: 12) %> </td>
           <td> <%= format_iso_datetime(card.due) %> </td>
           <td> <%= format(card.interval) %> </td>

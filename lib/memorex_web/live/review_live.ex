@@ -98,13 +98,15 @@ defmodule MemorexWeb.ReviewLive do
   @impl true
   def handle_params(params, _uri, %{assigns: %{start_time: time_now, config: config}} = socket) do
     deck = Repo.get!(Deck, params["deck"])
-    card = Cards.get_one_random_due_card(deck.id, time_now)
+    card_id = params["card_id"]
+    card = if card_id, do: Cards.get_card!(card_id), else: Cards.get_one_random_due_card(deck.id, time_now)
     interval_choices = if card, do: Cards.get_interval_choices(card, config)
 
     {:noreply,
      socket
      |> assign(
        card: card,
+       card_id: card_id,
        deck_stats: DeckStats.new(deck.id, time_now),
        deck: deck,
        interval_choices: interval_choices,
@@ -121,13 +123,13 @@ defmodule MemorexWeb.ReviewLive do
   def handle_event(
         "rate-difficulty",
         %{"answer_choice" => answer_choice} = _params,
-        %{assigns: %{deck: deck, start_time: start_time, card: card, config: config}} = socket
+        %{assigns: %{deck: deck, start_time: start_time, card: card, card_id: card_id, config: config}} = socket
       ) do
     answer_choice = String.to_atom(answer_choice)
     end_time = TimeUtils.now()
-    {_card_end_state, card_log} = CardReviewer.answer_card_and_create_log_entry(card, answer_choice, start_time, end_time, config)
+    {card_end_state, card_log} = CardReviewer.answer_card_and_create_log_entry(card, answer_choice, start_time, end_time, config)
 
-    new_card = Cards.get_one_random_due_card(deck.id, end_time)
+    new_card = if card_id, do: card_end_state, else: Cards.get_one_random_due_card(deck.id, end_time)
     interval_choices = if new_card, do: Cards.get_interval_choices(new_card, config)
 
     {:noreply,

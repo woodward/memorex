@@ -45,7 +45,7 @@ defmodule MemorexWeb.SharedViewHelpers do
 
   @spec ease_factor(float() | nil) :: String.t()
   def ease_factor(nil), do: "-"
-  def ease_factor(ease_factor), do: ease_factor
+  def ease_factor(ease_factor), do: :erlang.float_to_binary(ease_factor, decimals: 3)
 
   def format_iso_datetime(nil), do: "-"
 
