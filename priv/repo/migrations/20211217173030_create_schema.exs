@@ -5,6 +5,7 @@ defmodule Memorex.Repo.Migrations.CreateSchema do
   def change do
     create table("decks") do
       add :name, :text
+      add :config, :map, default: %{}
 
       timestamps()
     end
