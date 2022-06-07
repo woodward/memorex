@@ -1,5 +1,7 @@
 import Config
 
+alias Timex.Duration
+
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
 # system starts, so it is typically used to load production configuration
@@ -12,9 +14,25 @@ if System.get_env("PHX_SERVER") && System.get_env("RELEASE_NAME") do
   config :memorex, MemorexWeb.Endpoint, server: true
 end
 
+defmodule Memorex.Config.Utils do
+  @moduledoc false
+  def string_array_to_durations(string_array) do
+    string_array
+    |> String.split(",")
+    |> Enum.map(&String.trim(&1))
+    |> Enum.map(&Duration.parse!(&1))
+  end
+end
+
+alias Memorex.Config.Utils
+
 config :memorex, Memorex.Config,
   new_cards_per_day: System.get_env("MEMOREX_NEW_CARDS_PER_DAY", "20") |> String.to_integer(),
-  max_reviews_per_day: System.get_env("MEMOREX_MAX_REVIEWS_PER_DAY", "200") |> String.to_integer()
+  max_reviews_per_day: System.get_env("MEMOREX_MAX_REVIEWS_PER_DAY", "200") |> String.to_integer(),
+  #
+  learn_ahead_time_interval: System.get_env("MEMOREX_LEARN_AHEAD_TIME_INTERVAL", "PT20M") |> Duration.parse!(),
+  #
+  learn_steps: System.get_env("MEMOREX_LEARN_STEPS", "PT1M, PT10M") |> Utils.string_array_to_durations()
 
 if config_env() != :test do
   config :memorex, timezone: System.get_env("MEMOREX_TIMEZONE") || raise("environment variable MEMOREX_TIMEZONE is missing")

@@ -45,9 +45,9 @@ defmodule Memorex.Config do
     :new_cards_per_day,
     :max_reviews_per_day,
     #
-    learn_ahead_time_interval: Duration.parse!("PT20M"),
+    :learn_ahead_time_interval,
     #
-    learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")],
+    :learn_steps,
     graduating_interval_good: Duration.parse!("P1D"),
     graduating_interval_easy: Duration.parse!("P4D"),
     #
@@ -79,13 +79,17 @@ defmodule Memorex.Config do
   ]
 
   @duration_fields [
-    :graduating_interval_easy,
-    :graduating_interval_good,
     :learn_ahead_time_interval,
+    #
+    :graduating_interval_good,
+    :graduating_interval_easy,
+    #
     :max_review_interval,
-    :max_time_to_answer,
     :min_review_interval,
+    #
     :min_time_to_answer,
+    :max_time_to_answer,
+    #
     :relearn_easy_adj
   ]
 
@@ -96,7 +100,11 @@ defmodule Memorex.Config do
 
     %__MODULE__{
       new_cards_per_day: config[:new_cards_per_day],
-      max_reviews_per_day: config[:max_reviews_per_day]
+      max_reviews_per_day: config[:max_reviews_per_day],
+      #
+      learn_ahead_time_interval: config[:learn_ahead_time_interval],
+      #
+      learn_steps: config[:learn_steps]
     }
   end
 

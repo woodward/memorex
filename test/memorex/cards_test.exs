@@ -141,7 +141,7 @@ defmodule Memorex.CardsTest do
       _card2 = Repo.insert!(%Card{note: note2, card_type: :new})
       _card3 = Repo.insert!(%Card{note: note2, card_type: :new})
 
-      config = %Config{}
+      config = %Config{learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")]}
       time_now = ~U[2022-02-01 12:00:00Z]
       Cards.set_new_cards_in_deck_to_learn_cards(deck1.id, config, time_now, limit: 1)
 
@@ -282,7 +282,7 @@ defmodule Memorex.CardsTest do
   describe "get_interval_choices/2" do
     test "gets the interval choices for this card" do
       card = %Card{card_type: :learn, interval: Duration.parse!("PT1M"), remaining_steps: 2}
-      config = %Config{}
+      config = %Config{learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")]}
       interval_choices = Cards.get_interval_choices(card, config)
 
       assert interval_choices == [
