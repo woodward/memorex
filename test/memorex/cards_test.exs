@@ -282,7 +282,7 @@ defmodule Memorex.CardsTest do
   describe "get_interval_choices/2" do
     test "gets the interval choices for this card" do
       card = %Card{card_type: :learn, interval: Duration.parse!("PT1M"), remaining_steps: 2}
-      config = %Config{learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")]}
+      config = %Config{learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")], graduating_interval_easy: Duration.parse!("P4D")}
       interval_choices = Cards.get_interval_choices(card, config)
 
       assert interval_choices == [

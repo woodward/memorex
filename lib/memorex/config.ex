@@ -48,8 +48,8 @@ defmodule Memorex.Config do
     :learn_ahead_time_interval,
     #
     :learn_steps,
-    graduating_interval_good: Duration.parse!("P1D"),
-    graduating_interval_easy: Duration.parse!("P4D"),
+    :graduating_interval_good,
+    :graduating_interval_easy,
     #
     relearn_steps: [Duration.parse!("PT10M")],
     #
@@ -104,7 +104,10 @@ defmodule Memorex.Config do
       #
       learn_ahead_time_interval: config[:learn_ahead_time_interval],
       #
-      learn_steps: config[:learn_steps]
+      learn_steps: config[:learn_steps],
+      graduating_interval_good: config[:graduating_interval_good],
+      graduating_interval_easy: config[:graduating_interval_easy]
+      #
     }
   end
 
