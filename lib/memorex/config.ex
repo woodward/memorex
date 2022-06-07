@@ -27,18 +27,18 @@ defmodule Memorex.Config do
           ease_good: nil | float(),
           ease_easy: nil | float(),
           #
-          max_review_interval: Duration.t(),
-          min_review_interval: Duration.t(),
+          max_review_interval: nil | Duration.t(),
+          min_review_interval: nil | Duration.t(),
           #
           #
-          leech_threshold: non_neg_integer(),
+          leech_threshold: nil | non_neg_integer(),
           #
-          min_time_to_answer: Duration.t(),
-          max_time_to_answer: Duration.t(),
+          min_time_to_answer: nil | Duration.t(),
+          max_time_to_answer: nil | Duration.t(),
           #
-          relearn_easy_adj: Duration.t(),
+          relearn_easy_adj: nil | Duration.t(),
           #
-          timezone: String.t()
+          timezone: nil | String.t()
         }
 
   defstruct [
@@ -65,17 +65,17 @@ defmodule Memorex.Config do
     :ease_good,
     :ease_easy,
     #
-    max_review_interval: Duration.parse!("P100Y"),
-    min_review_interval: Duration.parse!("P1D"),
+    :max_review_interval,
+    :min_review_interval,
     #
-    leech_threshold: 8,
+    :leech_threshold,
     #
-    min_time_to_answer: Duration.parse!("PT1S"),
-    max_time_to_answer: Duration.parse!("PT1M"),
+    :min_time_to_answer,
+    :max_time_to_answer,
     #
-    relearn_easy_adj: Duration.parse!("P1D"),
+    :relearn_easy_adj,
     #
-    timezone: Timex.Timezone.Local.lookup()
+    :timezone
   ]
 
   @duration_fields [
@@ -120,7 +120,19 @@ defmodule Memorex.Config do
       ease_again: config[:ease_again],
       ease_hard: config[:ease_hard],
       ease_good: config[:ease_good],
-      ease_easy: config[:ease_easy]
+      ease_easy: config[:ease_easy],
+      #
+      max_review_interval: config[:max_review_interval],
+      min_review_interval: config[:min_review_interval],
+      #
+      leech_threshold: config[:leech_threshold],
+      #
+      min_time_to_answer: config[:min_time_to_answer],
+      max_time_to_answer: config[:max_time_to_answer],
+      #
+      relearn_easy_adj: config[:relearn_easy_adj],
+      #
+      timezone: config[:timezone]
     }
   end
 

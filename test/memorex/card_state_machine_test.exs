@@ -71,7 +71,7 @@ defmodule Memorex.CardStateMachineTest do
     end
 
     test "answer: 'hard'" do
-      config = %Config{interval_multiplier: 1.1, hard_multiplier: 1.25, ease_hard: -0.25}
+      config = %Config{interval_multiplier: 1.1, hard_multiplier: 1.25, ease_hard: -0.25, max_review_interval: Duration.parse!("P100Y")}
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
 
       changes = CardStateMachine.answer_card(card, :hard, config)
@@ -91,7 +91,7 @@ defmodule Memorex.CardStateMachineTest do
     end
 
     test "answer: 'good'" do
-      config = %Config{interval_multiplier: 1.1, ease_good: 0.1}
+      config = %Config{interval_multiplier: 1.1, ease_good: 0.1, max_review_interval: Duration.parse!("P100Y")}
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
 
       changes = CardStateMachine.answer_card(card, :good, config)
@@ -111,7 +111,7 @@ defmodule Memorex.CardStateMachineTest do
     end
 
     test "answer: 'easy'" do
-      config = %Config{interval_multiplier: 1.1, easy_multiplier: 1.3, ease_easy: 0.2}
+      config = %Config{interval_multiplier: 1.1, easy_multiplier: 1.3, ease_easy: 0.2, max_review_interval: Duration.parse!("P100Y")}
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
 
       changes = CardStateMachine.answer_card(card, :easy, config)

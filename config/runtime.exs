@@ -48,7 +48,19 @@ config :memorex, Memorex.Config,
   ease_again: System.get_env("MEMOREX_EASE_AGAIN", "-0.2") |> String.to_float(),
   ease_hard: System.get_env("MEMOREX_EASE_HARD", "-0.15") |> String.to_float(),
   ease_good: System.get_env("MEMOREX_EASE_GOOD", "0.0") |> String.to_float(),
-  ease_easy: System.get_env("MEMOREX_EASE_EASY", "0.15") |> String.to_float()
+  ease_easy: System.get_env("MEMOREX_EASE_EASY", "0.15") |> String.to_float(),
+  #
+  max_review_interval: System.get_env("MEMOREX_MAX_REVIEW_INTERVAL", "P100Y") |> Duration.parse!(),
+  min_review_interval: System.get_env("MEMOREX_MIN_REVIEW_INTERVAL", "P1D") |> Duration.parse!(),
+  #
+  leech_threshold: System.get_env("MEMOREX_LEECH_THRESHOLD", "8") |> String.to_integer(),
+  #
+  min_time_to_answer: System.get_env("MEMOREX_MIN_TIME_TO_ANSWER", "PT1S") |> Duration.parse!(),
+  max_time_to_answer: System.get_env("MEMOREX_MAX_TIME_TO_ANSWER", "PT1M") |> Duration.parse!(),
+  #
+  relearn_easy_adj: System.get_env("MEMOREX_RELEARN_EASY_ADJ", "P1D") |> Duration.parse!(),
+  #
+  timezone: System.get_env("MEMOREX_TIMEZONE", "America/Los_Angeles")
 
 if config_env() != :test do
   config :memorex, timezone: System.get_env("MEMOREX_TIMEZONE") || raise("environment variable MEMOREX_TIMEZONE is missing")

@@ -58,7 +58,15 @@ defmodule Memorex.CardReviewerTest do
       note = %Note{content: ["First", "Second"]}
       card = %Card{card_type: :review, interval: Duration.parse!("PT4M"), ease_factor: 2.5, reps: 3, note: note}
       card = Repo.insert!(card)
-      config = %Config{interval_multiplier: 1.0, ease_good: 0.0, max_time_to_answer: Duration.parse!("PT1M")}
+
+      config = %Config{
+        interval_multiplier: 1.0,
+        ease_good: 0.0,
+        max_time_to_answer: Duration.parse!("PT1M"),
+        max_review_interval: Duration.parse!("P100Y"),
+        min_time_to_answer: Duration.parse!("PT1S")
+      }
+
       start_time = ~U[2022-01-01 12:02:00Z]
       time_now = ~U[2022-01-01 12:04:00Z]
 
@@ -230,7 +238,7 @@ defmodule Memorex.CardReviewerTest do
     end
 
     test "review card - answer :hard" do
-      config = %Config{interval_multiplier: 1.1, ease_hard: -0.15, hard_multiplier: 1.2}
+      config = %Config{interval_multiplier: 1.1, ease_hard: -0.15, hard_multiplier: 1.2, max_review_interval: Duration.parse!("P100Y")}
 
       card =
         %Card{
@@ -258,7 +266,7 @@ defmodule Memorex.CardReviewerTest do
     end
 
     test "review card - answer :good" do
-      config = %Config{interval_multiplier: 1.1, ease_good: 0.1}
+      config = %Config{interval_multiplier: 1.1, ease_good: 0.1, max_review_interval: Duration.parse!("P100Y")}
 
       card =
         %Card{
@@ -286,7 +294,7 @@ defmodule Memorex.CardReviewerTest do
     end
 
     test "review card - answer :easy" do
-      config = %Config{interval_multiplier: 1.1, easy_multiplier: 1.3, ease_easy: 0.15}
+      config = %Config{interval_multiplier: 1.1, easy_multiplier: 1.3, ease_easy: 0.15, max_review_interval: Duration.parse!("P100Y")}
 
       card =
         %Card{
@@ -399,7 +407,11 @@ defmodule Memorex.CardReviewerTest do
     end
 
     test "relearn card - answer :easy - become a review card again" do
-      config = %Config{relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")], min_review_interval: Duration.parse!("P1D")}
+      config = %Config{
+        relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")],
+        min_review_interval: Duration.parse!("P1D"),
+        relearn_easy_adj: Duration.parse!("P1D")
+      }
 
       card =
         %Card{
