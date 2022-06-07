@@ -11,4 +11,11 @@ defmodule Memorex.Decks do
       deck -> deck
     end
   end
+
+  @spec update_config(Deck.t(), map()) :: Deck.t()
+  def update_config(deck, config) do
+    deck
+    |> Deck.changeset(%{config: config})
+    |> Repo.update!()
+  end
 end

@@ -20,4 +20,12 @@ defmodule Memorex.DecksTest do
       assert Repo.all(Deck) |> length() == 1
     end
   end
+
+  describe "update_config" do
+    test "updates the config file in the deck" do
+      deck = %Deck{config: %{"new_cards_per_day" => 12}} |> Repo.insert!()
+      deck = Decks.update_config(deck, %{"new_cards_per_day" => 34})
+      assert deck.config == %{"new_cards_per_day" => 34}
+    end
+  end
 end

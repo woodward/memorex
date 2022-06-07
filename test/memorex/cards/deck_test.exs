@@ -46,4 +46,14 @@ defmodule Memorex.Cards.DeckTest do
       assert retrieved_deck.config["new_cards_per_day"] == 20
     end
   end
+
+  describe "changeset" do
+    test "creates a changeset" do
+      deck = %Deck{config: %{"new_cards_per_day" => 12}}
+      changes = %{config: %{"new_cards_per_day" => 34}}
+      changeset = Deck.changeset(deck, changes)
+      assert changeset.valid?
+      assert changeset.changes == %{config: %{"new_cards_per_day" => 34}}
+    end
+  end
 end

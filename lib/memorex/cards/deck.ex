@@ -2,10 +2,10 @@ defmodule Memorex.Cards.Deck do
   @moduledoc false
 
   use Memorex.Schema
+  import Ecto.Changeset
 
-  alias Memorex.{Config, Schema}
+  alias Memorex.Schema
   alias Memorex.Cards.Note
-  alias Timex.Duration
 
   @type t :: %__MODULE__{
           id: Schema.id() | nil,
@@ -24,5 +24,10 @@ defmodule Memorex.Cards.Deck do
     has_many :cards, through: [:notes, :cards]
 
     timestamps()
+  end
+
+  @spec changeset(Ecto.Changeset.t() | t(), map()) :: Ecto.Changeset.t()
+  def changeset(deck, params \\ %{}) do
+    deck |> cast(params, [:config])
   end
 end

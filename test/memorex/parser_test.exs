@@ -50,6 +50,20 @@ defmodule Memorex.ParserTest do
 
       assert Repo.all(Note) |> length() == 13
       assert Repo.all(Card) |> length() == 26
+
+      decks_without_configs = ["deck-1", "deck-2", "deck-3", "deck-5"]
+
+      decks_without_configs
+      |> Enum.each(fn deck_name ->
+        deck = Repo.get_by(Deck, name: deck_name)
+        assert deck.config == %{}
+      end)
+
+      deck_4 = Repo.get_by(Deck, name: "deck-4")
+      assert deck_4.config == %{"new_cards_per_day" => 67}
+
+      deck_6 = Repo.get_by(Deck, name: "deck-6")
+      assert deck_6.config == %{"new_cards_per_day" => 33}
     end
 
     test "does not create decks again if the directory is read a 2nd time" do

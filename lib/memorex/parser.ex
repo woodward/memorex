@@ -1,7 +1,7 @@
 defmodule Memorex.Parser do
   @moduledoc false
 
-  alias Memorex.{Decks, Repo}
+  alias Memorex.{ConfigFile, Decks, Repo}
   alias Memorex.Cards.{Card, Deck, Note}
 
   @spec read_file(String.t(), Deck.t() | nil) :: :ok
@@ -13,8 +13,11 @@ defmodule Memorex.Parser do
 
   @spec read_dir(String.t()) :: :ok
   def read_dir(dirname) do
-    deck_name = Path.basename(dirname)
-    deck = Decks.find_or_create!(deck_name)
+    deck =
+      dirname
+      |> Path.basename()
+      |> Decks.find_or_create!()
+      |> load_config_file_if_it_exists(Path.join(dirname, "deck_config.toml"))
 
     Path.wildcard(dirname <> "/*.md")
     |> Enum.each(&read_file(&1, deck))
@@ -36,8 +39,12 @@ defmodule Memorex.Parser do
 
           case file_stat.type do
             :regular ->
-              deck = Decks.find_or_create!(Path.rootname(file_or_dir))
-              read_file(pathname, deck)
+              if Path.extname(file_or_dir) == ".md" do
+                deck = Decks.find_or_create!(Path.rootname(file_or_dir))
+                read_file(pathname, deck)
+                config_filename = Path.rootname(pathname) <> ".deck_config.toml"
+                load_config_file_if_it_exists(deck, config_filename)
+              end
 
             :directory ->
               read_dir(pathname)
@@ -70,6 +77,16 @@ defmodule Memorex.Parser do
         end
       end
     end)
+  end
+
+  @spec load_config_file_if_it_exists(Deck.t(), String.t()) :: Deck.t()
+  defp load_config_file_if_it_exists(deck, config_filename) do
+    if File.exists?(config_filename) do
+      config_file = ConfigFile.read(config_filename)
+      Decks.update_config(deck, config_file)
+    else
+      deck
+    end
   end
 
   @spec is_note_line?(String.t()) :: boolean()
