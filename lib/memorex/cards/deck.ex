@@ -5,6 +5,7 @@ defmodule Memorex.Cards.Deck do
 
   alias Memorex.{Config, Schema}
   alias Memorex.Cards.Note
+  alias Timex.Duration
 
   @type t :: %__MODULE__{
           id: Schema.id() | nil,
@@ -24,12 +25,4 @@ defmodule Memorex.Cards.Deck do
 
     timestamps()
   end
-
-  @spec config(t(), Config.t()) :: Config.t()
-  def config(deck, default_config) do
-    Map.merge(default_config, atomize_keys(deck.config))
-  end
-
-  @spec atomize_keys(map()) :: map()
-  def atomize_keys(map), do: map |> Enum.into(%{}, fn {key, value} -> {String.to_atom(key), value} end)
 end

@@ -78,6 +78,19 @@ defmodule Memorex.Config do
     timezone: Timex.Timezone.Local.lookup()
   ]
 
+  @duration_fields [
+    :graduating_interval_easy,
+    :graduating_interval_good,
+    :learn_ahead_time_interval,
+    :max_review_interval,
+    :max_time_to_answer,
+    :min_review_interval,
+    :min_time_to_answer,
+    :relearn_easy_adj
+  ]
+
+  @duration_array_fields [:learn_steps, :relearn_steps]
+
   def default() do
     config = Application.get_env(:memorex, __MODULE__)
 
@@ -86,4 +99,28 @@ defmodule Memorex.Config do
       max_reviews_per_day: config[:max_reviews_per_day]
     }
   end
+
+  @spec to_config(map(), t()) :: t()
+  def to_config(deck_config, default_config) do
+    config = Map.merge(default_config, atomize_keys(deck_config))
+
+    config =
+      @duration_fields
+      |> Enum.reduce(config, fn field_name, config ->
+        Map.put(config, field_name, convert_string_to_duration(Map.get(config, field_name)))
+      end)
+
+    @duration_array_fields
+    |> Enum.reduce(config, fn field_name, config ->
+      converted_array_values = Map.get(config, field_name) |> Enum.map(&convert_string_to_duration(&1))
+      Map.put(config, field_name, converted_array_values)
+    end)
+  end
+
+  @spec atomize_keys(map()) :: map()
+  def atomize_keys(map), do: map |> Enum.into(%{}, fn {key, value} -> {String.to_atom(key), value} end)
+
+  @spec convert_string_to_duration(String.t() | Duration.t()) :: Duration.t()
+  defp convert_string_to_duration(duration) when is_binary(duration), do: Duration.parse!(duration)
+  defp convert_string_to_duration(duration), do: duration
 end

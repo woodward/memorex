@@ -1,5 +1,7 @@
 
-title = "TOML Example"
-
-
 new_cards_per_day = 35
+max_reviews_per_day = 350
+
+learn_ahead_time_interval = "PT20M"
+
+
