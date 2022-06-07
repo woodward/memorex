@@ -7,13 +7,13 @@ defmodule Memorex.Config do
           new_cards_per_day: nil | non_neg_integer(),
           max_reviews_per_day: nil | non_neg_integer(),
           #
-          learn_ahead_time_interval: Duration.t(),
+          learn_ahead_time_interval: nil | Duration.t(),
           #
-          learn_steps: [Duration.t()],
-          graduating_interval_good: Duration.t(),
-          graduating_interval_easy: Duration.t(),
+          learn_steps: nil | [Duration.t()],
+          graduating_interval_good: nil | Duration.t(),
+          graduating_interval_easy: nil | Duration.t(),
           #
-          relearn_steps: [Duration.t()],
+          relearn_steps: nil | [Duration.t()],
           #
           initial_ease: float(),
           #
@@ -51,7 +51,7 @@ defmodule Memorex.Config do
     :graduating_interval_good,
     :graduating_interval_easy,
     #
-    relearn_steps: [Duration.parse!("PT10M")],
+    :relearn_steps,
     #
     initial_ease: 2.5,
     #
@@ -106,8 +106,9 @@ defmodule Memorex.Config do
       #
       learn_steps: config[:learn_steps],
       graduating_interval_good: config[:graduating_interval_good],
-      graduating_interval_easy: config[:graduating_interval_easy]
+      graduating_interval_easy: config[:graduating_interval_easy],
       #
+      relearn_steps: config[:relearn_steps]
     }
   end
 

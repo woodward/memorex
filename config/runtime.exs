@@ -33,8 +33,10 @@ config :memorex, Memorex.Config,
   learn_ahead_time_interval: System.get_env("MEMOREX_LEARN_AHEAD_TIME_INTERVAL", "PT20M") |> Duration.parse!(),
   #
   learn_steps: System.get_env("MEMOREX_LEARN_STEPS", "PT1M, PT10M") |> Utils.string_array_to_durations(),
-  learn_steps: System.get_env("MEMOREX_GRADUATING_INTERVAL_GOOD", "P1D") |> Duration.parse!(),
-  learn_steps: System.get_env("MEMOREX_GRADUATING_INTERVAL_EASY", "P4D") |> Duration.parse!()
+  graduating_interval_good: System.get_env("MEMOREX_GRADUATING_INTERVAL_GOOD", "P1D") |> Duration.parse!(),
+  graduating_interval_easy: System.get_env("MEMOREX_GRADUATING_INTERVAL_EASY", "P4D") |> Duration.parse!(),
+  #
+  relearn_steps: System.get_env("MEMOREX_RELEARN_STEPS", "PT10M") |> Duration.parse!()
 
 if config_env() != :test do
   config :memorex, timezone: System.get_env("MEMOREX_TIMEZONE") || raise("environment variable MEMOREX_TIMEZONE is missing")
