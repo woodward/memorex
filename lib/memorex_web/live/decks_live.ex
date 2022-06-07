@@ -31,7 +31,7 @@ defmodule MemorexWeb.DecksLive do
   @impl true
   def mount(_params, _session, socket) do
     decks = Repo.all(Deck)
-    config = %Config{}
+    default_config = Config.default()
 
     decks =
       decks
@@ -39,12 +39,18 @@ defmodule MemorexWeb.DecksLive do
         Map.put(acc, deck, DeckStats.new(deck.id, TimeUtils.now()))
       end)
 
-    {:ok, socket |> assign(decks: decks, config: config)}
+    {:ok, socket |> assign(decks: decks, default_config: default_config)}
   end
 
   @impl true
-  def handle_event("add-new-batch-of-learn-cards", %{"deck_id" => deck_id} = _params, %{assigns: %{config: config, decks: decks}} = socket) do
+  def handle_event(
+        "add-new-batch-of-learn-cards",
+        %{"deck_id" => deck_id} = _params,
+        %{assigns: %{default_config: default_config, decks: decks}} = socket
+      ) do
     time_now = TimeUtils.now()
+    deck = Repo.get!(Deck, deck_id)
+    config = default_config |> Config.merge(deck.config)
     Cards.set_new_cards_in_deck_to_learn_cards(deck_id, config, time_now, limit: config.new_cards_per_day)
     decks = Map.put(decks, Repo.get(Deck, deck_id), DeckStats.new(deck_id, time_now))
     {:noreply, socket |> assign(decks: decks)}

@@ -100,8 +100,8 @@ defmodule Memorex.Config do
     }
   end
 
-  @spec to_config(map(), t()) :: t()
-  def to_config(deck_config, default_config) do
+  @spec merge(map(), t()) :: t()
+  def merge(default_config, deck_config) do
     config = Map.merge(default_config, atomize_keys(deck_config))
 
     config =

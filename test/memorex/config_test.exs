@@ -6,7 +6,7 @@ defmodule Memorex.ConfigTest do
   alias Memorex.Cards.Deck
   alias Timex.Duration
 
-  describe "to_config" do
+  describe "merge" do
     test "the config is merged with the standard config, and overrides values there" do
       config = %{new_cards_per_day: 40, learn_ahead_time_interval: "PT20M", learn_steps: ["PT15M", "PT21M"]}
       deck = %Deck{config: config} |> Repo.insert!()
@@ -20,7 +20,7 @@ defmodule Memorex.ConfigTest do
         relearn_steps: [Duration.parse!("PT17M")]
       }
 
-      retrieved_deck_config = Config.to_config(retrieved_deck.config, default_config)
+      retrieved_deck_config = Config.merge(default_config, retrieved_deck.config)
 
       assert retrieved_deck_config.new_cards_per_day == 40
       assert retrieved_deck_config.max_reviews_per_day == 200

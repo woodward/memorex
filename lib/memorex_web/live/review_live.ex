@@ -83,21 +83,20 @@ defmodule MemorexWeb.ReviewLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    config = %Config{}
     time_now = TimeUtils.now()
 
     {:ok,
      socket
      |> assign(
-       config: config,
        display: :show_question,
        start_time: time_now
      )}
   end
 
   @impl true
-  def handle_params(params, _uri, %{assigns: %{start_time: time_now, config: config}} = socket) do
+  def handle_params(params, _uri, %{assigns: %{start_time: time_now}} = socket) do
     deck = Repo.get!(Deck, params["deck"])
+    config = Config.default() |> Config.merge(deck.config)
     card_id = params["card_id"]
     card = if card_id, do: Cards.get_card!(card_id), else: Cards.get_one_random_due_card(deck.id, time_now)
     interval_choices = if card, do: Cards.get_interval_choices(card, config)
@@ -107,6 +106,7 @@ defmodule MemorexWeb.ReviewLive do
      |> assign(
        card: card,
        card_id: card_id,
+       config: config,
        deck_stats: DeckStats.new(deck.id, time_now),
        deck: deck,
        interval_choices: interval_choices,
