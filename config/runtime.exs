@@ -36,7 +36,19 @@ config :memorex, Memorex.Config,
   graduating_interval_good: System.get_env("MEMOREX_GRADUATING_INTERVAL_GOOD", "P1D") |> Duration.parse!(),
   graduating_interval_easy: System.get_env("MEMOREX_GRADUATING_INTERVAL_EASY", "P4D") |> Duration.parse!(),
   #
-  relearn_steps: System.get_env("MEMOREX_RELEARN_STEPS", "PT10M") |> Duration.parse!()
+  relearn_steps: System.get_env("MEMOREX_RELEARN_STEPS", "PT10M") |> Duration.parse!(),
+  #
+  initial_ease: System.get_env("MEMOREX_INITIAL_EASE", "2.5") |> String.to_float(),
+  #
+  easy_multiplier: System.get_env("MEMOREX_EASY_MULTIPLIER", "1.3") |> String.to_float(),
+  hard_multiplier: System.get_env("MEMOREX_HARD_MULTIPLIER", "1.2") |> String.to_float(),
+  lapse_multiplier: System.get_env("MEMOREX_LAPSE_MULTIPLIER", "0.0") |> String.to_float(),
+  interval_multiplier: System.get_env("MEMOREX_INTERVAL_MULTIPLIER", "1.0") |> String.to_float(),
+  #
+  ease_again: System.get_env("MEMOREX_EASE_AGAIN", "-0.2") |> String.to_float(),
+  ease_hard: System.get_env("MEMOREX_EASE_HARD", "-0.15") |> String.to_float(),
+  ease_good: System.get_env("MEMOREX_EASE_GOOD", "0.0") |> String.to_float(),
+  ease_easy: System.get_env("MEMOREX_EASE_EASY", "0.15") |> String.to_float()
 
 if config_env() != :test do
   config :memorex, timezone: System.get_env("MEMOREX_TIMEZONE") || raise("environment variable MEMOREX_TIMEZONE is missing")

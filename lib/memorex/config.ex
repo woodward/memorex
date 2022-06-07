@@ -15,17 +15,17 @@ defmodule Memorex.Config do
           #
           relearn_steps: nil | [Duration.t()],
           #
-          initial_ease: float(),
+          initial_ease: nil | float(),
           #
-          easy_multiplier: float(),
-          hard_multiplier: float(),
-          lapse_multiplier: float(),
-          interval_multiplier: float(),
+          easy_multiplier: nil | float(),
+          hard_multiplier: nil | float(),
+          lapse_multiplier: nil | float(),
+          interval_multiplier: nil | float(),
           #
-          ease_again: float(),
-          ease_hard: float(),
-          ease_good: float(),
-          ease_easy: float(),
+          ease_again: nil | float(),
+          ease_hard: nil | float(),
+          ease_good: nil | float(),
+          ease_easy: nil | float(),
           #
           max_review_interval: Duration.t(),
           min_review_interval: Duration.t(),
@@ -53,17 +53,17 @@ defmodule Memorex.Config do
     #
     :relearn_steps,
     #
-    initial_ease: 2.5,
+    :initial_ease,
     #
-    easy_multiplier: 1.3,
-    hard_multiplier: 1.2,
-    lapse_multiplier: 0.0,
-    interval_multiplier: 1.0,
+    :easy_multiplier,
+    :hard_multiplier,
+    :lapse_multiplier,
+    :interval_multiplier,
     #
-    ease_again: -0.2,
-    ease_hard: -0.15,
-    ease_good: 0.0,
-    ease_easy: 0.15,
+    :ease_again,
+    :ease_hard,
+    :ease_good,
+    :ease_easy,
     #
     max_review_interval: Duration.parse!("P100Y"),
     min_review_interval: Duration.parse!("P1D"),
@@ -108,7 +108,19 @@ defmodule Memorex.Config do
       graduating_interval_good: config[:graduating_interval_good],
       graduating_interval_easy: config[:graduating_interval_easy],
       #
-      relearn_steps: config[:relearn_steps]
+      relearn_steps: config[:relearn_steps],
+      #
+      initial_ease: config[:initial_ease],
+      #
+      easy_multiplier: config[:easy_multiplier],
+      hard_multiplier: config[:hard_multiplier],
+      lapse_multiplier: config[:lapse_multiplier],
+      interval_multiplier: config[:interval_multiplier],
+      #
+      ease_again: config[:ease_again],
+      ease_hard: config[:ease_hard],
+      ease_good: config[:ease_good],
+      ease_easy: config[:ease_easy]
     }
   end
 
