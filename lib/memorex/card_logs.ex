@@ -22,6 +22,12 @@ defmodule Memorex.CardLogs do
   @spec count(Ecto.Query.t()) :: non_neg_integer()
   def count(query), do: query |> Repo.aggregate(:count, :id)
 
+  @spec where_card_type(Ecto.Query.t(), Card.card_type()) :: Ecto.Query.t()
+  def where_card_type(query, card_type) do
+    query
+    |> where([cl], cl.card_type == ^card_type)
+  end
+
   @spec count_for_deck_for_today(Schema.id(), DateTime.t(), String.t()) :: non_neg_integer()
   def count_for_deck_for_today(deck_id, time_now, timezone) do
     all() |> for_deck(deck_id) |> for_day(time_now, timezone) |> count()
