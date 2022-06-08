@@ -6,18 +6,36 @@ defmodule Memorex.CardLogsTest do
   alias Memorex.Cards.{Card, CardLog, Deck, Note}
   alias Timex.Duration
 
-  describe "count_for_today" do
-    test "returns the number of cards reviewed today for certain decks" do
-      deck = %Deck{} |> Repo.insert!()
-      note = %Note{deck: deck} |> Repo.insert!()
-      card = %Card{note: note} |> Repo.insert!()
-      _card_log = create_card_log(card, ~U[2022-01-01 12:00:00Z])
+  describe "card_logs_for_today" do
+    test "returns the card logs for today" do
+      card = %Card{} |> Repo.insert!()
+      # start_of_day: ~U[2022-01-01 08:00:00Z]
+      # end_of_day:   ~U[2022-01-02 07:59:59Z]
+
+      card_log = create_card_log(card, ~U[2022-01-01 12:00:00Z])
+      _card_log_after = create_card_log(card, ~U[2022-01-02 08:01:00Z])
+      _card_log_before = create_card_log(card, ~U[2022-01-01 07:59:00Z])
       timezone = "America/Los_Angeles"
-      time_now = ~U[2022-01-01 12:00:00Z]
+      time_now = ~U[2022-01-01 11:00:00Z]
 
-      count = CardLogs.count_for_today(deck.id, time_now, timezone)
+      card_logs = CardLogs.all() |> CardLogs.card_logs_for_today(time_now, timezone) |> Repo.all()
 
-      assert count == 1
+      assert length(card_logs) == 1
+      [retrieved_card_log] = card_logs
+      assert retrieved_card_log.id == card_log.id
+    end
+  end
+
+  describe "count" do
+    test "returns the number of card logs" do
+      card = %Card{} |> Repo.insert!()
+      _card_log1 = create_card_log(card, ~U[2022-01-01 12:00:00Z])
+      _card_log2 = create_card_log(card, ~U[2022-01-02 08:01:00Z])
+      _card_log3 = create_card_log(card, ~U[2022-01-01 07:59:00Z])
+
+      count = CardLogs.all() |> CardLogs.count()
+
+      assert count == 3
     end
   end
 
@@ -33,7 +51,7 @@ defmodule Memorex.CardLogsTest do
       card2 = %Card{note: note2} |> Repo.insert!()
       _card_log2 = create_card_log(card2, ~U[2022-01-01 12:00:00Z])
 
-      card_logs = CardLogs.card_logs_for_deck(deck1.id) |> Repo.all()
+      card_logs = CardLogs.all() |> CardLogs.card_logs_for_deck(deck1.id) |> Repo.all()
 
       assert length(card_logs) == 1
     end
