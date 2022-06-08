@@ -28,9 +28,9 @@ defmodule Memorex.CardLogs do
     |> where([cl], cl.card_type == ^card_type)
   end
 
-  @spec count_for_deck_for_today(Schema.id(), DateTime.t(), String.t()) :: non_neg_integer()
-  def count_for_deck_for_today(deck_id, time_now, timezone) do
-    all() |> for_deck(deck_id) |> for_day(time_now, timezone) |> count()
+  @spec reviews_count_for_day(Schema.id(), DateTime.t(), String.t()) :: non_neg_integer()
+  def reviews_count_for_day(deck_id, time_now, timezone) do
+    all() |> for_deck(deck_id) |> where_card_type(:review) |> for_day(time_now, timezone) |> count()
   end
 
   @spec for_deck(Ecto.Query.t(), Schema.id(), Keyword.t()) :: Ecto.Query.t()
