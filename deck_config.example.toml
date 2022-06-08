@@ -19,7 +19,7 @@ max_reviews_per_day = 200
 
 learn_ahead_time_interval = "PT20M"
 
-learn_step = ["PT1M", "PT10M"]
+learn_steps = ["PT1M", "PT10M"]
 graduating_interval_good = "P1D"
 graduating_interval_easy = "P4D"
 
