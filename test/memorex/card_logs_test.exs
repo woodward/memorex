@@ -26,6 +26,31 @@ defmodule Memorex.CardLogsTest do
     end
   end
 
+  describe "count_of_card_logs_for_deck_for_today" do
+    test "returns the count of the card logs for today" do
+      deck1 = %Deck{} |> Repo.insert!()
+      note1 = %Note{deck: deck1} |> Repo.insert!()
+      card1 = %Card{note: note1} |> Repo.insert!()
+      # start_of_day: ~U[2022-01-01 08:00:00Z]
+      # end_of_day:   ~U[2022-01-02 07:59:59Z]
+
+      _card_log_for_today_for_deck = create_card_log(card1, ~U[2022-01-01 12:00:00Z])
+      _card_log_after = create_card_log(card1, ~U[2022-01-02 08:01:00Z])
+      _card_log_before = create_card_log(card1, ~U[2022-01-01 07:59:00Z])
+
+      deck2 = %Deck{} |> Repo.insert!()
+      note2 = %Note{deck: deck2} |> Repo.insert!()
+      card2 = %Card{note: note2} |> Repo.insert!()
+      _card_log_for_today_but_different_deck = create_card_log(card2, ~U[2022-01-01 12:00:00Z])
+
+      timezone = "America/Los_Angeles"
+      time_now = ~U[2022-01-01 11:00:00Z]
+
+      count = CardLogs.count_of_card_logs_for_deck_for_today(deck1.id, time_now, timezone)
+      assert count == 1
+    end
+  end
+
   describe "count" do
     test "returns the number of card logs" do
       card = %Card{} |> Repo.insert!()

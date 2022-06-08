@@ -22,6 +22,11 @@ defmodule Memorex.CardLogs do
   @spec count(Ecto.Query.t()) :: non_neg_integer()
   def count(query), do: query |> Repo.aggregate(:count, :id)
 
+  @spec count_of_card_logs_for_deck_for_today(Schema.id(), DateTime.t(), String.t()) :: non_neg_integer()
+  def count_of_card_logs_for_deck_for_today(deck_id, time_now, timezone) do
+    all() |> card_logs_for_deck(deck_id) |> card_logs_for_today(time_now, timezone) |> count()
+  end
+
   @spec card_logs_for_deck(Ecto.Query.t(), Schema.id(), Keyword.t()) :: Ecto.Query.t()
   def card_logs_for_deck(_query, deck_id, _opts \\ []) do
     # query
