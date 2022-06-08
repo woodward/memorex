@@ -96,44 +96,10 @@ defmodule Memorex.Config do
   @duration_array_fields [:learn_steps, :relearn_steps]
 
   def default() do
-    config = Application.get_env(:memorex, __MODULE__)
-
-    %__MODULE__{
-      new_cards_per_day: config[:new_cards_per_day],
-      max_reviews_per_day: config[:max_reviews_per_day],
-      #
-      learn_ahead_time_interval: config[:learn_ahead_time_interval],
-      #
-      learn_steps: config[:learn_steps],
-      graduating_interval_good: config[:graduating_interval_good],
-      graduating_interval_easy: config[:graduating_interval_easy],
-      #
-      relearn_steps: config[:relearn_steps],
-      #
-      initial_ease: config[:initial_ease],
-      #
-      easy_multiplier: config[:easy_multiplier],
-      hard_multiplier: config[:hard_multiplier],
-      lapse_multiplier: config[:lapse_multiplier],
-      interval_multiplier: config[:interval_multiplier],
-      #
-      ease_again: config[:ease_again],
-      ease_hard: config[:ease_hard],
-      ease_good: config[:ease_good],
-      ease_easy: config[:ease_easy],
-      #
-      max_review_interval: config[:max_review_interval],
-      min_review_interval: config[:min_review_interval],
-      #
-      leech_threshold: config[:leech_threshold],
-      #
-      min_time_to_answer: config[:min_time_to_answer],
-      max_time_to_answer: config[:max_time_to_answer],
-      #
-      relearn_easy_adj: config[:relearn_easy_adj],
-      #
-      timezone: config[:timezone]
-    }
+    Application.get_env(:memorex, __MODULE__)
+    |> Enum.reduce(%__MODULE__{}, fn {key, value}, acc ->
+      Map.put(acc, key, value)
+    end)
   end
 
   @spec merge(map(), t()) :: t()
