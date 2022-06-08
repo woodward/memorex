@@ -21,7 +21,16 @@ defmodule Memorex.CardLogsTest do
     end
   end
 
-  def create_card_log(card, _inserted_at) do
+  describe "factory function" do
+    test "lets you set the inserted_at field" do
+      card = %Card{} |> Repo.insert!()
+      card_log = create_card_log(card, ~U[2022-01-01 12:00:00Z])
+      card_log = Repo.get!(CardLog, card_log.id)
+      assert card_log.inserted_at == ~U[2022-01-01 12:00:00Z]
+    end
+  end
+
+  def create_card_log(card, inserted_at) do
     %CardLog{
       answer_choice: :good,
       card_type: :review,
@@ -39,5 +48,7 @@ defmodule Memorex.CardLogsTest do
       card: card
     }
     |> Repo.insert!()
+    |> Ecto.Changeset.cast(%{inserted_at: inserted_at}, [:inserted_at])
+    |> Repo.update!()
   end
 end
