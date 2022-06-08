@@ -36,7 +36,7 @@ config :memorex, Memorex.Config,
   graduating_interval_good: System.get_env("MEMOREX_GRADUATING_INTERVAL_GOOD", "P1D") |> Duration.parse!(),
   graduating_interval_easy: System.get_env("MEMOREX_GRADUATING_INTERVAL_EASY", "P4D") |> Duration.parse!(),
   #
-  relearn_steps: System.get_env("MEMOREX_RELEARN_STEPS", "PT10M") |> Duration.parse!(),
+  relearn_steps: System.get_env("MEMOREX_RELEARN_STEPS", "PT10M") |> Utils.string_array_to_durations(),
   #
   initial_ease: System.get_env("MEMOREX_INITIAL_EASE", "2.5") |> String.to_float(),
   #
