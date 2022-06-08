@@ -2,7 +2,7 @@ defmodule Memorex.CardLogsTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.{CardLogs, Repo}
+  alias Memorex.{CardLogs, Repo, TimeUtils}
   alias Memorex.Cards.{Card, CardLog, Deck, Note}
   alias Timex.Duration
 
@@ -27,6 +27,21 @@ defmodule Memorex.CardLogsTest do
       card_log = create_card_log(card, ~U[2022-01-01 12:00:00Z])
       card_log = Repo.get!(CardLog, card_log.id)
       assert card_log.inserted_at == ~U[2022-01-01 12:00:00Z]
+    end
+  end
+
+  describe "explore how Timex functions work" do
+    test "end_of_day and beginning_of_day" do
+      timezone = "America/Los_Angeles"
+      random_time_somewhere_in_middle_of_day = ~U[2022-01-01 12:00:00Z]
+      today_pst = random_time_somewhere_in_middle_of_day |> TimeUtils.to_timezone(timezone)
+      utc = "Etc/UTC"
+
+      end_of_day = Timex.end_of_day(today_pst)
+      assert end_of_day |> TimeUtils.to_timezone(utc) == ~U[2022-01-02 07:59:59Z]
+
+      start_of_day = Timex.beginning_of_day(today_pst)
+      assert start_of_day |> TimeUtils.to_timezone(utc) == ~U[2022-01-01 08:00:00Z]
     end
   end
 
