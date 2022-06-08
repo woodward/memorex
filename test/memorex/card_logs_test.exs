@@ -21,6 +21,24 @@ defmodule Memorex.CardLogsTest do
     end
   end
 
+  describe "card_logs_for_deck" do
+    test "returns only the card logs associated with this deck" do
+      deck1 = %Deck{} |> Repo.insert!()
+      note1 = %Note{deck: deck1} |> Repo.insert!()
+      card1 = %Card{note: note1} |> Repo.insert!()
+      _card_log1 = create_card_log(card1, ~U[2022-01-01 12:00:00Z])
+
+      deck2 = %Deck{} |> Repo.insert!()
+      note2 = %Note{deck: deck2} |> Repo.insert!()
+      card2 = %Card{note: note2} |> Repo.insert!()
+      _card_log2 = create_card_log(card2, ~U[2022-01-01 12:00:00Z])
+
+      card_logs = CardLogs.card_logs_for_deck(deck1.id) |> Repo.all()
+
+      assert length(card_logs) == 1
+    end
+  end
+
   describe "factory function" do
     test "lets you set the inserted_at field" do
       card = %Card{} |> Repo.insert!()

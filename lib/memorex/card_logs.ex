@@ -3,7 +3,7 @@ defmodule Memorex.CardLogs do
 
   import Ecto.Query
 
-  alias Memorex.Repo
+  alias Memorex.{Repo, Schema}
   alias Memorex.Cards.{Card, CardLog, Deck, Note}
 
   def count_for_today(deck_id, _time_now, _timezone) do
