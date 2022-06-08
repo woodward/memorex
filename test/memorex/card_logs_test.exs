@@ -6,7 +6,7 @@ defmodule Memorex.CardLogsTest do
   alias Memorex.Cards.{Card, CardLog, Deck, Note}
   alias Timex.Duration
 
-  describe "card_logs_for_today" do
+  describe "for_day" do
     test "returns the card logs for today" do
       card = %Card{} |> Repo.insert!()
       # start_of_day: ~U[2022-01-01 08:00:00Z]
@@ -18,7 +18,7 @@ defmodule Memorex.CardLogsTest do
       timezone = "America/Los_Angeles"
       time_now = ~U[2022-01-01 11:00:00Z]
 
-      card_logs = CardLogs.all() |> CardLogs.card_logs_for_today(time_now, timezone) |> Repo.all()
+      card_logs = CardLogs.all() |> CardLogs.for_day(time_now, timezone) |> Repo.all()
 
       assert length(card_logs) == 1
       [retrieved_card_log] = card_logs
@@ -26,7 +26,7 @@ defmodule Memorex.CardLogsTest do
     end
   end
 
-  describe "count_of_card_logs_for_deck_for_today" do
+  describe "count_for_deck_for_today" do
     test "returns the count of the card logs for today" do
       deck1 = %Deck{} |> Repo.insert!()
       note1 = %Note{deck: deck1} |> Repo.insert!()
@@ -46,7 +46,7 @@ defmodule Memorex.CardLogsTest do
       timezone = "America/Los_Angeles"
       time_now = ~U[2022-01-01 11:00:00Z]
 
-      count = CardLogs.count_of_card_logs_for_deck_for_today(deck1.id, time_now, timezone)
+      count = CardLogs.count_for_deck_for_today(deck1.id, time_now, timezone)
       assert count == 1
     end
   end
@@ -64,7 +64,7 @@ defmodule Memorex.CardLogsTest do
     end
   end
 
-  describe "card_logs_for_deck" do
+  describe "for_deck" do
     test "returns only the card logs associated with this deck" do
       deck1 = %Deck{} |> Repo.insert!()
       note1 = %Note{deck: deck1} |> Repo.insert!()
@@ -76,7 +76,7 @@ defmodule Memorex.CardLogsTest do
       card2 = %Card{note: note2} |> Repo.insert!()
       _card_log2 = create_card_log(card2, ~U[2022-01-01 12:00:00Z])
 
-      card_logs = CardLogs.all() |> CardLogs.card_logs_for_deck(deck1.id) |> Repo.all()
+      card_logs = CardLogs.all() |> CardLogs.for_deck(deck1.id) |> Repo.all()
 
       assert length(card_logs) == 1
     end
