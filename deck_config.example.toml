@@ -1,12 +1,18 @@
-# An example deck Config
+# An example deck config TOML file
 
-# [TOML](https://github.com/toml-lang/toml)
+# If your deck is a directory, create a file in it called `deck_config.toml`.
+# If your deck is a single markdown file (e.g., called `my-deck.md`) you can create
+# a sibling file called `my-deck.deck_config.toml`) and it will be read in.
 
-# See [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601#Durations) for a description of the duration formats
-# e.g., "P2D" means 2 days, "PT10M" means 10 minutes, "P100Y" means 100 years
+# For TOML, see: [TOML](https://github.com/toml-lang/toml)
+
+# See [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601#Durations) for a description of the duration formats.
+# E.g., "P2D" means 2 days, "PT10M" means 10 minutes, "P100Y" means 100 years, 
+# "PT1H15M30S" means 1 hour, 15 minutes, 30 seconds, "P1DT3H" means 1 day, 3 hours.
 
 # Note that you only need to include values where you are overriding the defaults 
-# (i.e., you do not need to specify all of these values)
+# (i.e., you do not need to specify all of these values). Your deck_config.toml file can contain only
+# a few lines (if you are only overriding a few values).
 
 new_cards_per_day = 20
 max_reviews_per_day = 200

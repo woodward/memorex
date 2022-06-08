@@ -1,9 +1,15 @@
 export MEMOREX_BIDIRECTIONAL_NOTE_DELIMITTER="⮂"
 export MEMOREX_NOTE_DIRS="/dir1, /dir2, /dir3"
-export MEMOREX_TIMEZONE="America/Los_Angeles"
 
 # ----------------------------------------------------
 # Memorex.Config:
+# Note that it is necessary to specify one (or more) of these environment variables only if you are 
+# overriding the default Memorex values.
+
+# See [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601#Durations) for a description of the duration formats.
+# E.g., "P2D" means 2 days, "PT10M" means 10 minutes, "P100Y" means 100 years, 
+# "PT1H15M30S" means 1 hour, 15 minutes, 30 seconds, "P1DT3H" means 1 day, 3 hours.
+
 
 export MEMOREX_NEW_CARDS_PER_DAY=20
 export MEMOREX_MAX_REVIEWS_PER_DAY=200
@@ -37,3 +43,5 @@ export MEMOREX_MIN_TIME_TO_ANSWER="PT1S"
 export MEMOREX_MAX_TIME_TO_ANSWER="PT1M"
 
 export MEMOREX_RELEARN_EASY_ADJ="P1D"
+
+export MEMOREX_TIMEZONE="America/Los_Angeles"
