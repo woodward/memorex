@@ -100,7 +100,8 @@ defmodule MemorexWeb.ReviewLive do
     deck = Repo.get!(Deck, params["deck"])
     config = Config.default() |> Config.merge(deck.config)
     card_id = params["card_id"]
-    card = if card_id, do: Cards.get_card!(card_id), else: Cards.get_one_random_due_card(deck.id, time_now)
+    learn_ahead_time = Timex.add(time_now, config.learn_ahead_time_interval)
+    card = if card_id, do: Cards.get_card!(card_id), else: Cards.get_one_random_due_card(deck.id, learn_ahead_time)
     interval_choices = if card, do: Cards.get_interval_choices(card, config)
     num_of_reviewed_cards = CardLogs.reviews_count_for_day(deck.id, time_now, config.timezone)
 
@@ -134,7 +135,8 @@ defmodule MemorexWeb.ReviewLive do
     end_time = TimeUtils.now()
     {card_end_state, card_log} = CardReviewer.answer_card_and_create_log_entry(card, answer_choice, start_time, end_time, config)
 
-    new_card = if card_id, do: card_end_state, else: Cards.get_one_random_due_card(deck.id, end_time)
+    learn_ahead_time = Timex.add(end_time, config.learn_ahead_time_interval)
+    new_card = if card_id, do: card_end_state, else: Cards.get_one_random_due_card(deck.id, learn_ahead_time)
     interval_choices = if new_card, do: Cards.get_interval_choices(new_card, config)
     num_of_reviewed_cards = CardLogs.reviews_count_for_day(deck.id, end_time, config.timezone)
 
