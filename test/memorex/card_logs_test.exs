@@ -27,9 +27,10 @@ defmodule Memorex.CardLogsTest do
   end
 
   describe "where_card_type" do
-    test "returns the card logs of a certain type (such as :review)" do
+    test "returns the card logs of a certain type (such as :review) for both card_type and last_card_type" do
       card = %Card{} |> Repo.insert!()
-      card_log_review = create_card_log(card, card_type: :review)
+      card_log_review = create_card_log(card, card_type: :review, last_card_type: :review)
+      _card_log_review_learn = create_card_log(card, card_type: :review, last_card_type: :learn)
       _card_log_new = create_card_log(card, card_type: :new)
       _card_log_learn = create_card_log(card, card_type: :learn)
 
@@ -49,7 +50,12 @@ defmodule Memorex.CardLogsTest do
       # start_of_day: ~U[2022-01-01 08:00:00Z]
       # end_of_day:   ~U[2022-01-02 07:59:59Z]
 
-      _card_log_for_today_for_deck = create_card_log(card1, inserted_at: ~U[2022-01-01 12:00:00Z], card_type: :review)
+      _card_log_for_today_for_deck_included =
+        create_card_log(card1, inserted_at: ~U[2022-01-01 12:00:00Z], card_type: :review, last_card_type: :review)
+
+      _card_log_for_today_for_deck_excluded =
+        create_card_log(card1, inserted_at: ~U[2022-01-01 12:00:00Z], card_type: :review, last_card_type: :learn)
+
       _card_log_for_today_for_deck_learn = create_card_log(card1, inserted_at: ~U[2022-01-01 12:00:00Z], card_type: :learn)
       _card_log_after = create_card_log(card1, inserted_at: ~U[2022-01-02 08:01:00Z])
       _card_log_before = create_card_log(card1, inserted_at: ~U[2022-01-01 07:59:00Z])
@@ -132,6 +138,7 @@ defmodule Memorex.CardLogsTest do
   def create_card_log(card, opts \\ []) do
     inserted_at = Keyword.get(opts, :inserted_at, Timex.now())
     card_type = Keyword.get(opts, :card_type, :review)
+    last_card_type = Keyword.get(opts, :last_card_type, :learn)
 
     %CardLog{
       answer_choice: :good,
@@ -139,7 +146,7 @@ defmodule Memorex.CardLogsTest do
       due: ~U[2022-01-01 12:00:00Z],
       ease_factor: 2.5,
       interval: Duration.parse!("PT10M"),
-      last_card_type: :learn,
+      last_card_type: last_card_type,
       last_due: ~U[2022-01-01 12:00:00Z],
       last_ease_factor: 2.4,
       last_interval: Duration.parse!("PT5M"),

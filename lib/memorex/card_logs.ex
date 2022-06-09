@@ -25,7 +25,7 @@ defmodule Memorex.CardLogs do
   @spec where_card_type(Ecto.Query.t(), Card.card_type()) :: Ecto.Query.t()
   def where_card_type(query, card_type) do
     query
-    |> where([cl], cl.card_type == ^card_type)
+    |> where([cl], cl.card_type == ^card_type and cl.last_card_type == ^card_type)
   end
 
   @spec reviews_count_for_day(Schema.id(), DateTime.t(), String.t()) :: non_neg_integer()
