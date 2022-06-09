@@ -75,7 +75,6 @@ defmodule MemorexWeb.ReviewLive do
         </table>
 
         <%= if @prior_card_log do %>
-          <h3> <%= live_patch "Last Card - ID #{@prior_card_log.card_id}", to: Routes.card_show_path(@socket, :show, @prior_card_log.card_id) %> </h3>
           <.live_component module={MemorexWeb.CardLive.CardComponent} id={@prior_card_log.card.id} card={@prior_card_log.card} card_log={@prior_card_log} />
         <% end %>
       </div>

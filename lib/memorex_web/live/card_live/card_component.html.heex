@@ -1,9 +1,8 @@
 <div>
   <h1> Card </h1>
 
-  Card ID: <%= @card.id %>
-
-  <h3> <%= live_patch "Drill Card", to: Routes.review_path(@socket, :home, %{deck: @card.note.deck_id, card_id: @card.id}) %> </h3>
+  <h3> <%= live_patch "Card ID: #{@card.id}", to: Routes.card_show_path(@socket, :show, @card.id) %> </h3>
+  <h3> <%= live_patch "Drill Card in Isolation", to: Routes.review_path(@socket, :home, %{deck: @card.note.deck_id, card_id: @card.id}) %> </h3>
 
   <table>
     <tr>
