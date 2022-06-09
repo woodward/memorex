@@ -11,7 +11,6 @@ defmodule Memorex.Cards.CardLog do
           id: Schema.id() | nil,
           #
           answer_choice: Card.answer_choice(),
-          card_id: Schema.id(),
           card_type: Card.card_type(),
           due: DateTime.t(),
           ease_factor: float(),
@@ -24,6 +23,8 @@ defmodule Memorex.Cards.CardLog do
           remaining_steps: non_neg_integer(),
           reps: non_neg_integer(),
           time_to_answer: Duration.t(),
+          #
+          card_id: Schema.id(),
           #
           inserted_at: DateTime.t() | nil,
           updated_at: DateTime.t() | nil

@@ -11,6 +11,9 @@ defmodule Memorex.Cards.Card do
   @type card_queue :: :new | :learn | :review | :day_learn | :suspended | :buried
   @type card_type :: :new | :learn | :review | :relearn
 
+  # Not used yet, but perhaps a replacement for card_queue?
+  @type card_status :: :active | :suspended | :buried
+
   @type answer_choice :: :again | :hard | :good | :easy
   @answer_choices [:again, :hard, :good, :easy]
   @spec answer_choices() :: [answer_choice()]
@@ -30,7 +33,7 @@ defmodule Memorex.Cards.Card do
           remaining_steps: non_neg_integer(),
           reps: non_neg_integer(),
           #
-          note_id: Ecto.UUID.t(),
+          note_id: Schema.id(),
           #
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
