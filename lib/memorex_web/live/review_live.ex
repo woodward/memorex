@@ -2,7 +2,7 @@ defmodule MemorexWeb.ReviewLive do
   @moduledoc false
   use MemorexWeb, :live_view
 
-  alias Memorex.{Cards, CardReviewer, Config, DeckStats, Repo, TimeUtils}
+  alias Memorex.{Cards, CardLogs, CardReviewer, Config, DeckStats, Repo, Schema, TimeUtils}
   alias Memorex.Cards.{Card, Deck}
   alias Phoenix.LiveView.JS
 
@@ -11,7 +11,7 @@ defmodule MemorexWeb.ReviewLive do
     ~H"""
     <h1> Deck: <%= @deck.name %> </h1>
 
-    <%= if !@card do %>
+    <%= if !@card || @daily_review_limit_reached? do %>
       <h3> No cards to review </h3>
     <% else %>
 
@@ -104,9 +104,10 @@ defmodule MemorexWeb.ReviewLive do
     {:noreply,
      socket
      |> assign(
-       card: card,
        card_id: card_id,
+       card: card,
        config: config,
+       daily_review_limit_reached?: daily_review_limit_reached?(deck.id, time_now, config.timezone, config.max_reviews_per_day),
        deck_stats: DeckStats.new(deck.id, time_now),
        deck: deck,
        interval_choices: interval_choices,
@@ -138,12 +139,19 @@ defmodule MemorexWeb.ReviewLive do
      socket
      |> assign(
        card: new_card,
+       daily_review_limit_reached?: daily_review_limit_reached?(deck.id, end_time, config.timezone, config.max_reviews_per_day),
        deck_stats: DeckStats.new(deck.id, end_time),
        display: :show_question,
        interval_choices: interval_choices,
        prior_card_log: card_log,
        start_time: end_time
      )}
+  end
+
+  @spec daily_review_limit_reached?(Schema.id(), DateTime.t(), String.t(), non_neg_integer()) :: boolean()
+  def daily_review_limit_reached?(deck_id, time_now, timezone, max_reviews_per_day) do
+    no_of_reviewed_cards = CardLogs.reviews_count_for_day(deck_id, time_now, timezone)
+    no_of_reviewed_cards > max_reviews_per_day
   end
 
   @spec show_debug_info(any()) :: any()
