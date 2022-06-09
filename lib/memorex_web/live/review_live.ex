@@ -2,7 +2,7 @@ defmodule MemorexWeb.ReviewLive do
   @moduledoc false
   use MemorexWeb, :live_view
 
-  alias Memorex.{Cards, CardLogs, CardReviewer, Config, DeckStats, Repo, Schema, TimeUtils}
+  alias Memorex.{Cards, CardLogs, CardReviewer, Config, DeckStats, Repo, TimeUtils}
   alias Memorex.Cards.{Card, Deck}
   alias Phoenix.LiveView.JS
 
@@ -60,6 +60,7 @@ defmodule MemorexWeb.ReviewLive do
             <th> Learn </th>
             <th> Review </th>
             <th> Due </th>
+            <th> Reviewed Today </th>
           </thead>
           <tbody>
             <tr>
@@ -68,6 +69,7 @@ defmodule MemorexWeb.ReviewLive do
               <td> <%= @deck_stats.learn %> </td>
               <td> <%= @deck_stats.review %> </td>
               <td> <%= @deck_stats.due %> </td>
+              <td> <%= @num_of_reviewed_cards %> </td>
             </tr>
           </tbody>
         </table>
@@ -100,6 +102,7 @@ defmodule MemorexWeb.ReviewLive do
     card_id = params["card_id"]
     card = if card_id, do: Cards.get_card!(card_id), else: Cards.get_one_random_due_card(deck.id, time_now)
     interval_choices = if card, do: Cards.get_interval_choices(card, config)
+    num_of_reviewed_cards = CardLogs.reviews_count_for_day(deck.id, time_now, config.timezone)
 
     {:noreply,
      socket
@@ -107,9 +110,10 @@ defmodule MemorexWeb.ReviewLive do
        card_id: card_id,
        card: card,
        config: config,
-       daily_review_limit_reached?: daily_review_limit_reached?(deck.id, time_now, config.timezone, config.max_reviews_per_day),
+       daily_review_limit_reached?: num_of_reviewed_cards > config.max_reviews_per_day,
        deck_stats: DeckStats.new(deck.id, time_now),
        deck: deck,
+       num_of_reviewed_cards: num_of_reviewed_cards,
        interval_choices: interval_choices,
        prior_card_log: nil
      )}
@@ -132,6 +136,7 @@ defmodule MemorexWeb.ReviewLive do
 
     new_card = if card_id, do: card_end_state, else: Cards.get_one_random_due_card(deck.id, end_time)
     interval_choices = if new_card, do: Cards.get_interval_choices(new_card, config)
+    num_of_reviewed_cards = CardLogs.reviews_count_for_day(deck.id, end_time, config.timezone)
 
     Phoenix.PubSub.broadcast_from(Memorex.PubSub, self(), "card:#{new_card.id}", :updated_card)
 
@@ -139,19 +144,14 @@ defmodule MemorexWeb.ReviewLive do
      socket
      |> assign(
        card: new_card,
-       daily_review_limit_reached?: daily_review_limit_reached?(deck.id, end_time, config.timezone, config.max_reviews_per_day),
+       daily_review_limit_reached?: num_of_reviewed_cards > config.max_reviews_per_day,
        deck_stats: DeckStats.new(deck.id, end_time),
        display: :show_question,
        interval_choices: interval_choices,
+       num_of_reviewed_cards: num_of_reviewed_cards,
        prior_card_log: card_log,
        start_time: end_time
      )}
-  end
-
-  @spec daily_review_limit_reached?(Schema.id(), DateTime.t(), String.t(), non_neg_integer()) :: boolean()
-  def daily_review_limit_reached?(deck_id, time_now, timezone, max_reviews_per_day) do
-    no_of_reviewed_cards = CardLogs.reviews_count_for_day(deck_id, time_now, timezone)
-    no_of_reviewed_cards > max_reviews_per_day
   end
 
   @spec show_debug_info(any()) :: any()
