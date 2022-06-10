@@ -86,8 +86,8 @@
         </tr>
         <tr>
           <td> Step </td>
-          <td> <%= @card_log.last_step %> </td>
-          <td> <%= @card_log.current_step %> </td>
+          <td> <%= step(@card_log.last_step) %> </td>
+          <td> <%= step(@card_log.current_step) %> </td>
         </tr>
       </tbody>
     </table>
