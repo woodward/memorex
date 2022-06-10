@@ -67,7 +67,7 @@ defmodule Memorex.Cards do
     |> Repo.all()
     |> Enum.each(fn card ->
       card
-      |> Card.learn_card_to_new_card_changeset(config, time_now)
+      |> Card.new_card_to_learn_card_changeset(config, time_now)
       |> Repo.update!()
     end)
   end

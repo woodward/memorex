@@ -105,8 +105,8 @@ defmodule Memorex.Cards.Card do
     |> cast(%{reps: reps + 1}, [:reps])
   end
 
-  @spec learn_card_to_new_card_changeset(Ecto.Changeset.t() | t(), Config.t(), DateTime.t()) :: Ecto.Changeset.t()
-  def learn_card_to_new_card_changeset(card, config, time_now) do
+  @spec new_card_to_learn_card_changeset(Ecto.Changeset.t() | t(), Config.t(), DateTime.t()) :: Ecto.Changeset.t()
+  def new_card_to_learn_card_changeset(card, config, time_now) do
     updates = %{
       card_queue: :learn,
       card_type: :learn,

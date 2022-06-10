@@ -121,7 +121,7 @@ defmodule Memorex.Cards.CardTest do
     end
   end
 
-  describe "learn_card_to_new_card_changeset/3" do
+  describe "new_card_to_learn_card_changeset/3" do
     test "sets the values based on the config" do
       config = %Config{
         learn_steps: [Duration.parse!("PT2M"), Duration.parse!("PT15M")],
@@ -131,7 +131,7 @@ defmodule Memorex.Cards.CardTest do
       card = %Card{card_type: :new, ease_factor: 2.15, lapses: 2, reps: 33, card_queue: :review}
 
       time_now = ~U[2022-02-01 12:00:00Z]
-      changeset = Card.learn_card_to_new_card_changeset(card, config, time_now)
+      changeset = Card.new_card_to_learn_card_changeset(card, config, time_now)
 
       changes = changeset.changes
 
