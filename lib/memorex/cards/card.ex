@@ -112,7 +112,7 @@ defmodule Memorex.Cards.Card do
       card_type: :learn,
       current_step: 0,
       due: time_now,
-      interval: Duration.parse!("PT0S"),
+      interval: config.learn_steps |> List.first(),
       lapses: 0,
       reps: 0
     }

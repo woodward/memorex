@@ -212,6 +212,55 @@ defmodule Memorex.CardReviewerTest do
       assert card.reps == 4
     end
 
+    test "'test_learn' sequence (matches up with 'test_learn' in anki/pylib/tests/test_schedv2.py" do
+      # Based on:
+      # https://github.com/ankitects/anki/blob/1bab947c9c16f3725076462a702c880a083afe90/pylib/tests/test_schedv2.py#L149
+
+      config = %Config{
+        graduating_interval_good: Duration.parse!("P1D"),
+        learn_steps: [
+          Duration.parse!("PT30S"),
+          Duration.parse!("PT3M"),
+          Duration.parse!("PT10M")
+        ]
+      }
+
+      time_now = ~U[2022-01-01 12:00:00Z]
+      card = %Card{card_type: :new} |> Repo.insert!() |> Card.new_card_to_learn_card_changeset(config, time_now) |> Repo.update!()
+      assert card.card_type == :learn
+      assert card.current_step == 0
+      assert card.due == time_now
+      assert card.interval == Duration.parse!("PT30S")
+
+      card = CardReviewer.answer_card(card, :again, ~U[2022-01-01 12:00:00Z], config)
+      assert card.card_type == :learn
+      assert card.current_step == 0
+      assert card.due == ~U[2022-01-01 12:00:30Z]
+      assert card.interval == Duration.parse!("PT30S")
+
+      card = CardReviewer.answer_card(card, :good, ~U[2022-01-01 12:05:00Z], config)
+      assert card.card_type == :learn
+      assert card.current_step == 1
+      assert card.due == ~U[2022-01-01 12:08:00Z]
+      assert card.interval == Duration.parse!("PT3M")
+
+      card = CardReviewer.answer_card(card, :good, ~U[2022-01-01 12:10:00Z], config)
+      assert card.card_type == :learn
+      assert card.current_step == 2
+      assert card.due == ~U[2022-01-01 12:20:00Z]
+      assert card.interval == Duration.parse!("PT10M")
+
+      card = CardReviewer.answer_card(card, :good, ~U[2022-01-01 12:20:00Z], config)
+      assert card.card_type == :review
+      assert card.current_step == nil
+      assert card.interval == Duration.parse!("P1D")
+
+      # Not sure how to read this line: https://github.com/ankitects/anki/blob/1bab947c9c16f3725076462a702c880a083afe90/pylib/tests/test_schedv2.py#L196
+      # From anki:     assert c.due == col.sched.today + 1
+      # Is this just due on a certain day, but not at a certain time?
+      assert card.due == ~U[2022-01-02 12:20:00Z]
+    end
+
     # ======================== Review Cards ============================================================================
     test "review card - answer :again" do
       config = %Config{ease_again: -0.2, relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")], lapse_multiplier: 0.0}
