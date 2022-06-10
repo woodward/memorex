@@ -22,15 +22,15 @@ defmodule Memorex.Cards do
   end
 
   # Not currently in use
-  @spec update_new_cards_to_learn_cards(Ecto.Queryable.t(), Config.t(), DateTime.t(), Keyword.t()) :: :ok
-  def update_new_cards_to_learn_cards(queryable, config, time_now, opts \\ []) do
+  @spec update_new_cards_to_learn_cards(Ecto.Queryable.t(), DateTime.t(), Keyword.t()) :: :ok
+  def update_new_cards_to_learn_cards(queryable, time_now, opts \\ []) do
     updates = [
       card_queue: :learn,
       card_type: :learn,
       due: time_now,
       interval: Duration.parse!("PT0S"),
       lapses: 0,
-      remaining_steps: length(config.learn_steps),
+      current_step: 0,
       reps: 0
     ]
 

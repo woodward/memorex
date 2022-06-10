@@ -42,8 +42,8 @@
         <td> <%= format_datetime(@card.due) %> </td>
       </tr>
       <tr>
-        <td> Remaining Steps </td>
-        <td> <%=@card.remaining_steps %> </td>
+        <td> Current Step </td>
+        <td> <%=@card.current_step %> </td>
       </tr>
     <% end %>
     
@@ -85,9 +85,9 @@
           <td> <%= format_datetime(@card_log.due) %> </td>
         </tr>
         <tr>
-          <td> Remaining steps </td>
-          <td> <%= @card_log.last_remaining_steps %> </td>
-          <td> <%= @card_log.remaining_steps %> </td>
+          <td> Step </td>
+          <td> <%= @card_log.last_step %> </td>
+          <td> <%= @card_log.current_step %> </td>
         </tr>
       </tbody>
     </table>

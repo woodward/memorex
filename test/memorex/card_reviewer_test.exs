@@ -89,7 +89,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.due == ~U[2022-01-01 12:14:00Z]
       assert card.ease_factor == 2.5
       assert card.interval == Duration.parse!("PT10M")
-      assert card.remaining_steps == nil
+      assert card.current_step == nil
       assert card.reps == 4
     end
   end
@@ -107,7 +107,7 @@ defmodule Memorex.CardReviewerTest do
           ease_factor: nil,
           interval: Duration.parse!("PT1M"),
           lapses: 0,
-          remaining_steps: 2,
+          current_step: 2,
           reps: 3
         }
         |> Repo.insert!()
@@ -120,7 +120,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.ease_factor == nil
       assert card.interval == Duration.parse!("PT1M")
       assert card.lapses == 0
-      assert card.remaining_steps == 2
+      assert card.current_step == 0
       assert card.reps == 4
     end
 
@@ -135,7 +135,7 @@ defmodule Memorex.CardReviewerTest do
           ease_factor: nil,
           interval: Duration.parse!("PT1M"),
           lapses: 0,
-          remaining_steps: 2,
+          current_step: 2,
           reps: 3
         }
         |> Repo.insert!()
@@ -148,7 +148,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.ease_factor == nil
       assert card.interval == Duration.parse!("PT1M")
       assert card.lapses == 0
-      assert card.remaining_steps == 2
+      assert card.current_step == 2
       assert card.reps == 4
     end
 
@@ -163,7 +163,7 @@ defmodule Memorex.CardReviewerTest do
           ease_factor: nil,
           interval: Duration.parse!("PT1M"),
           lapses: 0,
-          remaining_steps: 2,
+          current_step: 0,
           reps: 3
         }
         |> Repo.insert!()
@@ -176,12 +176,16 @@ defmodule Memorex.CardReviewerTest do
       assert card.ease_factor == nil
       assert card.interval == Duration.parse!("PT15M")
       assert card.lapses == 0
-      assert card.remaining_steps == 1
+      assert card.current_step == 1
       assert card.reps == 4
     end
 
     test "learn card - answer :good - become a review card" do
-      config = %Config{initial_ease: 2.5, graduating_interval_good: Duration.parse!("P1D")}
+      config = %Config{
+        initial_ease: 2.5,
+        graduating_interval_good: Duration.parse!("P1D"),
+        learn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")]
+      }
 
       card =
         %Card{
@@ -191,7 +195,7 @@ defmodule Memorex.CardReviewerTest do
           ease_factor: nil,
           interval: Duration.parse!("PT10M"),
           lapses: 0,
-          remaining_steps: 1,
+          current_step: 1,
           reps: 3
         }
         |> Repo.insert!()
@@ -204,7 +208,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.ease_factor == 2.5
       assert card.interval == Duration.parse!("P1D")
       assert card.lapses == 0
-      assert card.remaining_steps == 0
+      assert card.current_step == nil
       assert card.reps == 4
     end
 
@@ -220,7 +224,7 @@ defmodule Memorex.CardReviewerTest do
           ease_factor: 2.5,
           interval: Duration.parse!("PT10M"),
           lapses: 0,
-          remaining_steps: 1,
+          current_step: 1,
           reps: 3
         }
         |> Repo.insert!()
@@ -233,7 +237,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.ease_factor == 2.3
       assert card.interval == Duration.parse!("PT0S")
       assert card.lapses == 1
-      assert card.remaining_steps == 2
+      assert card.current_step == 0
       assert card.reps == 4
     end
 
@@ -248,7 +252,7 @@ defmodule Memorex.CardReviewerTest do
           ease_factor: 2.5,
           interval: Duration.parse!("P1D"),
           lapses: 0,
-          remaining_steps: 0,
+          current_step: 0,
           reps: 3
         }
         |> Repo.insert!()
@@ -261,7 +265,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.ease_factor == 2.35
       assert card.interval == Duration.parse!("P3DT7H12M")
       assert card.lapses == 0
-      assert card.remaining_steps == 0
+      assert card.current_step == 0
       assert card.reps == 4
     end
 
@@ -276,7 +280,7 @@ defmodule Memorex.CardReviewerTest do
           ease_factor: 2.5,
           interval: Duration.parse!("P1D"),
           lapses: 0,
-          remaining_steps: 0,
+          current_step: 0,
           reps: 3
         }
         |> Repo.insert!()
@@ -289,7 +293,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.ease_factor == 2.6
       assert card.interval == Duration.parse!("P2DT18H")
       assert card.lapses == 0
-      assert card.remaining_steps == 0
+      assert card.current_step == 0
       assert card.reps == 4
     end
 
@@ -304,7 +308,7 @@ defmodule Memorex.CardReviewerTest do
           ease_factor: 2.5,
           interval: Duration.parse!("P1D"),
           lapses: 0,
-          remaining_steps: 0,
+          current_step: 0,
           reps: 3
         }
         |> Repo.insert!()
@@ -317,7 +321,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.ease_factor == 2.65
       assert card.interval == Duration.parse!("P3DT13H48M")
       assert card.lapses == 0
-      assert card.remaining_steps == 0
+      assert card.current_step == 0
       assert card.reps == 4
     end
 
@@ -333,7 +337,7 @@ defmodule Memorex.CardReviewerTest do
           ease_factor: 2.5,
           interval: Duration.parse!("PT10M"),
           lapses: 0,
-          remaining_steps: 1,
+          current_step: 1,
           reps: 3
         }
         |> Repo.insert!()
@@ -346,7 +350,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.ease_factor == 2.5
       assert card.interval == Duration.parse!("PT10M")
       assert card.lapses == 0
-      assert card.remaining_steps == 2
+      assert card.current_step == 0
       assert card.reps == 4
     end
 
@@ -361,7 +365,7 @@ defmodule Memorex.CardReviewerTest do
           ease_factor: 2.5,
           interval: Duration.parse!("PT10M"),
           lapses: 0,
-          remaining_steps: 1,
+          current_step: 1,
           reps: 3
         }
         |> Repo.insert!()
@@ -374,7 +378,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.ease_factor == 2.5
       assert card.interval == Duration.parse!("PT10M")
       assert card.lapses == 0
-      assert card.remaining_steps == 1
+      assert card.current_step == 1
       assert card.reps == 4
     end
 
@@ -389,7 +393,7 @@ defmodule Memorex.CardReviewerTest do
           ease_factor: 2.5,
           interval: Duration.parse!("PT10M"),
           lapses: 0,
-          remaining_steps: 1,
+          current_step: 1,
           reps: 3
         }
         |> Repo.insert!()
@@ -402,7 +406,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.ease_factor == 2.5
       assert card.interval == Duration.parse!("P1D")
       assert card.lapses == 0
-      assert card.remaining_steps == 0
+      assert card.current_step == nil
       assert card.reps == 4
     end
 
@@ -421,7 +425,7 @@ defmodule Memorex.CardReviewerTest do
           ease_factor: 2.5,
           interval: Duration.parse!("PT10M"),
           lapses: 0,
-          remaining_steps: 1,
+          current_step: 1,
           reps: 3
         }
         |> Repo.insert!()
@@ -434,7 +438,7 @@ defmodule Memorex.CardReviewerTest do
       assert card.ease_factor == 2.5
       assert card.interval == Duration.parse!("P2D")
       assert card.lapses == 0
-      assert card.remaining_steps == 0
+      assert card.current_step == nil
       assert card.reps == 4
     end
   end

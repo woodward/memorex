@@ -22,13 +22,13 @@ defmodule Memorex.Repo.Migrations.CreateSchema do
     create table("cards") do
       add :card_queue, :text
       add :card_type, :text
+      add :current_step, :integer
       add :due, :utc_datetime
       add :ease_factor, :float
       add :interval, :integer
       add :lapses, :integer
       add :note_answer_index, :integer
       add :note_question_index, :integer
-      add :remaining_steps, :integer
       add :reps, :integer
 
       add :note_id, references(:notes, on_delete: :delete_all)
@@ -39,6 +39,7 @@ defmodule Memorex.Repo.Migrations.CreateSchema do
     create table("card_logs") do
       add :answer_choice, :text
       add :card_type, :text
+      add :current_step, :integer
       add :due, :utc_datetime
       add :ease_factor, :float
       add :interval, :integer, null: false
@@ -46,8 +47,7 @@ defmodule Memorex.Repo.Migrations.CreateSchema do
       add :last_due, :utc_datetime
       add :last_ease_factor, :float
       add :last_interval, :integer, null: false
-      add :last_remaining_steps, :integer
-      add :remaining_steps, :integer
+      add :last_step, :integer
       add :reps, :integer
       add :time_to_answer, :integer, null: false
 

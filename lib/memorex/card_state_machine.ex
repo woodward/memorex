@@ -9,22 +9,23 @@ defmodule Memorex.CardStateMachine do
 
   # --------------- Learn Cards ----------------------------------------------------------------------------------------
 
-  def answer_card(%Card{card_type: :learn} = _card, :again, config) do
-    %{remaining_steps: length(config.learn_steps)}
+  def answer_card(%Card{card_type: :learn} = _card, :again, _config) do
+    %{current_step: 0}
   end
 
   def answer_card(%Card{card_type: :learn} = _card, :hard, _config) do
     %{}
   end
 
-  def answer_card(%Card{card_type: :learn, remaining_steps: 1} = _card, :good, config) do
-    %{card_type: :review, remaining_steps: 0, ease_factor: config.initial_ease, interval: config.graduating_interval_good}
-  end
-
   def answer_card(%Card{card_type: :learn} = card, :good, config) do
-    remaining_steps = card.remaining_steps - 1
-    {interval, _rest} = config.learn_steps |> Enum.reverse() |> List.pop_at(remaining_steps - 1)
-    %{remaining_steps: remaining_steps, interval: interval}
+    current_step = card.current_step + 1
+
+    if current_step >= length(config.learn_steps) do
+      %{card_type: :review, current_step: nil, ease_factor: config.initial_ease, interval: config.graduating_interval_good}
+    else
+      {interval, _rest} = config.learn_steps |> List.pop_at(current_step)
+      %{current_step: current_step, interval: interval}
+    end
   end
 
   def answer_card(%Card{card_type: :learn} = _card, :easy, config) do
@@ -38,9 +39,8 @@ defmodule Memorex.CardStateMachine do
     # Or should interval = first relearn step???
 
     ease_factor = card.ease_factor + config.ease_again
-    remaining_steps = length(config.relearn_steps)
     lapses = card.lapses + 1
-    %{card_type: :relearn, lapses: lapses, ease_factor: ease_factor, remaining_steps: remaining_steps, interval: interval}
+    %{card_type: :relearn, lapses: lapses, ease_factor: ease_factor, current_step: 0, interval: interval}
   end
 
   def answer_card(%Card{card_type: :review} = card, :hard, config) do
@@ -66,28 +66,28 @@ defmodule Memorex.CardStateMachine do
 
   # --------------- Re-Learn Cards -------------------------------------------------------------------------------------
 
-  def answer_card(%Card{card_type: :relearn} = _card, :again, config) do
-    %{remaining_steps: length(config.relearn_steps)}
+  def answer_card(%Card{card_type: :relearn} = _card, :again, _config) do
+    %{current_step: 0}
   end
 
   def answer_card(%Card{card_type: :relearn} = _card, :hard, _config) do
     %{}
   end
 
-  def answer_card(%Card{card_type: :relearn, remaining_steps: 1} = _card, :good, config) do
-    %{card_type: :review, interval: config.min_review_interval, remaining_steps: 0}
-  end
-
   def answer_card(%Card{card_type: :relearn} = card, :good, config) do
-    remaining_steps = card.remaining_steps - 1
-    {interval, _rest} = config.relearn_steps |> Enum.reverse() |> List.pop_at(remaining_steps - 1)
+    current_step = card.current_step + 1
 
-    %{remaining_steps: remaining_steps, interval: interval}
+    if current_step >= length(config.relearn_steps) do
+      %{card_type: :review, interval: config.min_review_interval, current_step: nil}
+    else
+      {interval, _rest} = config.relearn_steps |> List.pop_at(current_step)
+      %{current_step: current_step, interval: interval}
+    end
   end
 
   def answer_card(%Card{card_type: :relearn} = _card, :easy, config) do
     interval = Duration.add(config.min_review_interval, config.relearn_easy_adj)
-    %{card_type: :review, interval: interval, remaining_steps: 0}
+    %{card_type: :review, interval: interval, current_step: nil}
   end
 
   # --------------- Utilities ------------------------------------------------------------------------------------------

@@ -150,8 +150,8 @@ defmodule Memorex.CardLogsTest do
       last_due: ~U[2022-01-01 12:00:00Z],
       last_ease_factor: 2.4,
       last_interval: Duration.parse!("PT5M"),
-      last_remaining_steps: 2,
-      remaining_steps: 1,
+      last_step: 2,
+      current_step: 1,
       reps: 4,
       time_to_answer: Duration.parse!("PT30S"),
       card: card

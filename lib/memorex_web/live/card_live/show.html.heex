@@ -11,7 +11,7 @@
     <th> Due </th>
     <th> Interval </th>
     <th> Ease Factor </th>
-    <th> Remaining Steps </th>
+    <th> Current Step </th>
     <th> Reps </th>
   </thead>
   <tbody>
@@ -24,7 +24,7 @@
         <td> <%= format_iso_datetime(card_log.due) %> </td>
         <td> <%= format(card_log.interval) %> </td>
         <td> <%= ease_factor(card_log.ease_factor) %> </td>
-        <td> <%= card_log.remaining_steps %> </td>
+        <td> <%= card_log.current_step %> </td>
         <td> <%= card_log.reps %> </td>
       </tr>
     <% end %>

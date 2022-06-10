@@ -16,7 +16,7 @@ defmodule Memorex.Cards.CardLogTest do
       interval: Duration.parse!("PT33S"),
       ease_factor: 2.5,
       due: ~U[2022-01-01 12:00:00Z],
-      remaining_steps: 3
+      current_step: 3
     }
 
     card_after = %Card{
@@ -25,7 +25,7 @@ defmodule Memorex.Cards.CardLogTest do
       interval: Duration.parse!("PT47S"),
       ease_factor: 2.4,
       due: ~U[2022-01-01 12:02:00Z],
-      remaining_steps: 2,
+      current_step: 2,
       reps: 5
     }
 
@@ -44,8 +44,8 @@ defmodule Memorex.Cards.CardLogTest do
     assert card_log.due == ~U[2022-01-01 12:02:00Z]
     assert card_log.last_ease_factor == 2.5
     assert card_log.ease_factor == 2.4
-    assert card_log.last_remaining_steps == 3
-    assert card_log.remaining_steps == 2
+    assert card_log.last_step == 3
+    assert card_log.current_step == 2
     assert card_log.reps == 5
   end
 

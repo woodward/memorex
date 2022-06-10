@@ -24,13 +24,13 @@ defmodule Memorex.Cards.Card do
           #
           card_queue: card_queue(),
           card_type: card_type(),
+          current_step: non_neg_integer(),
           due: DateTime.t(),
           ease_factor: float(),
           interval: Duration.t(),
           lapses: non_neg_integer(),
           note_answer_index: non_neg_integer(),
           note_question_index: non_neg_integer(),
-          remaining_steps: non_neg_integer(),
           reps: non_neg_integer(),
           #
           note_id: Schema.id(),
@@ -42,13 +42,13 @@ defmodule Memorex.Cards.Card do
   schema "cards" do
     field :card_queue, Ecto.Enum, values: [:new, :learn, :review, :day_learn, :suspended, :buried], default: :new
     field :card_type, Ecto.Enum, values: [:new, :learn, :review, :relearn], default: :new
+    field :current_step, :integer
     field :due, :utc_datetime
     field :ease_factor, :float
     field :interval, EctoTimexDuration
     field :lapses, :integer
     field :note_answer_index, :integer
     field :note_question_index, :integer
-    field :remaining_steps, :integer
     field :reps, :integer
 
     belongs_to :note, Note
@@ -70,13 +70,13 @@ defmodule Memorex.Cards.Card do
     |> cast(params, [
       :card_queue,
       :card_type,
+      :current_step,
       :due,
       :ease_factor,
       :interval,
       :lapses,
       :note_answer_index,
       :note_question_index,
-      :remaining_steps,
       :reps
     ])
   end
@@ -110,10 +110,10 @@ defmodule Memorex.Cards.Card do
     updates = %{
       card_queue: :learn,
       card_type: :learn,
+      current_step: 0,
       due: time_now,
       interval: Duration.parse!("PT0S"),
       lapses: 0,
-      remaining_steps: length(config.learn_steps),
       reps: 0
     }
 

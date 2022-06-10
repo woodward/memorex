@@ -58,7 +58,7 @@ defmodule Memorex.Cards.CardTest do
       ease_factor: 2.5,
       interval: Duration.parse!("PT33S"),
       lapses: 2,
-      remaining_steps: 7
+      current_step: 7
     }
 
     card_changeset =
@@ -71,7 +71,7 @@ defmodule Memorex.Cards.CardTest do
         lapses: 3,
         note_answer_index: 3,
         note_question_index: 4,
-        remaining_steps: 2,
+        current_step: 2,
         reps: 36
       })
 
@@ -85,7 +85,7 @@ defmodule Memorex.Cards.CardTest do
     assert changes.lapses == 3
     assert changes.note_answer_index == 3
     assert changes.note_question_index == 4
-    assert changes.remaining_steps == 2
+    assert changes.current_step == 2
     assert changes.reps == 36
   end
 
@@ -135,7 +135,7 @@ defmodule Memorex.Cards.CardTest do
 
       changes = changeset.changes
 
-      assert changes.remaining_steps == 2
+      assert changes.current_step == 0
       assert changes.card_type == :learn
       assert changes.card_queue == :learn
       assert changes.lapses == 0
