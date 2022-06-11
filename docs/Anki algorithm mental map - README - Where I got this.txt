@@ -23,3 +23,8 @@ interval = interval * card.ease_factor * config.interval_multiplier * config.eas
 
 From the Anki code:
 interval = (interval + (time.now - card.due)) * card.ease_factor * config.interval_multiplier * config.easy_multiplier
+
+---------------------------------
+
+This is explained here:
+https://faqs.ankiweb.net/due-times-after-a-break.html
