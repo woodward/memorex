@@ -119,25 +119,23 @@ defmodule Memorex.CardStateMachineTest do
     end
 
     test "answer: 'easy'" do
-      config = %Config{interval_multiplier: 1.1, easy_multiplier: 1.3, ease_easy: 0.2, max_review_interval: Duration.parse!("P100Y")}
-      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
-      unused_time_now = ~U[2022-01-01 12:00:00Z]
+      # Based on:
+      # https://github.com/ankitects/anki/blob/fbb0d909354b53e602151206dab442e92969b3a8/pylib/tests/test_schedv2.py#L406
+      config = %Config{interval_multiplier: 1.0, easy_multiplier: 1.3, ease_easy: 0.15, max_review_interval: Duration.parse!("P100Y")}
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P100D"), due: ~U[2021-12-24 12:00:00Z]}
+      time_now = ~U[2022-01-01 12:00:00Z]
 
-      changes = CardStateMachine.answer_card(card, :easy, config, unused_time_now)
-      scale = 2.5 * 1.1 * 1.3
-      new_interval = Duration.parse!("P4D") |> Timex.Duration.scale(scale)
-
-      assert changes == %{ease_factor: 2.7, interval: new_interval}
+      changes = CardStateMachine.answer_card(card, :easy, config, time_now)
+      assert changes == %{ease_factor: 2.65, interval: Duration.parse!("P351D")}
     end
 
-    test "answer: 'easy' - interval stays below max_interval" do
-      config = %Config{interval_multiplier: 1.1, easy_multiplier: 1.3, ease_easy: 0.2, max_review_interval: Duration.parse!("P1M")}
-      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P15D")}
-      unused_time_now = ~U[2022-01-01 12:00:00Z]
+    test "answer: 'easy' - interval is capped by max interval" do
+      config = %Config{interval_multiplier: 1.0, easy_multiplier: 1.3, ease_easy: 0.15, max_review_interval: Duration.parse!("P5D")}
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P100D"), due: ~U[2021-12-24 12:00:00Z]}
+      time_now = ~U[2022-01-01 12:00:00Z]
 
-      changes = CardStateMachine.answer_card(card, :easy, config, unused_time_now)
-
-      assert changes == %{ease_factor: 2.7, interval: Duration.parse!("P1M")}
+      changes = CardStateMachine.answer_card(card, :easy, config, time_now)
+      assert changes == %{ease_factor: 2.65, interval: Duration.parse!("P5D")}
     end
   end
 

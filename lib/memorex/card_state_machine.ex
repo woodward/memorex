@@ -64,10 +64,16 @@ defmodule Memorex.CardStateMachine do
     %{ease_factor: ease_factor, interval: interval}
   end
 
-  def answer_card(%Card{card_type: :review} = card, :easy, config, _time_now) do
+  def answer_card(%Card{card_type: :review} = card, :easy, config, time_now) do
+    gap_between_due_and_now = Timex.diff(time_now, card.due, :duration)
     scale = card.ease_factor * config.interval_multiplier * config.easy_multiplier
     ease_factor = card.ease_factor + config.ease_easy
-    interval = Duration.scale(card.interval, scale) |> cap_duration(config.max_review_interval)
+
+    interval =
+      Duration.add(card.interval, gap_between_due_and_now)
+      |> Duration.scale(scale)
+      |> cap_duration(config.max_review_interval)
+
     %{ease_factor: ease_factor, interval: interval}
   end
 

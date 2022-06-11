@@ -586,7 +586,6 @@ defmodule Memorex.CardReviewerTest do
       assert card.reps == 4
     end
 
-    @tag :skip
     test "answer :easy", %{time_now: time_now, config: config, card: card} do
       # https://github.com/ankitects/anki/blob/fbb0d909354b53e602151206dab442e92969b3a8/pylib/tests/test_schedv2.py#L406
       card = CardReviewer.answer_card(card, :easy, time_now, config)
