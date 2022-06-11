@@ -169,68 +169,8 @@ def test_newBoxes():
     col.decks.save(conf)
     col.sched.answerCard(c, 2)
 
-
-def test_learn():
-    col = getEmptyCol()
-    # add a note
-    note = col.newNote()
-    note["Front"] = "one"
-    note["Back"] = "two"
-    col.addNote(note)
-    # set as a new card and rebuild queues
-    col.db.execute(f"update cards set queue={QUEUE_TYPE_NEW}, type={CARD_TYPE_NEW}")
-    col.reset()
-    # sched.getCard should return it, since it's due in the past
-    c = col.sched.getCard()
-    assert c
-    conf = col.sched._cardConf(c)
-    conf["new"]["delays"] = [0.5, 3, 10]
-    col.decks.save(conf)
-    # fail it
-    col.sched.answerCard(c, 1)
-    # it should have three reps left to graduation
-    assert c.left % 1000 == 3
-    # it should be due in 30 seconds
-    t = round(c.due - time.time())
-    assert t >= 25 and t <= 40
-    # pass it once
-    col.sched.answerCard(c, 3)
-    # it should be due in 3 minutes
-    dueIn = c.due - time.time()
-    assert 178 <= dueIn <= 180 * 1.25
-    assert c.left % 1000 == 2
-    # check log is accurate
-    log = col.db.first("select * from revlog order by id desc")
-    assert log[3] == 3
-    assert log[4] == -180
-    assert log[5] == -30
-    # pass again
-    col.sched.answerCard(c, 3)
-    # it should be due in 10 minutes
-    dueIn = c.due - time.time()
-    assert 599 <= dueIn <= 600 * 1.25
-    assert c.left % 1000 == 1
-    # the next pass should graduate the card
-    assert c.queue == QUEUE_TYPE_LRN
-    assert c.type == CARD_TYPE_LRN
-    col.sched.answerCard(c, 3)
-    assert c.queue == QUEUE_TYPE_REV
-    assert c.type == CARD_TYPE_REV
-    # should be due tomorrow, with an interval of 1
-    assert c.due == col.sched.today + 1
-    assert c.ivl == 1
-    # or normal removal
-    c.type = CARD_TYPE_NEW
-    c.queue = QUEUE_TYPE_LRN
-    c.flush()
-    col.sched.reset()
-    col.sched.answerCard(c, 4)
-    assert c.type == CARD_TYPE_REV
-    assert c.queue == QUEUE_TYPE_REV
-    checkRevIvl(col, c, 4)
-    # revlog should have been updated each time
-    assert col.db.scalar("select count() from revlog where type = 0") == 5
-
+# def test_learn():
+# # Implemented!
 
 def test_relearn():
     col = getEmptyCol()
