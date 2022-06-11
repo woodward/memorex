@@ -503,5 +503,55 @@ defmodule Memorex.CardReviewerTest do
       # Is this just due on a certain day, but not at a certain time?
       assert card.due == ~U[2022-01-02 12:20:00Z]
     end
+
+    test "'test_reviews' sequence (matches up with 'test_reviews' in anki/pylib/tests/test_schedv2.py" do
+      # Based on:
+      # https://github.com/ankitects/anki/blob/1bab947c9c16f3725076462a702c880a083afe90/pylib/tests/test_schedv2.py#L359
+
+      config = %Config{
+        ease_again: -0.2,
+        ease_hard: -0.15,
+        ease_good: 0.0,
+        ease_easy: 0.15,
+        #
+        easy_multiplier: 1.3,
+        hard_multiplier: 1.2,
+        lapse_multiplier: 0.0,
+        interval_multiplier: 1.0,
+        #
+        max_review_interval: Duration.parse!("P100Y"),
+        min_review_interval: Duration.parse!("P1D")
+      }
+
+      time_now = ~U[2022-01-01 12:00:00Z]
+
+      card =
+        %Card{
+          card_type: :review,
+          due: time_now,
+          interval: Duration.parse!("P100D"),
+          reps: 3,
+          ease_factor: 2.5,
+          lapses: 1
+        }
+        |> Repo.insert!()
+
+      assert card.card_type == :review
+      assert card.current_step == nil
+      assert card.due == time_now
+      assert card.ease_factor == 2.5
+      assert card.interval == Duration.parse!("P100D")
+      assert card.lapses == 1
+      assert card.reps == 3
+
+      card = CardReviewer.answer_card(card, :hard, time_now, config)
+      assert card.card_type == :review
+      assert card.current_step == nil
+      assert card.due == ~U[2022-10-28 12:00:00Z]
+      assert card.ease_factor == 2.35
+      assert card.interval == Duration.parse!("P10M")
+      assert card.lapses == 1
+      assert card.reps == 4
+    end
   end
 end
