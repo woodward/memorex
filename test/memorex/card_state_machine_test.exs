@@ -75,7 +75,7 @@ defmodule Memorex.CardStateMachineTest do
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
 
       changes = CardStateMachine.answer_card(card, :hard, config)
-      scale = 2.5 * 1.1 * 1.25
+      scale = 1.1 * 1.25
       new_interval = Duration.parse!("P4D") |> Timex.Duration.scale(scale)
 
       assert changes == %{ease_factor: 2.25, interval: new_interval}

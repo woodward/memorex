@@ -44,7 +44,7 @@ defmodule Memorex.CardStateMachine do
   end
 
   def answer_card(%Card{card_type: :review} = card, :hard, config) do
-    scale = card.ease_factor * config.hard_multiplier * config.interval_multiplier
+    scale = config.hard_multiplier * config.interval_multiplier
     ease_factor = card.ease_factor + config.ease_hard
     interval = Duration.scale(card.interval, scale) |> cap_duration(config.max_review_interval)
     %{ease_factor: ease_factor, interval: interval}

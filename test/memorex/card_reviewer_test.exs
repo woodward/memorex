@@ -261,9 +261,9 @@ defmodule Memorex.CardReviewerTest do
 
       # assert card.card_queue == :review
       assert card.card_type == :review
-      assert card.due == ~U[2022-01-04 19:12:00Z]
+      assert card.due == ~U[2022-01-02 19:40:48Z]
       assert card.ease_factor == 2.35
-      assert card.interval == Duration.parse!("P3DT7H12M")
+      assert card.interval == Duration.parse!("P1DT7H40M48S")
       assert card.lapses == 0
       assert card.current_step == 0
       assert card.reps == 4
@@ -443,7 +443,7 @@ defmodule Memorex.CardReviewerTest do
     end
   end
 
-  describe "tests from anki" do
+  describe "tests from anki - learn" do
     test "'test_learn' sequence (matches up with 'test_learn' in anki/pylib/tests/test_schedv2.py" do
       # Based on:
       # https://github.com/ankitects/anki/blob/1bab947c9c16f3725076462a702c880a083afe90/pylib/tests/test_schedv2.py#L149
@@ -503,11 +503,12 @@ defmodule Memorex.CardReviewerTest do
       # Is this just due on a certain day, but not at a certain time?
       assert card.due == ~U[2022-01-02 12:20:00Z]
     end
+  end
 
-    test "'test_reviews' sequence (matches up with 'test_reviews' in anki/pylib/tests/test_schedv2.py" do
-      # Based on:
-      # https://github.com/ankitects/anki/blob/1bab947c9c16f3725076462a702c880a083afe90/pylib/tests/test_schedv2.py#L359
-
+  describe "tests from anki - reviews - 'test_reviews' sequence (matches up with 'test_reviews' in anki/pylib/tests/test_schedv2.py" do
+    # Based on:
+    # https://github.com/ankitects/anki/blob/1bab947c9c16f3725076462a702c880a083afe90/pylib/tests/test_schedv2.py#L359
+    setup do
       config = %Config{
         ease_again: -0.2,
         ease_hard: -0.15,
@@ -544,12 +545,30 @@ defmodule Memorex.CardReviewerTest do
       assert card.lapses == 1
       assert card.reps == 3
 
+      [time_now: time_now, config: config, card: card]
+    end
+
+    test "answer :hard", %{time_now: time_now, config: config, card: card} do
       card = CardReviewer.answer_card(card, :hard, time_now, config)
       assert card.card_type == :review
       assert card.current_step == nil
-      assert card.due == ~U[2022-10-28 12:00:00Z]
+      # https://www.convertunits.com/dates/120/daysfrom/Jan+1,+2021
+      assert card.due == ~U[2022-05-01 12:00:00Z]
       assert card.ease_factor == 2.35
-      assert card.interval == Duration.parse!("P10M")
+      assert card.interval == Duration.parse!("P120D")
+      assert card.lapses == 1
+      assert card.reps == 4
+    end
+
+    @tag :skip
+    test "answer :good", %{time_now: time_now, config: config, card: card} do
+      card = CardReviewer.answer_card(card, :good, time_now, config)
+      assert card.card_type == :review
+      assert card.current_step == nil
+      # https://www.convertunits.com/dates/260/daysfrom/Jan+1,+2021
+      # assert card.due == ~U[2022-09-18 12:00:00Z]
+      assert card.ease_factor == 2.50
+      # assert card.interval == Duration.parse!("P260D")
       assert card.lapses == 1
       assert card.reps == 4
     end
