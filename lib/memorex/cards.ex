@@ -119,11 +119,11 @@ defmodule Memorex.Cards do
     |> Repo.aggregate(:count, :id)
   end
 
-  @spec get_interval_choices(Card.t(), Config.t()) :: [{Card.answer_choice(), Duration.t()}]
-  def get_interval_choices(card, config) do
+  @spec get_interval_choices(Card.t(), Config.t(), DateTime.t()) :: [{Card.answer_choice(), Duration.t()}]
+  def get_interval_choices(card, config, time_now) do
     Card.answer_choices()
     |> Enum.map(fn answer ->
-      changes = CardStateMachine.answer_card(card, answer, config)
+      changes = CardStateMachine.answer_card(card, answer, config, time_now)
       interval = card |> Card.changeset(changes) |> Ecto.Changeset.get_field(:interval)
       {answer, interval}
     end)

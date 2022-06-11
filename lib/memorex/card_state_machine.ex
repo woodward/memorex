@@ -5,19 +5,19 @@ defmodule Memorex.CardStateMachine do
   alias Memorex.Config
   alias Timex.Duration
 
-  @spec answer_card(Card.t(), Card.answer_choice(), Config.t()) :: map()
+  @spec answer_card(Card.t(), Card.answer_choice(), Config.t(), DateTime.t()) :: map()
 
   # --------------- Learn Cards ----------------------------------------------------------------------------------------
 
-  def answer_card(%Card{card_type: :learn} = _card, :again, _config) do
+  def answer_card(%Card{card_type: :learn} = _card, :again, _config, _time_now) do
     %{current_step: 0}
   end
 
-  def answer_card(%Card{card_type: :learn} = _card, :hard, _config) do
+  def answer_card(%Card{card_type: :learn} = _card, :hard, _config, _time_now) do
     %{}
   end
 
-  def answer_card(%Card{card_type: :learn} = card, :good, config) do
+  def answer_card(%Card{card_type: :learn} = card, :good, config, _time_now) do
     current_step = card.current_step + 1
 
     if current_step >= length(config.learn_steps) do
@@ -28,13 +28,13 @@ defmodule Memorex.CardStateMachine do
     end
   end
 
-  def answer_card(%Card{card_type: :learn} = _card, :easy, config) do
+  def answer_card(%Card{card_type: :learn} = _card, :easy, config, _time_now) do
     %{card_type: :review, ease_factor: config.initial_ease, interval: config.graduating_interval_easy}
   end
 
   # --------------- Review Cards ---------------------------------------------------------------------------------------
 
-  def answer_card(%Card{card_type: :review} = card, :again, config) do
+  def answer_card(%Card{card_type: :review} = card, :again, config, _time_now) do
     interval = Duration.scale(card.interval, config.lapse_multiplier)
     # Or should interval = first relearn step???
 
@@ -43,21 +43,21 @@ defmodule Memorex.CardStateMachine do
     %{card_type: :relearn, lapses: lapses, ease_factor: ease_factor, current_step: 0, interval: interval}
   end
 
-  def answer_card(%Card{card_type: :review} = card, :hard, config) do
+  def answer_card(%Card{card_type: :review} = card, :hard, config, _time_now) do
     scale = config.hard_multiplier * config.interval_multiplier
     ease_factor = card.ease_factor + config.ease_hard
     interval = Duration.scale(card.interval, scale) |> cap_duration(config.max_review_interval)
     %{ease_factor: ease_factor, interval: interval}
   end
 
-  def answer_card(%Card{card_type: :review} = card, :good, config) do
+  def answer_card(%Card{card_type: :review} = card, :good, config, _time_now) do
     scale = card.ease_factor * config.interval_multiplier
     ease_factor = card.ease_factor + config.ease_good
     interval = Duration.scale(card.interval, scale) |> cap_duration(config.max_review_interval)
     %{ease_factor: ease_factor, interval: interval}
   end
 
-  def answer_card(%Card{card_type: :review} = card, :easy, config) do
+  def answer_card(%Card{card_type: :review} = card, :easy, config, _time_now) do
     scale = card.ease_factor * config.interval_multiplier * config.easy_multiplier
     ease_factor = card.ease_factor + config.ease_easy
     interval = Duration.scale(card.interval, scale) |> cap_duration(config.max_review_interval)
@@ -66,15 +66,15 @@ defmodule Memorex.CardStateMachine do
 
   # --------------- Re-Learn Cards -------------------------------------------------------------------------------------
 
-  def answer_card(%Card{card_type: :relearn} = _card, :again, _config) do
+  def answer_card(%Card{card_type: :relearn} = _card, :again, _config, _time_now) do
     %{current_step: 0}
   end
 
-  def answer_card(%Card{card_type: :relearn} = _card, :hard, _config) do
+  def answer_card(%Card{card_type: :relearn} = _card, :hard, _config, _time_now) do
     %{}
   end
 
-  def answer_card(%Card{card_type: :relearn} = card, :good, config) do
+  def answer_card(%Card{card_type: :relearn} = card, :good, config, _time_now) do
     current_step = card.current_step + 1
 
     if current_step >= length(config.relearn_steps) do
@@ -85,7 +85,7 @@ defmodule Memorex.CardStateMachine do
     end
   end
 
-  def answer_card(%Card{card_type: :relearn} = _card, :easy, config) do
+  def answer_card(%Card{card_type: :relearn} = _card, :easy, config, _time_now) do
     interval = Duration.add(config.min_review_interval, config.relearn_easy_adj)
     %{card_type: :review, interval: interval, current_step: nil}
   end

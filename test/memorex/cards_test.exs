@@ -297,7 +297,8 @@ defmodule Memorex.CardsTest do
     test "gets the interval choices for this card" do
       card = %Card{card_type: :learn, interval: Duration.parse!("PT1M"), current_step: 0}
       config = %Config{learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")], graduating_interval_easy: Duration.parse!("P4D")}
-      interval_choices = Cards.get_interval_choices(card, config)
+      unused_time_now = ~U[2022-01-01 12:00:00Z]
+      interval_choices = Cards.get_interval_choices(card, config, unused_time_now)
 
       assert interval_choices == [
                {:again, Duration.parse!("PT1M")},

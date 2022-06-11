@@ -101,7 +101,7 @@ defmodule MemorexWeb.ReviewLive do
     card_id = params["card_id"]
     learn_ahead_time = Timex.add(time_now, config.learn_ahead_time_interval)
     card = if card_id, do: Cards.get_card!(card_id), else: Cards.get_one_random_due_card(deck.id, learn_ahead_time)
-    interval_choices = if card, do: Cards.get_interval_choices(card, config)
+    interval_choices = if card, do: Cards.get_interval_choices(card, config, time_now)
     num_of_reviewed_cards = CardLogs.reviews_count_for_day(deck.id, time_now, config.timezone)
 
     {:noreply,
@@ -136,7 +136,7 @@ defmodule MemorexWeb.ReviewLive do
 
     learn_ahead_time = Timex.add(end_time, config.learn_ahead_time_interval)
     new_card = if card_id, do: card_end_state, else: Cards.get_one_random_due_card(deck.id, learn_ahead_time)
-    interval_choices = if new_card, do: Cards.get_interval_choices(new_card, config)
+    interval_choices = if new_card, do: Cards.get_interval_choices(new_card, config, end_time)
     num_of_reviewed_cards = CardLogs.reviews_count_for_day(deck.id, end_time, config.timezone)
 
     Phoenix.PubSub.broadcast_from(Memorex.PubSub, self(), "card:#{new_card.id}", :updated_card)
