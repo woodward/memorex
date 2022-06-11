@@ -77,25 +77,23 @@ defmodule Memorex.CardStateMachineTest do
     end
 
     test "answer: 'hard'" do
-      config = %Config{interval_multiplier: 1.1, hard_multiplier: 1.25, ease_hard: -0.25, max_review_interval: Duration.parse!("P100Y")}
-      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
+      # Based on:
+      # https://github.com/ankitects/anki/blob/fbb0d909354b53e602151206dab442e92969b3a8/pylib/tests/test_schedv2.py#L381
+      config = %Config{interval_multiplier: 1.0, hard_multiplier: 1.2, ease_hard: -0.15, max_review_interval: Duration.parse!("P100Y")}
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P100D")}
       unused_time_now = ~U[2022-01-01 12:00:00Z]
 
       changes = CardStateMachine.answer_card(card, :hard, config, unused_time_now)
-      scale = 1.1 * 1.25
-      new_interval = Duration.parse!("P4D") |> Timex.Duration.scale(scale)
-
-      assert changes == %{ease_factor: 2.25, interval: new_interval}
+      assert changes == %{ease_factor: 2.35, interval: Duration.parse!("P120D")}
     end
 
-    test "answer: 'hard' - interval stays below max interval" do
-      config = %Config{interval_multiplier: 1.1, hard_multiplier: 1.25, ease_hard: -0.25, max_review_interval: Duration.parse!("P5D")}
-      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
+    test "answer: 'hard' - interval is capped by max interval" do
+      config = %Config{interval_multiplier: 1.0, hard_multiplier: 1.2, ease_hard: -0.15, max_review_interval: Duration.parse!("P5D")}
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P100D")}
       unused_time_now = ~U[2022-01-01 12:00:00Z]
 
       changes = CardStateMachine.answer_card(card, :hard, config, unused_time_now)
-
-      assert changes == %{ease_factor: 2.25, interval: Duration.parse!("P5D")}
+      assert changes == %{ease_factor: 2.35, interval: Duration.parse!("P5D")}
     end
 
     test "answer: 'good'" do
