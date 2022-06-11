@@ -402,40 +402,7 @@ def test_reviews():
     cardcopy = copy.copy(c)
     # try with an ease of 2
     ##################################################
-    c = copy.copy(cardcopy)
-    c.flush()
-    col.reset()
-    col.sched.answerCard(c, 2)
-    assert c.queue == QUEUE_TYPE_REV
-    # the new interval should be (100) * 1.2 = 120
-    checkRevIvl(col, c, 120)
-    assert c.due == col.sched.today + c.ivl
-    # factor should have been decremented
-    assert c.factor == 2350
-    # check counters
-    assert c.lapses == 1
-    assert c.reps == 4
-    # ease 3
-    ##################################################
-    c = copy.copy(cardcopy)
-    c.flush()
-    col.sched.answerCard(c, 3)
-    # the new interval should be (100 + 8/2) * 2.5 = 260
-    checkRevIvl(col, c, 260)
-    assert c.due == col.sched.today + c.ivl
-    # factor should have been left alone
-    assert c.factor == STARTING_FACTOR
-    # ease 4
-    ##################################################
-    c = copy.copy(cardcopy)
-    c.flush()
-    col.sched.answerCard(c, 4)
-    # the new interval should be (100 + 8) * 2.5 * 1.3 = 351
-    checkRevIvl(col, c, 351)
-    assert c.due == col.sched.today + c.ivl
-    # factor should have been increased
-    assert c.factor == 2650
-    # leech handling
+
     ##################################################
     conf = col.decks.get_config(1)
     conf["lapse"]["leechAction"] = LEECH_SUSPEND
