@@ -525,11 +525,12 @@ defmodule Memorex.CardReviewerTest do
       }
 
       time_now = ~U[2022-01-01 12:00:00Z]
+      eight_days_ago = ~U[2021-12-24 12:00:00Z]
 
       card =
         %Card{
           card_type: :review,
-          due: time_now,
+          due: eight_days_ago,
           interval: Duration.parse!("P100D"),
           reps: 3,
           ease_factor: 2.5,
@@ -539,7 +540,7 @@ defmodule Memorex.CardReviewerTest do
 
       assert card.card_type == :review
       assert card.current_step == nil
-      assert card.due == time_now
+      assert card.due == eight_days_ago
       assert card.ease_factor == 2.5
       assert card.interval == Duration.parse!("P100D")
       assert card.lapses == 1
@@ -549,10 +550,12 @@ defmodule Memorex.CardReviewerTest do
     end
 
     test "answer :hard", %{time_now: time_now, config: config, card: card} do
+      # https://github.com/ankitects/anki/blob/fbb0d909354b53e602151206dab442e92969b3a8/pylib/tests/test_schedv2.py#L381
       card = CardReviewer.answer_card(card, :hard, time_now, config)
       assert card.card_type == :review
       assert card.current_step == nil
-      # https://www.convertunits.com/dates/120/daysfrom/Jan+1,+2021
+      # https://www.convertunits.com/dates/120/daysfrom/Jan+1,+2022
+      # Comment in Anki code: # the new interval should be (100) * 1.2 = 120
       assert card.due == ~U[2022-05-01 12:00:00Z]
       assert card.ease_factor == 2.35
       assert card.interval == Duration.parse!("P120D")
@@ -562,13 +565,30 @@ defmodule Memorex.CardReviewerTest do
 
     @tag :skip
     test "answer :good", %{time_now: time_now, config: config, card: card} do
+      # https://github.com/ankitects/anki/blob/fbb0d909354b53e602151206dab442e92969b3a8/pylib/tests/test_schedv2.py#L396
       card = CardReviewer.answer_card(card, :good, time_now, config)
       assert card.card_type == :review
       assert card.current_step == nil
-      # https://www.convertunits.com/dates/260/daysfrom/Jan+1,+2021
-      # assert card.due == ~U[2022-09-18 12:00:00Z]
+      # https://www.convertunits.com/dates/260/daysfrom/Jan+1,+2022
+      # Comment in Anki code:  # the new interval should be (100 + 8/2) * 2.5 = 260
+      assert card.due == ~U[2022-09-18 12:00:00Z]
       assert card.ease_factor == 2.50
-      # assert card.interval == Duration.parse!("P260D")
+      assert card.interval == Duration.parse!("P260D")
+      assert card.lapses == 1
+      assert card.reps == 4
+    end
+
+    @tag :skip
+    test "answer :easy", %{time_now: time_now, config: config, card: card} do
+      # https://github.com/ankitects/anki/blob/fbb0d909354b53e602151206dab442e92969b3a8/pylib/tests/test_schedv2.py#L406
+      card = CardReviewer.answer_card(card, :easy, time_now, config)
+      assert card.card_type == :review
+      assert card.current_step == nil
+      # https://www.convertunits.com/dates/351/daysfrom/Jan+1,+2022
+      # Comment in Anki code:  # the new interval should be (100 + 8) * 2.5 * 1.3 = 351
+      assert card.due == ~U[2022-12-18 12:00:00Z]
+      assert card.ease_factor == 2.65
+      assert card.interval == Duration.parse!("P351D")
       assert card.lapses == 1
       assert card.reps == 4
     end
