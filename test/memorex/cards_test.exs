@@ -148,6 +148,25 @@ defmodule Memorex.CardsTest do
       assert learn_card.card_type == :learn
       assert learn_card.id != card1.id
       assert learn_card.id != card4.id
+
+      card_logs = Ecto.Query.from(CardLog) |> Repo.all()
+
+      assert length(card_logs) == 1
+      [card_log] = card_logs
+
+      assert card_log.answer_choice == nil
+      assert card_log.card_type == :learn
+      assert card_log.current_step == 0
+      assert card_log.due == time_now
+      assert card_log.ease_factor == nil
+      assert card_log.interval == Duration.parse!("PT1M")
+      assert card_log.last_card_type == :new
+      assert card_log.last_due == nil
+      assert card_log.last_ease_factor == nil
+      assert card_log.last_interval == nil
+      assert card_log.last_step == nil
+      assert card_log.reps == 0
+      assert card_log.time_to_answer == nil
     end
   end
 

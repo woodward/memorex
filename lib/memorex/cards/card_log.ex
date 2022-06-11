@@ -51,7 +51,7 @@ defmodule Memorex.Cards.CardLog do
     timestamps()
   end
 
-  @spec new(Card.answer_choice(), card_before :: Card.t(), card_after :: Card.t(), time_to_answer :: Duration.t()) :: t()
+  @spec new(Card.answer_choice() | nil, card_before :: Card.t(), card_after :: Card.t(), time_to_answer :: Duration.t() | nil) :: t()
   def new(answer_choice, card_before, card_after, time_to_answer) do
     %__MODULE__{
       answer_choice: answer_choice,

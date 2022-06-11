@@ -35,4 +35,8 @@ defmodule MemorexWeb.CardLive.Show do
        card_log: card.card_logs |> List.first()
      )}
   end
+
+  @spec answer_choice(nil | atom()) :: String.t()
+  defp answer_choice(nil), do: "-"
+  defp answer_choice(answer_choice), do: ":#{answer_choice}"
 end

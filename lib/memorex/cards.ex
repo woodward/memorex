@@ -3,7 +3,7 @@ defmodule Memorex.Cards do
 
   import Ecto.Query
 
-  alias Memorex.Cards.{Card, Deck, Note}
+  alias Memorex.Cards.{Card, CardLog, Deck, Note}
   alias Memorex.{CardStateMachine, Config, Repo, Schema}
   alias Timex.Duration
 
@@ -65,10 +65,13 @@ defmodule Memorex.Cards do
     |> cards_for_deck(limit: limit)
     |> where_card_type(:new)
     |> Repo.all()
-    |> Enum.each(fn card ->
-      card
-      |> Card.new_card_to_learn_card_changeset(config, time_now)
-      |> Repo.update!()
+    |> Enum.each(fn card_before ->
+      card_after =
+        card_before
+        |> Card.new_card_to_learn_card_changeset(config, time_now)
+        |> Repo.update!()
+
+      CardLog.new(nil, card_before, card_after, nil) |> Repo.insert!()
     end)
   end
 

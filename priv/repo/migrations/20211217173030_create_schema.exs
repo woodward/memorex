@@ -42,14 +42,14 @@ defmodule Memorex.Repo.Migrations.CreateSchema do
       add :current_step, :integer
       add :due, :utc_datetime
       add :ease_factor, :float
-      add :interval, :integer, null: false
+      add :interval, :integer
       add :last_card_type, :text
       add :last_due, :utc_datetime
       add :last_ease_factor, :float
-      add :last_interval, :integer, null: false
+      add :last_interval, :integer
       add :last_step, :integer
       add :reps, :integer
-      add :time_to_answer, :integer, null: false
+      add :time_to_answer, :integer
 
       add :card_id, references(:cards, on_delete: :delete_all)
 
