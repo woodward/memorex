@@ -99,24 +99,22 @@ defmodule Memorex.CardStateMachineTest do
     end
 
     test "answer: 'good'" do
-      config = %Config{interval_multiplier: 1.1, ease_good: 0.1, max_review_interval: Duration.parse!("P100Y")}
-      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
-      unused_time_now = ~U[2022-01-01 12:00:00Z]
+      # Based on:
+      # https://github.com/ankitects/anki/blob/fbb0d909354b53e602151206dab442e92969b3a8/pylib/tests/test_schedv2.py#L396
+      config = %Config{ease_good: 0.1, interval_multiplier: 1.0, max_review_interval: Duration.parse!("P100Y")}
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P100D"), due: ~U[2021-12-24 12:00:00Z]}
+      time_now = ~U[2022-01-01 12:00:00Z]
 
-      changes = CardStateMachine.answer_card(card, :good, config, unused_time_now)
-      scale = 2.5 * 1.1
-      new_interval = Duration.parse!("P4D") |> Timex.Duration.scale(scale)
-
-      assert changes == %{ease_factor: 2.6, interval: new_interval}
+      changes = CardStateMachine.answer_card(card, :good, config, time_now)
+      assert changes == %{ease_factor: 2.6, interval: Duration.parse!("P260D")}
     end
 
-    test "answer: 'good' - interval stays below max interval" do
-      config = %Config{interval_multiplier: 1.1, ease_good: 0.1, max_review_interval: Duration.parse!("P5D")}
-      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D")}
-      unused_time_now = ~U[2022-01-01 12:00:00Z]
+    test "answer: 'good' - interval is capped by max interval" do
+      config = %Config{ease_good: 0.1, interval_multiplier: 1.0, max_review_interval: Duration.parse!("P5D")}
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P100D"), due: ~U[2021-12-24 12:00:00Z]}
+      time_now = ~U[2022-01-01 12:00:00Z]
 
-      changes = CardStateMachine.answer_card(card, :good, config, unused_time_now)
-
+      changes = CardStateMachine.answer_card(card, :good, config, time_now)
       assert changes == %{ease_factor: 2.6, interval: Duration.parse!("P5D")}
     end
 

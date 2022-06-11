@@ -56,7 +56,16 @@ defmodule Memorex.CardReviewerTest do
   describe "answer_card_and_create_log_entry" do
     test "answers the card, and creates a log entry" do
       note = %Note{content: ["First", "Second"]}
-      card = %Card{card_type: :review, interval: Duration.parse!("PT4M"), ease_factor: 2.5, reps: 3, note: note}
+
+      card = %Card{
+        card_type: :review,
+        interval: Duration.parse!("PT4M"),
+        ease_factor: 2.5,
+        reps: 3,
+        note: note,
+        due: ~U[2021-12-24 12:00:00Z]
+      }
+
       card = Repo.insert!(card)
 
       config = %Config{
@@ -76,7 +85,7 @@ defmodule Memorex.CardReviewerTest do
       assert card_log.card_id == card.id
       assert card_log.card_type == :review
       assert card_log.ease_factor == 2.5
-      assert card_log.interval == Duration.parse!("PT10M")
+      assert card_log.interval == Duration.parse!("P10DT15M")
       assert card_log.last_interval == Duration.parse!("PT4M")
       assert card_log.time_to_answer == Duration.parse!("PT60S")
 
@@ -86,9 +95,9 @@ defmodule Memorex.CardReviewerTest do
 
       # assert card.card_queue == :review
       assert card.card_type == :review
-      assert card.due == ~U[2022-01-01 12:14:00Z]
+      assert card.due == ~U[2022-01-11 12:19:00Z]
       assert card.ease_factor == 2.5
-      assert card.interval == Duration.parse!("PT10M")
+      assert card.interval == Duration.parse!("P10DT15M")
       assert card.current_step == nil
       assert card.reps == 4
     end
@@ -563,7 +572,6 @@ defmodule Memorex.CardReviewerTest do
       assert card.reps == 4
     end
 
-    @tag :skip
     test "answer :good", %{time_now: time_now, config: config, card: card} do
       # https://github.com/ankitects/anki/blob/fbb0d909354b53e602151206dab442e92969b3a8/pylib/tests/test_schedv2.py#L396
       card = CardReviewer.answer_card(card, :good, time_now, config)
