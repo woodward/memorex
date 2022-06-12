@@ -50,6 +50,8 @@ defmodule Memorex.Cards do
     deck_id
     |> cards_for_deck(limit: limit)
     |> where_card_type(:new)
+    # The following RANDOM line is untested (but without it cards are definitely NOT random):
+    |> order_by(fragment("RANDOM()"))
     |> Repo.all()
     |> Enum.each(fn card_before ->
       updates = CardStateMachine.convert_new_card_to_learn_card(card_before, config, time_now)
