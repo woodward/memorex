@@ -163,7 +163,7 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
       time_now = ~U[2021-12-24 12:00:00Z]
 
       changes = CardStateMachine.answer_card(card, :good, config, time_now)
-      assert changes == %{ease_factor: 2.6, interval: Duration.parse!("P260D")}
+      assert changes == %{ease_factor: 2.6, interval: Duration.parse!("P8M10D")}
     end
 
     test "answer: 'easy'" do
@@ -201,7 +201,7 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
       time_now = ~U[2021-12-24 12:00:00Z]
 
       changes = CardStateMachine.answer_card(card, :easy, config, time_now)
-      assert changes == %{ease_factor: 2.65, interval: Duration.parse!("P351D")}
+      assert changes == %{ease_factor: 2.65, interval: Duration.parse!("P10M25D")}
     end
   end
 
