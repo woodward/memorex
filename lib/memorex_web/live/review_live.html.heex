@@ -1,34 +1,34 @@
-<h1> Deck: <%= @deck.name %> </h1>
+<h1 class="title is-3"> Deck: <%= @deck.name %> </h1>
 
 <%= if !@card || @daily_review_limit_reached? do %>
-  <h3> No cards to review </h3>
+  <h3 class="title is-4"> No cards to review </h3>
 <% else %>
 
-  <h3> <%= Card.question(@card) %> </h3>
+  <h4 class="title is-4"> <%= Card.question(@card) %> </h4>
 
   <%= if @display == :show_question do %>
-    <button phx-click="show-answer"> Answer </button>
+    <button class="button" phx-click="show-answer"> Answer </button>
   <% end %>
 
   <%= if @display == :show_question_and_answer do %>
-    <h3> <%= Card.answer(@card) %> </h3>
+    <h4 class="title is-4"> <%= Card.answer(@card) %> </h4>
 
-    <button class="answer-button again" phx-click="rate-difficulty" phx-value-answer_choice="again">
+    <button class="button answer-button again" phx-click="rate-difficulty" phx-value-answer_choice="again">
       <span class="answer-choice"> Again </span>
       <span class="answer-interval"> <%= format(@interval_choices[:again])  %> </span>
     </button>
 
-    <button class="answer-button hard" phx-click="rate-difficulty" phx-value-answer_choice="hard">
+    <button class="button answer-button hard" phx-click="rate-difficulty" phx-value-answer_choice="hard">
       <span class="answer-choice"> Hard </span>
       <span class="answer-interval"> <%= format(@interval_choices[:hard])  %> </span>
     </button>
 
-    <button class="answer-button good" phx-click="rate-difficulty" phx-value-answer_choice="good">
+    <button class="button answer-button good" phx-click="rate-difficulty" phx-value-answer_choice="good">
       <span class="answer-choice"> Good </span>
       <span class="answer-interval"> <%= format(@interval_choices[:good])  %> </span>
     </button>
 
-    <button class="answer-button easy" phx-click="rate-difficulty" phx-value-answer_choice="easy">
+    <button class="button answer-button easy" phx-click="rate-difficulty" phx-value-answer_choice="easy">
       <span class="answer-choice"> Easy </span>
       <span class="answer-interval"> <%= format(@interval_choices[:easy])  %> </span>
     </button>
@@ -42,7 +42,7 @@
   <div class="debug-contents">
     <hr>
 
-    <table class="deck-stats">
+    <table class="table deck-stats">
       <thead>
         <th> Total </th>
         <th> New </th>

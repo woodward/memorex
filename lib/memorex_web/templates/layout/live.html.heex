@@ -1,4 +1,4 @@
-<main id={page_id(@socket.view)}>
+<main class="container" id={page_id(@socket.view)}>
   <p role="alert"
     phx-click="lv:clear-flash"
     phx-value-key="info"><%= live_flash(@flash, :info) %></p>
