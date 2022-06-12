@@ -7,6 +7,20 @@ defmodule Memorex.CardStateMachine do
 
   @spec answer_card(Card.t(), Card.answer_choice(), Config.t(), DateTime.t()) :: map()
 
+  # --------------- New Cards ------------------------------------------------------------------------------------------
+
+  def convert_new_card_to_learn_card(%Card{card_type: :new} = _card, config, time_now) do
+    %{
+      card_queue: :learn,
+      card_type: :learn,
+      current_step: 0,
+      due: time_now,
+      interval: config.learn_steps |> List.first(),
+      lapses: 0,
+      reps: 0
+    }
+  end
+
   # --------------- Learn Cards ----------------------------------------------------------------------------------------
 
   def answer_card(%Card{card_type: :learn} = _card, :again, _config, _time_now) do

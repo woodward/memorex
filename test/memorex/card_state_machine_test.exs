@@ -6,6 +6,29 @@ defmodule Memorex.CardStateMachineTest do
   alias Memorex.{CardStateMachine, Config}
   alias Timex.Duration
 
+  # ======================== New Cards =================================================================================
+  describe "convert_new_card_to_learn_card/3" do
+    test "sets the values based on the config" do
+      config = %Config{
+        learn_steps: [Duration.parse!("PT2M"), Duration.parse!("PT15M")],
+        initial_ease: 2.25
+      }
+
+      card = %Card{card_type: :new, ease_factor: 2.15, lapses: 2, reps: 33, card_queue: :review}
+
+      time_now = ~U[2022-02-01 12:00:00Z]
+      changes = CardStateMachine.convert_new_card_to_learn_card(card, config, time_now)
+
+      assert changes.current_step == 0
+      assert changes.card_type == :learn
+      assert changes.card_queue == :learn
+      assert changes.lapses == 0
+      assert changes.reps == 0
+      assert changes.due == time_now
+      assert changes.interval == Duration.parse!("PT2M")
+    end
+  end
+
   # ======================== Learn Cards ===============================================================================
   describe "learn cards" do
     test "answer: 'again'" do

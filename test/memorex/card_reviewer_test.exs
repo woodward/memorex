@@ -2,7 +2,7 @@ defmodule Memorex.CardReviewerTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.{CardReviewer, Config}
+  alias Memorex.{CardReviewer, CardStateMachine, Config}
   alias Memorex.Cards.{Card, Note}
   alias Timex.Duration
 
@@ -467,7 +467,10 @@ defmodule Memorex.CardReviewerTest do
       }
 
       time_now = ~U[2022-01-01 12:00:00Z]
-      card = %Card{card_type: :new} |> Repo.insert!() |> Card.new_card_to_learn_card_changeset(config, time_now) |> Repo.update!()
+      card = %Card{card_type: :new} |> Repo.insert!()
+      updates = card |> CardStateMachine.convert_new_card_to_learn_card(config, time_now)
+      card = card |> Card.changeset(updates) |> Repo.update!()
+
       assert card.card_type == :learn
       assert card.current_step == 0
       assert card.due == time_now

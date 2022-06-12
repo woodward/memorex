@@ -5,7 +5,7 @@ defmodule Memorex.Cards.Card do
   import Ecto.Changeset
 
   alias Memorex.Cards.{CardLog, Note}
-  alias Memorex.{Config, EctoTimexDuration, Repo, Schema}
+  alias Memorex.{EctoTimexDuration, Repo, Schema}
   alias Timex.Duration
 
   @type card_queue :: :new | :learn | :review | :day_learn | :suspended | :buried
@@ -103,21 +103,6 @@ defmodule Memorex.Cards.Card do
 
     changeset
     |> cast(%{reps: reps + 1}, [:reps])
-  end
-
-  @spec new_card_to_learn_card_changeset(Ecto.Changeset.t() | t(), Config.t(), DateTime.t()) :: Ecto.Changeset.t()
-  def new_card_to_learn_card_changeset(card, config, time_now) do
-    updates = %{
-      card_queue: :learn,
-      card_type: :learn,
-      current_step: 0,
-      due: time_now,
-      interval: config.learn_steps |> List.first(),
-      lapses: 0,
-      reps: 0
-    }
-
-    changeset(card, updates)
   end
 
   @spec question(t()) :: String.t()

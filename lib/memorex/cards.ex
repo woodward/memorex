@@ -50,11 +50,8 @@ defmodule Memorex.Cards do
     |> where_card_type(:new)
     |> Repo.all()
     |> Enum.each(fn card_before ->
-      card_after =
-        card_before
-        |> Card.new_card_to_learn_card_changeset(config, time_now)
-        |> Repo.update!()
-
+      updates = CardStateMachine.convert_new_card_to_learn_card(card_before, config, time_now)
+      card_after = card_before |> Card.changeset(updates) |> Repo.update!()
       CardLog.new(nil, card_before, card_after, nil) |> Repo.insert!()
     end)
   end
