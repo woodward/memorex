@@ -3,7 +3,7 @@ defmodule MemorexWeb.CardLive.CardComponent do
 
   use MemorexWeb, :live_component
 
-  alias Memorex.Cards.Card
+  alias Memorex.Domain.Card
 
   @spec step(nil | non_neg_integer()) :: String.t() | non_neg_integer()
   def step(nil), do: "-"

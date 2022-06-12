@@ -3,7 +3,7 @@ defmodule Memorex.DecksTest do
   use Memorex.DataCase
 
   alias Memorex.Decks
-  alias Memorex.Cards.Deck
+  alias Memorex.Domain.Deck
 
   describe "find_or_create!" do
     test "creates a deck if one does not exist with this name" do

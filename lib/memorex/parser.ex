@@ -3,7 +3,7 @@ defmodule Memorex.Parser do
 
   alias Memorex.{ConfigFile, Decks}
   alias Memorex.Ecto.Repo
-  alias Memorex.Cards.{Card, Deck, Note}
+  alias Memorex.Domain.{Card, Deck, Note}
 
   @spec read_file(String.t(), Deck.t() | nil) :: :ok
   def read_file(filename, deck \\ nil) do

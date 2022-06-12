@@ -1,7 +1,7 @@
 defmodule Memorex.CardStateMachine do
   @moduledoc false
 
-  alias Memorex.Cards.Card
+  alias Memorex.Domain.Card
   alias Memorex.Config
   alias Timex.Duration
 

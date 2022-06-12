@@ -4,7 +4,7 @@ defmodule Memorex.DeckStatsTest do
 
   alias Memorex.DeckStats
   alias Memorex.Ecto.Repo
-  alias Memorex.Cards.{Card, Deck, Note}
+  alias Memorex.Domain.{Card, Deck, Note}
 
   describe "new/2" do
     test "returns the stats for the deck" do

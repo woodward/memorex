@@ -2,7 +2,7 @@ defmodule Memorex.CardStateMachineTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.Cards.Card
+  alias Memorex.Domain.Card
   alias Memorex.{CardStateMachine, Config}
   alias Timex.Duration
 

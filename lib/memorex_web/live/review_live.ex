@@ -4,7 +4,7 @@ defmodule MemorexWeb.ReviewLive do
 
   alias Memorex.{Cards, CardLogs, CardReviewer, Config, DeckStats, TimeUtils}
   alias Memorex.Ecto.Repo
-  alias Memorex.Cards.{Card, Deck}
+  alias Memorex.Domain.{Card, Deck}
   alias Phoenix.LiveView.JS
 
   @impl true

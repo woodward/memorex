@@ -4,7 +4,7 @@ defmodule Memorex.CardsTest do
 
   alias Memorex.{Cards, Config}
   alias Memorex.Ecto.Repo
-  alias Memorex.Cards.{Card, CardLog, Deck, Note}
+  alias Memorex.Domain.{Card, CardLog, Deck, Note}
   alias Timex.Duration
 
   describe "update_card!" do

@@ -1,11 +1,11 @@
-defmodule Memorex.Cards.Deck do
+defmodule Memorex.Domain.Deck do
   @moduledoc false
 
   use Memorex.Ecto.Schema
   import Ecto.Changeset
 
   alias Memorex.Ecto.Schema
-  alias Memorex.Cards.Note
+  alias Memorex.Domain.Note
 
   @type t :: %__MODULE__{
           id: Schema.id() | nil,

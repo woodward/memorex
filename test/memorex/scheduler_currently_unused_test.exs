@@ -3,7 +3,7 @@ defmodule Memorex.SchedulerCurrentlyUnusedCurrentlyUnusedTest do
   use Memorex.DataCase
 
   alias Memorex.{Config, SchedulerCurrentlyUnused}
-  alias Memorex.Cards.Card
+  alias Memorex.Domain.Card
   alias Timex.Duration
 
   describe "learn_ahead_time" do

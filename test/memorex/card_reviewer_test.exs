@@ -3,7 +3,7 @@ defmodule Memorex.CardReviewerTest do
   use Memorex.DataCase
 
   alias Memorex.{CardReviewer, CardStateMachine, Config}
-  alias Memorex.Cards.{Card, Note}
+  alias Memorex.Domain.{Card, Note}
   alias Timex.Duration
 
   describe "bracket_time_to_answer/1" do

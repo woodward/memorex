@@ -2,7 +2,7 @@ defmodule Memorex.ParserTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.Cards.{Card, Deck, Note}
+  alias Memorex.Domain.{Card, Deck, Note}
   alias Memorex.Parser
 
   describe "read_file" do

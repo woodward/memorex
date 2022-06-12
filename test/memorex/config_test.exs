@@ -4,7 +4,7 @@ defmodule Memorex.ConfigTest do
 
   alias Memorex.Config
   alias Memorex.Ecto.Repo
-  alias Memorex.Cards.Deck
+  alias Memorex.Domain.Deck
   alias Timex.Duration
 
   describe "merge" do

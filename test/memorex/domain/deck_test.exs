@@ -1,8 +1,8 @@
-defmodule Memorex.Cards.DeckTest do
+defmodule Memorex.Domain.DeckTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.Cards.{Card, CardLog, Deck, Note}
+  alias Memorex.Domain.{Card, CardLog, Deck, Note}
   alias Memorex.Ecto.Repo
   alias Timex.Duration
 

@@ -1,10 +1,10 @@
-defmodule Memorex.Cards.NoteTest do
+defmodule Memorex.Domain.NoteTest do
   @moduledoc false
   use Memorex.DataCase
 
   alias Memorex.Parser
   alias Memorex.Ecto.Repo
-  alias Memorex.Cards.{Card, CardLog, Note}
+  alias Memorex.Domain.{Card, CardLog, Note}
   alias Timex.Duration
 
   # From: https://stackoverflow.com/questions/136505/searching-for-uuids-in-text-with-regex

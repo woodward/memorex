@@ -1,4 +1,4 @@
-defmodule Memorex.Cards.Note do
+defmodule Memorex.Domain.Note do
   @moduledoc false
 
   use Memorex.Ecto.Schema
@@ -7,7 +7,7 @@ defmodule Memorex.Cards.Note do
 
   alias Memorex.Ecto.Repo
   alias Memorex.Ecto.Schema
-  alias Memorex.Cards.{Card, Deck, Note}
+  alias Memorex.Domain.{Card, Deck, Note}
 
   @type t :: %__MODULE__{
           id: Schema.id() | nil,

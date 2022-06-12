@@ -5,7 +5,7 @@ defmodule MemorexWeb.CardLive.Index do
 
   alias Memorex.Cards
   alias Memorex.Ecto.Repo
-  alias Memorex.Cards.Card
+  alias Memorex.Domain.Card
 
   require Ecto.Query
 

@@ -2,7 +2,7 @@ defmodule Memorex.Decks do
   @moduledoc false
 
   alias Memorex.Ecto.Repo
-  alias Memorex.Cards.Deck
+  alias Memorex.Domain.Deck
 
   @spec find_or_create!(String.t()) :: Deck.t()
   def find_or_create!(name) do
