@@ -21,22 +21,6 @@ defmodule Memorex.Cards do
     Repo.get!(Card, card_id) |> Repo.preload([:card_logs, :note])
   end
 
-  # Not currently in use
-  @spec update_new_cards_to_learn_cards(Ecto.Queryable.t(), DateTime.t(), Keyword.t()) :: :ok
-  def update_new_cards_to_learn_cards(queryable, time_now, opts \\ []) do
-    updates = [
-      card_queue: :learn,
-      card_type: :learn,
-      due: time_now,
-      interval: Duration.parse!("PT0S"),
-      lapses: 0,
-      current_step: 0,
-      reps: 0
-    ]
-
-    Repo.update_all(queryable, [set: updates], opts)
-  end
-
   @spec cards_for_deck(Schema.id(), Keyword.t()) :: Ecto.Query.t()
   def cards_for_deck(deck_id, opts \\ []) do
     query =

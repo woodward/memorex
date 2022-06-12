@@ -21,25 +21,6 @@ defmodule Memorex.CardsTest do
     end
   end
 
-  describe "update_new_cards_to_learn_cards/3" do
-    test "sets the values based on the config" do
-      card1 = %Card{card_type: :new, ease_factor: 2.15, lapses: 2, reps: 33, card_queue: :review} |> Repo.insert!()
-
-      time_now = ~U[2022-02-01 12:00:00Z]
-      Cards.update_new_cards_to_learn_cards(Card, time_now)
-
-      card1 = Repo.get!(Card, card1.id)
-
-      assert card1.interval == Duration.parse!("PT0S")
-      assert card1.current_step == 0
-      assert card1.card_type == :learn
-      assert card1.card_queue == :learn
-      assert card1.lapses == 0
-      assert card1.reps == 0
-      assert card1.due == ~U[2022-02-01 12:00:00Z]
-    end
-  end
-
   describe "cards_for_deck/1" do
     test "gets the cards associated with a particular deck" do
       deck1 = Repo.insert!(%Deck{})
