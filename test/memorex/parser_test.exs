@@ -33,8 +33,12 @@ defmodule Memorex.ParserTest do
       assert deck.name == "deck"
 
       [note1, note2] = Repo.all(Note, order_by: :id) |> Repo.preload(:deck)
+
       assert note1.deck.name == "deck"
       assert note2.deck.name == "deck"
+
+      assert note1.category == "file1"
+      assert note2.category == "file2"
 
       assert Repo.all(Card) |> length() == 4
     end
@@ -102,8 +106,15 @@ defmodule Memorex.ParserTest do
 
   test "parse_line/1" do
     line = " one ⮂   two  "
-    note = Parser.parse_line(line)
-    assert note == %Note{content: ["one", "two"], id: "b6db891e-d142-51fa-9e0a-7100b0843d78", in_latest_parse?: true}
+    category = "my category"
+    note = Parser.parse_line(line, category)
+
+    assert note == %Note{
+             content: ["one", "two"],
+             category: "my category",
+             id: "99f1f73a-69be-5588-a86b-de7b3163d575",
+             in_latest_parse?: true
+           }
   end
 
   describe "parse_file_contents/1" do

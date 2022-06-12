@@ -8,11 +8,9 @@ defmodule Memorex.Parser do
 
   @spec read_file(String.t(), Keyword.t()) :: :ok
   def read_file(filename, opts \\ []) do
-    deck = Keyword.get(opts, :deck)
-
     filename
     |> File.read!()
-    |> parse_file_contents(deck: deck)
+    |> parse_file_contents(opts)
   end
 
   @spec read_dir(String.t()) :: :ok
@@ -24,7 +22,10 @@ defmodule Memorex.Parser do
       |> load_config_file_if_it_exists(Path.join(dirname, "deck_config.toml"))
 
     Path.wildcard(dirname <> "/*.md")
-    |> Enum.each(&read_file(&1, deck: deck))
+    |> Enum.each(fn filename ->
+      category = Path.basename(filename, ".md")
+      read_file(filename, deck: deck, category: category)
+    end)
   end
 
   @spec read_note_dirs([String.t()] | nil) :: :ok
@@ -66,12 +67,13 @@ defmodule Memorex.Parser do
   @spec parse_file_contents(String.t(), Keyword.t()) :: :ok
   def parse_file_contents(contents, opts \\ []) do
     deck = Keyword.get(opts, :deck)
+    category = Keyword.get(opts, :category)
 
     contents
     |> String.split("\n")
     |> Enum.each(fn line ->
       if is_note_line?(line) do
-        note = line |> parse_line()
+        note = parse_line(line, category)
         note_from_db = Repo.get(Note, note.id)
 
         if note_from_db do
@@ -98,10 +100,10 @@ defmodule Memorex.Parser do
   @spec is_note_line?(String.t()) :: boolean()
   def is_note_line?(line), do: String.match?(line, ~r/#{bidirectional_note_delimitter()}/)
 
-  @spec parse_line(String.t()) :: Note.t()
-  def parse_line(line) do
+  @spec parse_line(String.t(), String.t() | nil) :: Note.t()
+  def parse_line(line, category) do
     content = line |> String.split(bidirectional_note_delimitter()) |> Enum.map(&String.trim(&1))
-    Note.new(content: content)
+    Note.new(content: content, category: category)
   end
 
   @spec bidirectional_note_delimitter() :: String.t()
