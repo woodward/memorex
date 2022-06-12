@@ -36,7 +36,7 @@ defmodule MemorexWeb.CardLive.Show do
      )}
   end
 
-  @spec answer_choice(nil | atom()) :: String.t()
-  defp answer_choice(nil), do: "-"
-  defp answer_choice(answer_choice), do: ":#{answer_choice}"
+  @spec show_dash_if_nil(nil | atom()) :: String.t()
+  defp show_dash_if_nil(nil), do: "-"
+  defp show_dash_if_nil(answer_choice), do: ":#{answer_choice}"
 end
