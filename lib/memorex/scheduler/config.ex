@@ -1,4 +1,4 @@
-defmodule Memorex.Config do
+defmodule Memorex.Scheduler.Config do
   @moduledoc false
 
   alias Timex.Duration

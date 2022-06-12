@@ -2,7 +2,8 @@ defmodule Memorex.CardsTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.{Cards, Config}
+  alias Memorex.Cards
+  alias Memorex.Scheduler.Config
   alias Memorex.Ecto.Repo
   alias Memorex.Domain.{Card, CardLog, Deck, Note}
   alias Timex.Duration

@@ -1,8 +1,9 @@
-defmodule Memorex.CardReviewer do
+defmodule Memorex.Scheduler.CardReviewer do
   @moduledoc false
 
   alias Timex.Duration
-  alias Memorex.{Cards, CardStateMachine, Config}
+  alias Memorex.Cards
+  alias Memorex.Scheduler.{CardStateMachine, Config}
   alias Memorex.Ecto.Repo
   alias Memorex.Domain.{Card, CardLog}
 

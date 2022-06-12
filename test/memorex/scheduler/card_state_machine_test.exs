@@ -1,9 +1,9 @@
-defmodule Memorex.CardStateMachineTest do
+defmodule Memorex.Scheduler.CardStateMachineTest do
   @moduledoc false
   use Memorex.DataCase
 
   alias Memorex.Domain.Card
-  alias Memorex.{CardStateMachine, Config}
+  alias Memorex.Scheduler.{CardStateMachine, Config}
   alias Timex.Duration
 
   # ======================== New Cards =================================================================================

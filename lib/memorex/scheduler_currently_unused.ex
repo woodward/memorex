@@ -2,7 +2,7 @@ defmodule Memorex.SchedulerCurrentlyUnused do
   @moduledoc false
 
   alias Memorex.Domain.Card
-  alias Memorex.Config
+  alias Memorex.Scheduler.Config
 
   @spec is_card_due?(Card.t(), Config.t(), DateTime.t() | nil) :: boolean()
   def is_card_due?(%Card{card_queue: :new} = _card, _config, _now), do: true

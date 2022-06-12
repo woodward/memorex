@@ -1,8 +1,8 @@
-defmodule Memorex.ConfigFileTest do
+defmodule Memorex.Scheduler.ConfigFileTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.ConfigFile
+  alias Memorex.Scheduler.ConfigFile
 
   describe "read" do
     test "reads the config info from a TOML file" do

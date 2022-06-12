@@ -2,7 +2,8 @@ defmodule Memorex.SchedulerCurrentlyUnusedCurrentlyUnusedTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.{Config, SchedulerCurrentlyUnused}
+  alias Memorex.SchedulerCurrentlyUnused
+  alias Memorex.Scheduler.Config
   alias Memorex.Domain.Card
   alias Timex.Duration
 

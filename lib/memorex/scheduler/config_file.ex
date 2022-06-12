@@ -1,4 +1,4 @@
-defmodule Memorex.ConfigFile do
+defmodule Memorex.Scheduler.ConfigFile do
   @moduledoc false
 
   @spec read(String.t()) :: map()

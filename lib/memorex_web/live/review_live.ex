@@ -2,7 +2,8 @@ defmodule MemorexWeb.ReviewLive do
   @moduledoc false
   use MemorexWeb, :live_view
 
-  alias Memorex.{Cards, CardLogs, CardReviewer, Config, DeckStats, TimeUtils}
+  alias Memorex.{Cards, CardLogs, DeckStats, TimeUtils}
+  alias Memorex.Scheduler.{CardReviewer, Config}
   alias Memorex.Ecto.Repo
   alias Memorex.Domain.{Card, Deck}
   alias Phoenix.LiveView.JS

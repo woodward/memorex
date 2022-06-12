@@ -1,8 +1,8 @@
-defmodule Memorex.CardStateMachine do
+defmodule Memorex.Scheduler.CardStateMachine do
   @moduledoc false
 
   alias Memorex.Domain.Card
-  alias Memorex.Config
+  alias Memorex.Scheduler.Config
   alias Timex.Duration
 
   @spec answer_card(Card.t(), Card.answer_choice(), Config.t(), DateTime.t()) :: map()

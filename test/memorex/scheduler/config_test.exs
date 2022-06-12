@@ -1,8 +1,8 @@
-defmodule Memorex.ConfigTest do
+defmodule Memorex.Scheduler.ConfigTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.Config
+  alias Memorex.Scheduler.Config
   alias Memorex.Ecto.Repo
   alias Memorex.Domain.Deck
   alias Timex.Duration
@@ -29,7 +29,7 @@ defmodule Memorex.ConfigTest do
       assert retrieved_deck_config.graduating_interval_good == Duration.parse!("P2D")
       assert retrieved_deck_config.relearn_steps == [Duration.parse!("PT17M")]
       assert retrieved_deck_config.learn_steps == [Duration.parse!("PT15M"), Duration.parse!("PT21M")]
-      assert retrieved_deck_config.__struct__ == Memorex.Config
+      assert retrieved_deck_config.__struct__ == Memorex.Scheduler.Config
     end
   end
 end

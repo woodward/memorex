@@ -1,8 +1,8 @@
-defmodule Memorex.CardReviewerTest do
+defmodule Memorex.Scheduler.CardReviewerTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.{CardReviewer, CardStateMachine, Config}
+  alias Memorex.Scheduler.{CardReviewer, CardStateMachine, Config}
   alias Memorex.Domain.{Card, Note}
   alias Timex.Duration
 

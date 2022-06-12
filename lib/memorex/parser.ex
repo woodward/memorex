@@ -1,7 +1,8 @@
 defmodule Memorex.Parser do
   @moduledoc false
 
-  alias Memorex.{ConfigFile, Decks}
+  alias Memorex.Decks
+  alias Memorex.Scheduler.ConfigFile
   alias Memorex.Ecto.Repo
   alias Memorex.Domain.{Card, Deck, Note}
 

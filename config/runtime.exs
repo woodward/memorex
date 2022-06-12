@@ -14,7 +14,7 @@ if System.get_env("PHX_SERVER") && System.get_env("RELEASE_NAME") do
   config :memorex, MemorexWeb.Endpoint, server: true
 end
 
-defmodule Memorex.Config.Utils do
+defmodule Memorex.Scheduler.Config.Utils do
   @moduledoc false
   def string_array_to_durations(string_array) do
     string_array
@@ -24,9 +24,9 @@ defmodule Memorex.Config.Utils do
   end
 end
 
-alias Memorex.Config.Utils
+alias Memorex.Scheduler.Config.Utils
 
-config :memorex, Memorex.Config,
+config :memorex, Memorex.Scheduler.Config,
   new_cards_per_day: System.get_env("MEMOREX_NEW_CARDS_PER_DAY", "20") |> String.to_integer(),
   max_reviews_per_day: System.get_env("MEMOREX_MAX_REVIEWS_PER_DAY", "200") |> String.to_integer(),
   #
