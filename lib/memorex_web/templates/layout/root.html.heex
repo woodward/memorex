@@ -14,18 +14,10 @@
     <header class="container">
       <section>
         <nav class="navbar">
-          <ul>
-            <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-              <li>
-                <%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home), class: "navbar-item" %>
-              </li>
-            <% end %>
-          </ul>
-          <ul>
-            <li>
-              <%= link "Decks", to: Routes.decks_path(@conn, :home), class: "navbar-item" %>
-            </li>
-          </ul>
+          <%= link "Decks", to: Routes.decks_path(@conn, :home), class: "navbar-item" %>
+          <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+            <%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home), class: "navbar-item" %>
+          <% end %>
         </nav>
       </section>
     </header>
