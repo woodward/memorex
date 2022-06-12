@@ -13,24 +13,32 @@
   <%= if @display == :show_question_and_answer do %>
     <h4 class="title is-4"> <%= Card.answer(@card) %> </h4>
 
-    <button class="button answer-button again" phx-click="rate-difficulty" phx-value-answer_choice="again">
-      <span class="answer-choice"> Again </span>
-      <span class="answer-interval"> <%= format(@interval_choices[:again])  %> </span>
+    <button class="button is-medium is-danger" phx-click="rate-difficulty" phx-value-answer_choice="again">
+      <div>
+        <span class="answer"> Again </span>
+        <span class="answer"> <%= format(@interval_choices[:again])  %> </span>
+      </div>
     </button>
 
-    <button class="button answer-button hard" phx-click="rate-difficulty" phx-value-answer_choice="hard">
-      <span class="answer-choice"> Hard </span>
-      <span class="answer-interval"> <%= format(@interval_choices[:hard])  %> </span>
+    <button class="button is-medium is-warning" phx-click="rate-difficulty" phx-value-answer_choice="hard">
+      <div>
+        <span class="answer"> Hard </span>
+        <span class="answer"> <%= format(@interval_choices[:hard])  %> </span>
+      </div>
     </button>
 
-    <button class="button answer-button good" phx-click="rate-difficulty" phx-value-answer_choice="good">
-      <span class="answer-choice"> Good </span>
-      <span class="answer-interval"> <%= format(@interval_choices[:good])  %> </span>
+    <button class="button is-medium is-info" phx-click="rate-difficulty" phx-value-answer_choice="good">
+      <div>
+        <span class="answer"> Good </span>
+        <span class="answer"> <%= format(@interval_choices[:good])  %> </span>
+      </div>
     </button>
 
-    <button class="button answer-button easy" phx-click="rate-difficulty" phx-value-answer_choice="easy">
-      <span class="answer-choice"> Easy </span>
-      <span class="answer-interval"> <%= format(@interval_choices[:easy])  %> </span>
+    <button class="button is-medium is-success" phx-click="rate-difficulty" phx-value-answer_choice="easy">
+      <div>
+        <span class="answer"> Easy </span>
+        <span class="answer"> <%= format(@interval_choices[:easy])  %> </span>
+      </div>
     </button>
   <% end %>
 <% end %>
