@@ -28,7 +28,18 @@ defmodule Memorex.Domain.NoteTest do
     assert note.id == uuid
   end
 
-  test "the note's UUID is based on its content" do
+  test "the note's UUID is based on its content and category" do
+    Note.new(content: ["zero", "one"], category: "some category") |> Repo.insert()
+    note = Repo.all(Note) |> List.first()
+
+    assert note.id == "5fbaa83b-e42d-5588-a1c1-09056e1bad2d"
+
+    [content0, content1] = note.content
+    assert content0 == "zero"
+    assert content1 == "one"
+  end
+
+  test "the note's UUID is does not blow up if the category is nil" do
     Note.new(content: ["zero", "one"]) |> Repo.insert()
     note = Repo.all(Note) |> List.first()
 
@@ -39,15 +50,23 @@ defmodule Memorex.Domain.NoteTest do
     assert content1 == "one"
   end
 
-  test "content_to_uuid/1" do
-    content1 = ["zero", "one", "two"]
-    uid1 = Note.content_to_uuid(content1)
-    assert uid1 == "cd04855f-1ef3-54e0-9d1c-1e8ea24563c2"
+  describe "content_to_uuid/2" do
+    test "content_to_uuid/2" do
+      content1 = ["zero", "one", "two"]
+      uid1 = Note.content_to_uuid(content1, "category")
+      assert uid1 == "82208bd0-1c9f-5b0a-95f5-1330874e26f8"
 
-    content2 = ["0", "one", "two"]
-    uid2 = Note.content_to_uuid(content2)
-    assert uid2 == "e4bdc36d-f397-5cc2-a60a-87003946c04a"
-    assert uid1 != uid2
+      content2 = ["0", "one", "two"]
+      uid2 = Note.content_to_uuid(content2, "category")
+      assert uid2 == "be112558-ee18-54cb-beb7-2133a3d5f769"
+      assert uid1 != uid2
+    end
+
+    test "does not blow up if the category is nil" do
+      content1 = ["zero", "one", "two"]
+      uid1 = Note.content_to_uuid(content1, nil)
+      assert uid1 == "cd04855f-1ef3-54e0-9d1c-1e8ea24563c2"
+    end
   end
 
   test "sha1 of some content" do

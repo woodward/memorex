@@ -11,8 +11,10 @@ defmodule Memorex.Domain.Note do
 
   @type t :: %__MODULE__{
           id: Schema.id() | nil,
+          category: String.t() | nil,
           content: [String.t()],
           in_latest_parse?: boolean(),
+          #
           deck_id: Schema.id() | nil,
           #
           inserted_at: DateTime.t() | nil,
@@ -20,6 +22,7 @@ defmodule Memorex.Domain.Note do
         }
 
   schema "notes" do
+    field :category, :binary
     field :content, {:array, :binary}
     field :in_latest_parse?, :boolean
 
@@ -31,23 +34,34 @@ defmodule Memorex.Domain.Note do
 
   @spec new(Keyword.t()) :: t()
   def new(opts \\ []) do
+    category = Keyword.get(opts, :category)
     content = Keyword.get(opts, :content)
     deck = Keyword.get(opts, :deck)
     deck_id = if deck, do: deck.id, else: nil
     in_latest_parse? = Keyword.get(opts, :in_latest_parse?, true)
-    %__MODULE__{id: content_to_uuid(content), content: content, in_latest_parse?: in_latest_parse?, deck_id: deck_id}
+
+    %__MODULE__{
+      id: content_to_uuid(content, category),
+      category: category,
+      content: content,
+      in_latest_parse?: in_latest_parse?,
+      deck_id: deck_id
+    }
   end
 
   @spec create_uuid_from_content(Ecto.Changeset.t()) :: Ecto.Changeset.t()
   def create_uuid_from_content(changeset) do
+    content = changeset |> get_change(:content)
+    category = changeset |> get_change(:category)
+
     changeset
-    |> put_change(:id, changeset |> get_change(:content) |> content_to_uuid())
+    |> put_change(:id, content_to_uuid(content, category))
   end
 
-  @spec content_to_uuid([String.t()]) :: String.t()
-  def content_to_uuid(content) do
+  @spec content_to_uuid([String.t()], String.t() | nil) :: String.t()
+  def content_to_uuid(content, category) do
     content
-    |> Enum.reduce("", fn content_line, acc -> content_line <> acc end)
+    |> Enum.reduce("#{category}", fn content_line, acc -> content_line <> acc end)
     |> sha1()
     |> sha1_to_uuid()
   end

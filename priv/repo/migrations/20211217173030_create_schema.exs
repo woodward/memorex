@@ -13,6 +13,7 @@ defmodule Memorex.Ecto.Repo.Migrations.CreateSchema do
     create table("notes") do
       add :content, {:array, :text}
       add :in_latest_parse?, :boolean, default: false, null: false
+      add :category, :text
 
       add :deck_id, references(:decks, on_delete: :delete_all)
 
