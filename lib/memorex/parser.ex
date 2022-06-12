@@ -6,11 +6,13 @@ defmodule Memorex.Parser do
   alias Memorex.Ecto.Repo
   alias Memorex.Domain.{Card, Deck, Note}
 
-  @spec read_file(String.t(), Deck.t() | nil) :: :ok
-  def read_file(filename, deck \\ nil) do
+  @spec read_file(String.t(), Keyword.t()) :: :ok
+  def read_file(filename, opts \\ []) do
+    deck = Keyword.get(opts, :deck)
+
     filename
     |> File.read!()
-    |> parse_file_contents(deck)
+    |> parse_file_contents(deck: deck)
   end
 
   @spec read_dir(String.t()) :: :ok
@@ -22,7 +24,7 @@ defmodule Memorex.Parser do
       |> load_config_file_if_it_exists(Path.join(dirname, "deck_config.toml"))
 
     Path.wildcard(dirname <> "/*.md")
-    |> Enum.each(&read_file(&1, deck))
+    |> Enum.each(&read_file(&1, deck: deck))
   end
 
   @spec read_note_dirs([String.t()] | nil) :: :ok
@@ -43,7 +45,7 @@ defmodule Memorex.Parser do
             :regular ->
               if Path.extname(file_or_dir) == ".md" do
                 deck = Decks.find_or_create!(Path.rootname(file_or_dir))
-                read_file(pathname, deck)
+                read_file(pathname, deck: deck)
                 config_filename = Path.rootname(pathname) <> ".deck_config.toml"
                 load_config_file_if_it_exists(deck, config_filename)
               end
@@ -61,8 +63,10 @@ defmodule Memorex.Parser do
   @spec does_not_start_with_dot(String.t()) :: boolean()
   defp does_not_start_with_dot(file_or_dir), do: !String.starts_with?(file_or_dir, ".")
 
-  @spec parse_file_contents(String.t(), Deck.t() | nil) :: :ok
-  def parse_file_contents(contents, deck \\ nil) do
+  @spec parse_file_contents(String.t(), Keyword.t()) :: :ok
+  def parse_file_contents(contents, opts \\ []) do
+    deck = Keyword.get(opts, :deck)
+
     contents
     |> String.split("\n")
     |> Enum.each(fn line ->

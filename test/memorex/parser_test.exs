@@ -15,7 +15,7 @@ defmodule Memorex.ParserTest do
 
     test "can take an optional deck" do
       deck = Repo.insert!(%Deck{name: "My Deck"})
-      Parser.read_file("test/fixtures/deck1.md", deck)
+      Parser.read_file("test/fixtures/deck1.md", deck: deck)
 
       deck = Repo.all(Deck) |> Repo.preload(:notes) |> Repo.preload(:cards) |> List.first()
 
@@ -153,7 +153,7 @@ defmodule Memorex.ParserTest do
       one ⮂ one
       """
 
-      Parser.parse_file_contents(file_contents, deck)
+      Parser.parse_file_contents(file_contents, deck: deck)
 
       note = Repo.all(Note) |> Repo.preload(:deck) |> List.first()
       assert note.deck.id == deck.id
