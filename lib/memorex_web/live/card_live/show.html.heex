@@ -20,7 +20,7 @@
         <td> <%= format_iso_datetime(card_log.inserted_at) %> </td>
         <td> :<%= card_log.last_card_type %> </td>
         <td> :<%= card_log.card_type %> </td>
-        <td> <%= show_dash_if_nil(card_log.answer_choice) %> </td>
+        <td> <%= answer_choice(card_log.answer_choice) %> </td>
         <td> <%= format_iso_datetime(card_log.due) %> </td>
         <td> <%= format(card_log.interval) %> </td>
         <td> <%= ease_factor(card_log.ease_factor) %> </td>
