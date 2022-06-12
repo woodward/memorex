@@ -157,6 +157,15 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
       assert changes == %{ease_factor: 2.6, interval: Duration.parse!("P5D")}
     end
 
+    test "answer: 'good' - bug fix - time_now is BEFORE due" do
+      config = %Config{ease_good: 0.1, interval_multiplier: 1.0, max_review_interval: Duration.parse!("P100Y")}
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P100D"), due: ~U[2022-01-01 12:00:00Z]}
+      time_now = ~U[2021-12-24 12:00:00Z]
+
+      changes = CardStateMachine.answer_card(card, :good, config, time_now)
+      assert changes == %{ease_factor: 2.6, interval: Duration.parse!("P260D")}
+    end
+
     test "answer: 'easy'" do
       # Based on:
       # https://github.com/ankitects/anki/blob/fbb0d909354b53e602151206dab442e92969b3a8/pylib/tests/test_schedv2.py#L406
@@ -184,6 +193,15 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
 
       changes = CardStateMachine.answer_card(card, :easy, config, time_now)
       assert changes == %{ease_factor: 2.65, interval: Duration.parse!("P5D")}
+    end
+
+    test "answer: 'easy' - bug fix - time_now is BEFORE due date/time" do
+      config = %Config{interval_multiplier: 1.0, easy_multiplier: 1.3, ease_easy: 0.15, max_review_interval: Duration.parse!("P100Y")}
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P100D"), due: ~U[2022-01-01 12:00:00Z]}
+      time_now = ~U[2021-12-24 12:00:00Z]
+
+      changes = CardStateMachine.answer_card(card, :easy, config, time_now)
+      assert changes == %{ease_factor: 2.65, interval: Duration.parse!("P351D")}
     end
   end
 

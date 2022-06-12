@@ -65,7 +65,7 @@ defmodule Memorex.Scheduler.CardStateMachine do
   end
 
   def answer_card(%Card{card_type: :review} = card, :good, config, time_now) do
-    gap_between_due_and_now = Timex.diff(time_now, card.due, :duration)
+    gap_between_due_and_now = Timex.diff(time_now, card.due, :duration) |> Duration.abs()
     half_of_gap_between_due_and_now = Duration.scale(gap_between_due_and_now, 0.5)
     scale = card.ease_factor * config.interval_multiplier
     ease_factor = card.ease_factor + config.ease_good
@@ -79,7 +79,7 @@ defmodule Memorex.Scheduler.CardStateMachine do
   end
 
   def answer_card(%Card{card_type: :review} = card, :easy, config, time_now) do
-    gap_between_due_and_now = Timex.diff(time_now, card.due, :duration)
+    gap_between_due_and_now = Timex.diff(time_now, card.due, :duration) |> Duration.abs()
     scale = card.ease_factor * config.interval_multiplier * config.easy_multiplier
     ease_factor = card.ease_factor + config.ease_easy
 
