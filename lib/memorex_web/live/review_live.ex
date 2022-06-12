@@ -61,16 +61,16 @@ defmodule MemorexWeb.ReviewLive do
     {card_end_state, card_log} = CardReviewer.answer_card_and_create_log_entry(card, answer_choice, start_time, end_time, config)
 
     learn_ahead_time = Timex.add(end_time, config.learn_ahead_time_interval)
-    new_card = if card_id, do: card_end_state, else: Cards.get_one_random_due_card(deck.id, learn_ahead_time)
-    interval_choices = if new_card, do: Cards.get_interval_choices(new_card, config, end_time)
+    next_card = if card_id, do: card_end_state, else: Cards.get_one_random_due_card(deck.id, learn_ahead_time)
+    interval_choices = if next_card, do: Cards.get_interval_choices(next_card, config, end_time)
     num_of_reviewed_cards = CardLogs.reviews_count_for_day(deck.id, end_time, config.timezone)
 
-    Phoenix.PubSub.broadcast_from(Memorex.PubSub, self(), "card:#{new_card.id}", :updated_card)
+    Phoenix.PubSub.broadcast_from(Memorex.PubSub, self(), "card:#{next_card.id}", :updated_card)
 
     {:noreply,
      socket
      |> assign(
-       card: new_card,
+       card: next_card,
        daily_review_limit_reached?: num_of_reviewed_cards > config.max_reviews_per_day,
        deck_stats: DeckStats.new(deck.id, end_time),
        display: :show_question,
