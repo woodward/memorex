@@ -4,14 +4,14 @@
   <h3 class="title is-4"> No cards to review </h3>
 <% else %>
 
-  <h4 class="title is-4"> <%= Card.question(@card) %> </h4>
+  <h4 class="title is-4"> Question: <%= Card.question(@card) %> </h4>
 
   <%= if @display == :show_question do %>
     <button class="button" phx-click="show-answer"> Answer </button>
   <% end %>
 
   <%= if @display == :show_question_and_answer do %>
-    <h4 class="title is-4"> <%= Card.answer(@card) %> </h4>
+    <h4 class="title is-4"> Answer: <%= Card.answer(@card) %> </h4>
 
     <button class="button is-medium is-danger" phx-click="rate-difficulty" phx-value-answer_choice="again">
       <div>
