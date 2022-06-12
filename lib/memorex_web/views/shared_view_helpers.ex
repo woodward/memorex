@@ -43,7 +43,9 @@ defmodule MemorexWeb.SharedViewHelpers do
     |> String.downcase()
   end
 
-  @spec format_datetime(DateTime.t()) :: String.t()
+  @spec format_datetime(nil | DateTime.t()) :: String.t()
+  def format_datetime(nil), do: "-"
+
   def format_datetime(%DateTime{} = datetime) do
     # See: https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Strftime.html
     datetime |> TimeUtils.to_timezone() |> Timex.format!("%a, %b %e, %Y, %l:%M %P", :strftime)
