@@ -62,5 +62,9 @@ defmodule MemorexWeb.SharedViewHelpersTest do
     test "Strips off milliseconds if other time values are present" do
       assert format(Duration.parse!("P9DT5H21M11.31125S")) == "1 week, 2 days, 5 hours, 21 minutes"
     end
+
+    test "Converts 0 microseconds to now" do
+      assert format(Duration.parse!("PT0S")) == "Now"
+    end
   end
 end

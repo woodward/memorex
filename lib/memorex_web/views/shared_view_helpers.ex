@@ -13,6 +13,7 @@ defmodule MemorexWeb.SharedViewHelpers do
     Timex.Format.Duration.Formatters.Humanized.format(duration)
     |> strip_off_seconds()
     |> strip_off_milliseconds()
+    |> zero_microseconds_to_now()
   end
 
   @spec truncate(String.t(), Keyword.t()) :: String.t()
@@ -68,4 +69,7 @@ defmodule MemorexWeb.SharedViewHelpers do
 
   @spec strip_off_milliseconds(String.t()) :: String.t()
   defp strip_off_milliseconds(formatted_time), do: String.replace(formatted_time, ~r/, \d*.\d* milliseconds/, "")
+
+  @spec zero_microseconds_to_now(String.t()) :: String.t()
+  defp zero_microseconds_to_now(formatted_time), do: String.replace(formatted_time, "0 microseconds", "Now")
 end
