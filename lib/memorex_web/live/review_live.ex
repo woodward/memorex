@@ -5,7 +5,7 @@ defmodule MemorexWeb.ReviewLive do
   alias Memorex.{Cards, CardLogs, DeckStats, TimeUtils}
   alias Memorex.Scheduler.{CardReviewer, Config}
   alias Memorex.Ecto.Repo
-  alias Memorex.Domain.{Card, Deck}
+  alias Memorex.Domain.{Card, Deck, Note}
   alias Phoenix.LiveView.JS
 
   @impl true
@@ -65,7 +65,7 @@ defmodule MemorexWeb.ReviewLive do
     interval_choices = if next_card, do: Cards.get_interval_choices(next_card, config, end_time)
     num_of_reviewed_cards = CardLogs.reviews_count_for_day(deck.id, end_time, config.timezone)
 
-    Phoenix.PubSub.broadcast_from(Memorex.PubSub, self(), "card:#{next_card.id}", :updated_card)
+    if next_card, do: Phoenix.PubSub.broadcast_from(Memorex.PubSub, self(), "card:#{next_card.id}", :updated_card)
 
     {:noreply,
      socket
@@ -102,4 +102,8 @@ defmodule MemorexWeb.ReviewLive do
 
   @spec debug_mode?() :: boolean()
   def debug_mode?(), do: Application.get_env(:memorex, MemorexWeb.ReviewLive)[:debug_mode?]
+
+  def note_category(nil), do: nil
+  def note_category(%Card{note: %Note{category: nil}}), do: nil
+  def note_category(%Card{note: %Note{category: category}}), do: " - #{category}"
 end

@@ -1,4 +1,4 @@
-<h1 class="title is-3"> Deck: <%= @deck.name %> </h1>
+<h1 class="title is-3"> Deck: <%= @deck.name %><%= note_category(@card) %> </h1>
 
 <%= if !@card || @daily_review_limit_reached? do %>
   <h3 class="title is-4"> No cards to review </h3>
