@@ -3,7 +3,8 @@ defmodule MemorexWeb.CardLive.Index do
 
   use MemorexWeb, :live_view
 
-  alias Memorex.{Cards, Repo}
+  alias Memorex.Cards
+  alias Memorex.Ecto.Repo
   alias Memorex.Cards.Card
 
   require Ecto.Query

@@ -2,7 +2,7 @@ defmodule Memorex.Cards.CardLogTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.Repo
+  alias Memorex.Ecto.Repo
   alias Memorex.Cards.{Card, CardLog, Note}
   alias Timex.Duration
 

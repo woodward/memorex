@@ -5,7 +5,7 @@ defmodule Memorex.Cards.Card do
   import Ecto.Changeset
 
   alias Memorex.Cards.{CardLog, Note}
-  alias Memorex.Repo
+  alias Memorex.Ecto.Repo
   alias Memorex.Ecto.{TimexDuration, Schema}
   alias Timex.Duration
 

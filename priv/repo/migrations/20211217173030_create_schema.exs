@@ -1,4 +1,4 @@
-defmodule Memorex.Repo.Migrations.CreateSchema do
+defmodule Memorex.Ecto.Repo.Migrations.CreateSchema do
   @moduledoc false
   use Ecto.Migration
 

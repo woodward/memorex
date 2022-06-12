@@ -2,7 +2,8 @@ defmodule Memorex.DeckStatsTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.{DeckStats, Repo}
+  alias Memorex.DeckStats
+  alias Memorex.Ecto.Repo
   alias Memorex.Cards.{Card, Deck, Note}
 
   describe "new/2" do

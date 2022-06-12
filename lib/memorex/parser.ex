@@ -1,7 +1,8 @@
 defmodule Memorex.Parser do
   @moduledoc false
 
-  alias Memorex.{ConfigFile, Decks, Repo}
+  alias Memorex.{ConfigFile, Decks}
+  alias Memorex.Ecto.Repo
   alias Memorex.Cards.{Card, Deck, Note}
 
   @spec read_file(String.t(), Deck.t() | nil) :: :ok

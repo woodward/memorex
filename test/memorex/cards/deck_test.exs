@@ -3,6 +3,7 @@ defmodule Memorex.Cards.DeckTest do
   use Memorex.DataCase
 
   alias Memorex.Cards.{Card, CardLog, Deck, Note}
+  alias Memorex.Ecto.Repo
   alias Timex.Duration
 
   test "deletes notes, cards, and card logs when deleted" do

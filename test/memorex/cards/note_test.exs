@@ -2,7 +2,8 @@ defmodule Memorex.Cards.NoteTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.{Parser, Repo}
+  alias Memorex.Parser
+  alias Memorex.Ecto.Repo
   alias Memorex.Cards.{Card, CardLog, Note}
   alias Timex.Duration
 

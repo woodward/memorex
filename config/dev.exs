@@ -1,7 +1,7 @@
 import Config
 
 # Configure your database
-config :memorex, Memorex.Repo,
+config :memorex, Memorex.Ecto.Repo,
   username: "postgres",
   password: "postgres",
   database: "memorex_dev",

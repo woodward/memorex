@@ -5,7 +5,7 @@ defmodule Memorex.Cards.Note do
   import Ecto.Changeset
   require Ecto.Query
 
-  alias Memorex.Repo
+  alias Memorex.Ecto.Repo
   alias Memorex.Ecto.Schema
   alias Memorex.Cards.{Card, Deck, Note}
 

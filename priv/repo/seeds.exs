@@ -5,7 +5,7 @@
 # Inside the script, you can read and write to any of your
 # repositories directly:
 #
-#     Memorex.Repo.insert!(%Memorex.SomeSchema{})
+#     Memorex.Ecto.Repo.insert!(%Memorex.SomeSchema{})
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.

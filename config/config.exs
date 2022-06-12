@@ -8,9 +8,9 @@
 import Config
 
 config :memorex,
-  ecto_repos: [Memorex.Repo]
+  ecto_repos: [Memorex.Ecto.Repo]
 
-config :memorex, Memorex.Repo,
+config :memorex, Memorex.Ecto.Repo,
   # See `:migration_primary_key` description here: https://hexdocs.pm/ecto_sql/Ecto.Migration.html#module-repo-configuration
   migration_primary_key: [name: :id, type: :binary_id],
   migration_foreign_key: [column: :id, type: :binary_id],

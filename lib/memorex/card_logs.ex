@@ -3,7 +3,8 @@ defmodule Memorex.CardLogs do
 
   import Ecto.Query
 
-  alias Memorex.{Repo, TimeUtils}
+  alias Memorex.TimeUtils
+  alias Memorex.Ecto.Repo
   alias Memorex.Ecto.Schema
   alias Memorex.Cards.{Card, CardLog, Deck, Note}
 

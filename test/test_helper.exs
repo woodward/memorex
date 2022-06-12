@@ -1,2 +1,2 @@
 ExUnit.start()
-Ecto.Adapters.SQL.Sandbox.mode(Memorex.Repo, :manual)
+Ecto.Adapters.SQL.Sandbox.mode(Memorex.Ecto.Repo, :manual)

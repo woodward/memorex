@@ -1,7 +1,7 @@
 defmodule Memorex.Decks do
   @moduledoc false
 
-  alias Memorex.Repo
+  alias Memorex.Ecto.Repo
   alias Memorex.Cards.Deck
 
   @spec find_or_create!(String.t()) :: Deck.t()
