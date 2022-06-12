@@ -1,9 +1,9 @@
 defmodule Memorex.Cards.CardLog do
   @moduledoc false
 
-  use Memorex.Schema
+  use Memorex.Ecto.Schema
 
-  alias Memorex.{EctoTimexDuration, Schema}
+  alias Memorex.Ecto.{Schema, TimexDuration}
   alias Memorex.Cards.Card
   alias Timex.Duration
 
@@ -36,14 +36,14 @@ defmodule Memorex.Cards.CardLog do
     field :current_step, :integer
     field :due, :utc_datetime
     field :ease_factor, :float
-    field :interval, EctoTimexDuration
+    field :interval, TimexDuration
     field :last_card_type, Ecto.Enum, values: [:new, :learn, :review, :relearn]
     field :last_due, :utc_datetime
     field :last_ease_factor, :float
-    field :last_interval, EctoTimexDuration
+    field :last_interval, TimexDuration
     field :last_step, :integer
     field :reps, :integer
-    field :time_to_answer, EctoTimexDuration
+    field :time_to_answer, TimexDuration
 
     belongs_to :card, Card
     has_one :note, through: [:card, :note]

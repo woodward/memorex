@@ -1,10 +1,10 @@
 defmodule Memorex.Cards.Deck do
   @moduledoc false
 
-  use Memorex.Schema
+  use Memorex.Ecto.Schema
   import Ecto.Changeset
 
-  alias Memorex.Schema
+  alias Memorex.Ecto.Schema
   alias Memorex.Cards.Note
 
   @type t :: %__MODULE__{

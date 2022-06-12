@@ -1,11 +1,12 @@
 defmodule Memorex.Cards.Note do
   @moduledoc false
 
-  use Memorex.Schema
+  use Memorex.Ecto.Schema
   import Ecto.Changeset
   require Ecto.Query
 
-  alias Memorex.{Repo, Schema}
+  alias Memorex.Repo
+  alias Memorex.Ecto.Schema
   alias Memorex.Cards.{Card, Deck, Note}
 
   @type t :: %__MODULE__{

@@ -1,11 +1,12 @@
 defmodule Memorex.Cards.Card do
   @moduledoc false
 
-  use Memorex.Schema
+  use Memorex.Ecto.Schema
   import Ecto.Changeset
 
   alias Memorex.Cards.{CardLog, Note}
-  alias Memorex.{EctoTimexDuration, Repo, Schema}
+  alias Memorex.Repo
+  alias Memorex.Ecto.{TimexDuration, Schema}
   alias Timex.Duration
 
   @type card_queue :: :new | :learn | :review | :day_learn | :suspended | :buried
@@ -45,7 +46,7 @@ defmodule Memorex.Cards.Card do
     field :current_step, :integer
     field :due, :utc_datetime
     field :ease_factor, :float
-    field :interval, EctoTimexDuration
+    field :interval, TimexDuration
     field :lapses, :integer
     field :note_answer_index, :integer
     field :note_question_index, :integer

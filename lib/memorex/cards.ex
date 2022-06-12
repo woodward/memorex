@@ -4,7 +4,8 @@ defmodule Memorex.Cards do
   import Ecto.Query
 
   alias Memorex.Cards.{Card, CardLog, Deck, Note}
-  alias Memorex.{CardStateMachine, Config, Repo, Schema}
+  alias Memorex.{CardStateMachine, Config, Repo}
+  alias Memorex.Ecto.Schema
   alias Timex.Duration
 
   @spec update_card!(Card.t(), map(), DateTime.t()) :: Card.t()

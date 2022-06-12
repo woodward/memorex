@@ -3,7 +3,8 @@ defmodule Memorex.CardLogs do
 
   import Ecto.Query
 
-  alias Memorex.{Repo, Schema, TimeUtils}
+  alias Memorex.{Repo, TimeUtils}
+  alias Memorex.Ecto.Schema
   alias Memorex.Cards.{Card, CardLog, Deck, Note}
 
   @spec for_day(Ecto.Query.t(), DateTime.t(), String.t()) :: Ecto.Query.t()

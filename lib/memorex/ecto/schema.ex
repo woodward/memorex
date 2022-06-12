@@ -1,4 +1,4 @@
-defmodule Memorex.Schema do
+defmodule Memorex.Ecto.Schema do
   @moduledoc false
 
   @type id :: Ecto.UUID.t()

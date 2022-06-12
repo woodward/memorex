@@ -1,4 +1,4 @@
-defmodule Memorex.EctoTimexDuration do
+defmodule Memorex.Ecto.TimexDuration do
   @moduledoc false
 
   # See: https://hexdocs.pm/ecto/Ecto.Type.html

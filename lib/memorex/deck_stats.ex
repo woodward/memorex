@@ -1,7 +1,8 @@
 defmodule Memorex.DeckStats do
   @moduledoc false
 
-  alias Memorex.{Cards, Schema}
+  alias Memorex.Cards
+  alias Memorex.Ecto.Schema
 
   @type t :: %__MODULE__{
           total: non_neg_integer(),
