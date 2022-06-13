@@ -223,7 +223,12 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
     # ======================== Review Cards ============================================================================
     test "review card - answer :again" do
-      config = %Config{ease_again: -0.2, relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")], lapse_multiplier: 0.0}
+      config = %Config{
+        ease_again: -0.2,
+        relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")],
+        lapse_multiplier: 0.0,
+        min_review_interval: Duration.parse!("P1D")
+      }
 
       card =
         %Card{
@@ -242,9 +247,9 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       # assert card.card_queue == :review
       assert card.card_type == :relearn
-      assert card.due == ~U[2022-01-01 12:00:00Z]
+      assert card.due == ~U[2022-01-02 12:00:00Z]
       assert card.ease_factor == 2.3
-      assert card.interval == Duration.parse!("PT0S")
+      assert card.interval == Duration.parse!("P1D")
       assert card.lapses == 1
       assert card.current_step == 0
       assert card.reps == 4
@@ -600,6 +605,53 @@ defmodule Memorex.Scheduler.CardReviewerTest do
       assert card.ease_factor == 2.65
       assert card.interval == Duration.parse!("P351D")
       assert card.lapses == 1
+      assert card.reps == 4
+    end
+  end
+
+  describe "tests from anki - relearn - 'test_relearn' sequence (matches up with 'test_relearn' in anki/pylib/tests/test_schedv2.py" do
+    # Based on:
+    # https://github.com/ankitects/anki/blob/4d51ee8a645fd1fd8b4116df25299139af07d518/pylib/tests/test_schedv2.py#L211
+
+    test "fail the card and then immediately graduate it back to :review" do
+      config = %Config{
+        ease_again: -0.2,
+        # ease_hard: -0.15,
+        # ease_good: 0.0,
+        # ease_easy: 0.15,
+        # #
+        # easy_multiplier: 1.3,
+        # hard_multiplier: 1.2,
+        lapse_multiplier: 0.0,
+        # interval_multiplier: 1.0,
+        # #
+        # max_review_interval: Duration.parse!("P100Y"),
+        min_review_interval: Duration.parse!("P1D")
+      }
+
+      time_now = ~U[2022-01-01 12:00:00Z]
+
+      card =
+        %Card{
+          card_type: :review,
+          due: time_now,
+          interval: Duration.parse!("P100D"),
+          reps: 3,
+          ease_factor: 2.5,
+          lapses: 1
+        }
+        |> Repo.insert!()
+
+      [time_now: time_now, config: config, card: card]
+
+      card = CardReviewer.answer_card(card, :again, time_now, config)
+
+      assert card.card_type == :relearn
+      assert card.current_step == 0
+      assert card.due == ~U[2022-01-02 12:00:00Z]
+      assert card.ease_factor == 2.3
+      assert card.interval == Duration.parse!("P1D")
+      assert card.lapses == 2
       assert card.reps == 4
     end
   end
