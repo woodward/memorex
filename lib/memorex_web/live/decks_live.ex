@@ -28,6 +28,35 @@ defmodule MemorexWeb.DecksLive do
           </li>
         <% end %>
       </ul>
+
+      <table class="table">
+        <thead>
+          <th> Deck </th>
+          <th> Total </th>
+          <th> New </th>
+          <th> Learn </th>
+          <th> Review </th>
+          <th> Due </th>
+          <th>  </th>
+          <th> Actions </th>
+          <th>  </th>
+        </thead>
+        <tbody>
+          <%= for {deck, deck_stats} <- @decks do %>
+            <tr>
+              <td class="has-text-weight-bold"> <%= deck.name %> </td>
+              <td> <%= deck_stats.total %> </td>
+              <td> <%= deck_stats.new %> </td>
+              <td> <%= deck_stats.learn %> </td>
+              <td> <%= deck_stats.review %> </td>
+              <td> <%= deck_stats.due %> </td>
+              <td> <%= live_patch "All Cards", to: Routes.card_index_path(@socket, :index, %{deck_id: deck.id}), class: "button" %> </td>
+              <td> <%= live_patch "Review", to: Routes.review_path(@socket, :home, %{deck: deck}), class: "button"  %> </td>
+              <td> <a phx-click="add-new-batch-of-learn-cards" phx-value-deck_id={ deck.id } class="button"> Add New Cards </a> </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     </div>
     """
   end
