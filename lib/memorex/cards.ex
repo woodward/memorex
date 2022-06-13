@@ -53,11 +53,15 @@ defmodule Memorex.Cards do
     # The following RANDOM line is untested (but without it cards are definitely NOT random):
     |> order_by(fragment("RANDOM()"))
     |> Repo.all()
-    |> Enum.each(fn card_before ->
-      updates = CardStateMachine.convert_new_card_to_learn_card(card_before, config, time_now)
-      card_after = card_before |> Card.changeset(updates) |> Repo.update!()
-      CardLog.new(nil, card_before, card_after, nil) |> Repo.insert!()
-    end)
+    |> Enum.each(&convert_new_card_to_learn_card(&1, config, time_now))
+  end
+
+  @spec convert_new_card_to_learn_card(Card.t(), Config.t(), DateTime.t()) :: Card.t()
+  def convert_new_card_to_learn_card(card_before, config, time_now) do
+    updates = CardStateMachine.convert_new_card_to_learn_card(card_before, config, time_now)
+    card_after = card_before |> Card.changeset(updates) |> Repo.update!()
+    CardLog.new(nil, card_before, card_after, nil) |> Repo.insert!()
+    card_after
   end
 
   @spec where_due(Ecto.Query.t(), DateTime.t()) :: Ecto.Query.t()

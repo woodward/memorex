@@ -27,6 +27,13 @@ defmodule MemorexWeb.ReviewLive do
     card_id = params["card_id"]
     learn_ahead_time = Timex.add(time_now, config.learn_ahead_time_interval)
     card = if card_id, do: Cards.get_card!(card_id), else: Cards.get_one_random_due_card(deck.id, learn_ahead_time)
+
+    card =
+      case card.card_type do
+        :new -> Cards.convert_new_card_to_learn_card(card, config, time_now)
+        _ -> card
+      end
+
     interval_choices = if card, do: Cards.get_interval_choices(card, config, time_now)
     num_of_reviewed_cards = CardLogs.reviews_count_for_day(deck.id, time_now, config.timezone)
 

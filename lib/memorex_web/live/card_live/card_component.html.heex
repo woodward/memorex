@@ -8,56 +8,56 @@
 
   <table class="table">
     <tr>
-      <td> Question </td>
+      <td class="has-text-weight-bold"> Question </td>
       <td> <%= Card.question(@card) %> </td>
     </tr>
     <tr>
-      <td> Answer </td>
+      <td class="has-text-weight-bold"> Answer </td>
       <td> <%= Card.answer(@card) %> </td>
     </tr>
 
     <%= if @card_log do %>
       <tr>
-        <td> Answer Choice </td>
+        <td class="has-text-weight-bold"> Answer Choice </td>
         <td> <%= @card_log.answer_choice %> </td>
       </tr>
       <tr>
-        <td> Time to Answer </td>
+        <td class="has-text-weight-bold"> Time to Answer </td>
         <td> <%= format(@card_log.time_to_answer) %> </td>
       </tr>
 
     <% else %>  
       <tr>
-        <td> Card Type </td>
+        <td class="has-text-weight-bold"> Card Type </td>
         <td> :<%=@card.card_type %> </td>
       </tr>
       <tr>
-        <td> Interval </td>
+        <td class="has-text-weight-bold"> Interval </td>
         <td> <%= format(@card.interval) %> </td>
       </tr>
       <tr>
-        <td> Ease Factor </td>
+        <td class="has-text-weight-bold"> Ease Factor </td>
         <td> <%= ease_factor(@card.ease_factor) %> </td>
       </tr>
       <tr>
-        <td> Due </td>
+        <td class="has-text-weight-bold"> Due </td>
         <td> <%= format_datetime(@card.due) %> </td>
       </tr>
       <tr>
-        <td> Current Step </td>
+        <td class="has-text-weight-bold"> Current Step </td>
         <td> <%=@card.current_step %> </td>
       </tr>
     <% end %>
     
     <tr>
-      <td> Lapses </td>
+      <td class="has-text-weight-bold"> Lapses </td>
       <td> <%=@card.lapses %> </td>
     </tr>
 
   </table>
 
   <%= if !@card_log do %>
-    <h2> This card has never been answered </h2>
+    <h2 class="title is-4"> This card has never been answered </h2>
   <% else %>
     <table class="table">
       <thead>

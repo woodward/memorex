@@ -153,6 +153,49 @@ defmodule Memorex.CardsTest do
     end
   end
 
+  describe "convert_new_card_to_learn_card" do
+    test "converts a card from a :new card to a :learn card" do
+      card_before = Repo.insert!(%Card{card_type: :new})
+
+      config = %Config{learn_steps: [Duration.parse!("PT1M"), Duration.parse!("PT10M")]}
+      time_now = ~U[2022-02-01 12:00:00Z]
+      query = Ecto.Query.from(c in Card, where: c.card_type == :learn)
+      assert Enum.empty?(Repo.all(query))
+
+      card_after = Cards.convert_new_card_to_learn_card(card_before, config, time_now)
+
+      learn_cards = Repo.all(query)
+      assert length(Repo.all(query)) == 1
+
+      [learn_card] = learn_cards
+      assert learn_card.id == card_after.id
+
+      assert card_after.card_type == :learn
+      assert card_after.due == time_now
+      assert card_after.interval == Duration.parse!("PT1M")
+      assert card_after.reps == 0
+
+      card_logs = Ecto.Query.from(CardLog) |> Repo.all()
+
+      assert length(card_logs) == 1
+      [card_log] = card_logs
+
+      assert card_log.answer_choice == nil
+      assert card_log.card_type == :learn
+      assert card_log.current_step == 0
+      assert card_log.due == time_now
+      assert card_log.ease_factor == nil
+      assert card_log.interval == Duration.parse!("PT1M")
+      assert card_log.last_card_type == :new
+      assert card_log.last_due == nil
+      assert card_log.last_ease_factor == nil
+      assert card_log.last_interval == nil
+      assert card_log.last_step == nil
+      assert card_log.reps == 0
+      assert card_log.time_to_answer == nil
+    end
+  end
+
   describe "where_due/2" do
     test "returns the due cards" do
       time_now = ~U[2022-02-01 12:00:00Z]

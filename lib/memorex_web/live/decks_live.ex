@@ -10,21 +10,21 @@ defmodule MemorexWeb.DecksLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <h1> Decks </h1>
+    <h1 class="title"> Decks </h1>
 
     <div class="content">
       <ul>
         <%= for {deck, deck_stats} <- @decks do %>
           <li>
-            <%=  deck.name %>
-            (Total: <%= deck_stats.total %>,
+            <span class="subtitle is-4"> <%=  deck.name %> </span>
+            [Total: <%= deck_stats.total %>,
             New: <%= deck_stats.new %>,
             Learn: <%= deck_stats.learn %>,
             Review: <%= deck_stats.review %>,
-            Due: <%= deck_stats.due %> )
-            <%= live_patch "All Cards", to: Routes.card_index_path(@socket, :index, %{deck_id: deck.id}) %>
-            <%= live_patch "Review", to: Routes.review_path(@socket, :home, %{deck: deck}) %>
-            <a phx-click="add-new-batch-of-learn-cards" phx-value-deck_id={ deck.id }> Add New Cards </a>
+            Due: <%= deck_stats.due %> ]
+            <%= live_patch "All Cards", to: Routes.card_index_path(@socket, :index, %{deck_id: deck.id}), class: "button" %>
+            <%= live_patch "Review", to: Routes.review_path(@socket, :home, %{deck: deck}), class: "button"  %>
+            <a phx-click="add-new-batch-of-learn-cards" phx-value-deck_id={ deck.id } class="button"> Add New Cards </a>
           </li>
         <% end %>
       </ul>
