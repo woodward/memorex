@@ -58,9 +58,10 @@ defmodule Memorex.Scheduler.CardStateMachine do
   end
 
   def answer_card(%Card{card_type: :review} = card, :hard, config, _time_now) do
-    scale = config.hard_multiplier * config.interval_multiplier
+    # Note that interval_scale doesn't multiply by ease_factor for this case
+    interval_scale = config.hard_multiplier * config.interval_multiplier
     ease_factor = card.ease_factor + config.ease_hard
-    interval = Duration.scale(card.interval, scale) |> cap_duration(config.max_review_interval)
+    interval = Duration.scale(card.interval, interval_scale) |> cap_duration(config.max_review_interval)
     %{ease_factor: ease_factor, interval: interval}
   end
 
@@ -71,12 +72,12 @@ defmodule Memorex.Scheduler.CardStateMachine do
         _ -> Duration.parse!("PT0S")
       end
 
-    scale = card.ease_factor * config.interval_multiplier
+    interval_scale = card.ease_factor * config.interval_multiplier
     ease_factor = card.ease_factor + config.ease_good
 
     interval =
       Duration.add(card.interval, gap)
-      |> Duration.scale(scale)
+      |> Duration.scale(interval_scale)
       |> cap_duration(config.max_review_interval)
 
     %{ease_factor: ease_factor, interval: interval}
@@ -89,12 +90,12 @@ defmodule Memorex.Scheduler.CardStateMachine do
         _ -> Duration.parse!("PT0S")
       end
 
-    scale = card.ease_factor * config.interval_multiplier * config.easy_multiplier
+    interval_scale = card.ease_factor * config.interval_multiplier * config.easy_multiplier
     ease_factor = card.ease_factor + config.ease_easy
 
     interval =
       Duration.add(card.interval, gap)
-      |> Duration.scale(scale)
+      |> Duration.scale(interval_scale)
       |> cap_duration(config.max_review_interval)
 
     %{ease_factor: ease_factor, interval: interval}
