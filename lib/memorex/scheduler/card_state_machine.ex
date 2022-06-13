@@ -49,9 +49,15 @@ defmodule Memorex.Scheduler.CardStateMachine do
   # --------------- Review Cards ---------------------------------------------------------------------------------------
 
   def answer_card(%Card{card_type: :review} = card, :again, config, _time_now) do
-    # interval = Duration.scale(card.interval, config.lapse_multiplier)
-    # Or should interval = first relearn step???
     interval_prior_to_lapse = card.interval
+    scaled_interval = Duration.scale(card.interval, config.lapse_multiplier)
+
+    interval =
+      if Duration.to_seconds(scaled_interval) < Duration.to_seconds(config.min_review_interval) do
+        config.min_review_interval
+      else
+        scaled_interval
+      end
 
     ease_factor = card.ease_factor + config.ease_again
     lapses = card.lapses + 1
@@ -61,7 +67,7 @@ defmodule Memorex.Scheduler.CardStateMachine do
       current_step: 0,
       ease_factor: ease_factor,
       interval_prior_to_lapse: interval_prior_to_lapse,
-      interval: config.min_review_interval,
+      interval: interval,
       lapses: lapses
     }
   end

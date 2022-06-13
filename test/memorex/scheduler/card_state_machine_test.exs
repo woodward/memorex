@@ -93,7 +93,29 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
       config = %Config{
         lapse_multiplier: 0.5,
         ease_again: -0.3,
-        relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT1H")],
+        min_review_interval: Duration.parse!("P1D")
+      }
+
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D"), current_step: 3, lapses: 3}
+      unused_time_now = ~U[2022-01-01 12:00:00Z]
+
+      changes = CardStateMachine.answer_card(card, :again, config, unused_time_now)
+
+      assert changes == %{
+               ease_factor: 2.2,
+               card_type: :relearn,
+               current_step: 0,
+               interval: Duration.parse!("P2D"),
+               lapses: 4,
+               interval_prior_to_lapse: Duration.parse!("P4D")
+             }
+    end
+
+    test "answer: 'again' - min_review_interval takes effect" do
+      config = %Config{
+        # note small lapse multiplier:
+        lapse_multiplier: 0.1,
+        ease_again: -0.3,
         min_review_interval: Duration.parse!("P1D")
       }
 
