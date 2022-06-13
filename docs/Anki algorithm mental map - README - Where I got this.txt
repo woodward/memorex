@@ -24,6 +24,9 @@ interval = interval * card.ease_factor * config.interval_multiplier * config.eas
 From the Anki code:
 interval = (interval + (time.now - card.due)) * card.ease_factor * config.interval_multiplier * config.easy_multiplier
 
+NOTE THAT THIS ONLY APPLIES IF TIME_NOW IS GREATER THAN CARD.DUE!!! i.e., you get a little benefit if you 
+are answering a card late.
+
 ---------------------------------
 
 This is explained here:
