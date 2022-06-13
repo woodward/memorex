@@ -172,32 +172,8 @@ def test_newBoxes():
 # def test_learn():
 # # Implemented!
 
-def test_relearn():
-    col = getEmptyCol()
-    note = col.newNote()
-    note["Front"] = "one"
-    col.addNote(note)
-    c = note.cards()[0]
-    c.ivl = 100
-    c.due = col.sched.today
-    c.queue = CARD_TYPE_REV
-    c.type = QUEUE_TYPE_REV
-    c.flush()
-
-    # fail the card
-    col.reset()
-    c = col.sched.getCard()
-    col.sched.answerCard(c, 1)
-    assert c.queue == QUEUE_TYPE_LRN
-    assert c.type == CARD_TYPE_RELEARNING
-    assert c.ivl == 1
-
-    # immediately graduate it
-    col.sched.answerCard(c, 4)
-    assert c.queue == CARD_TYPE_REV and c.type == QUEUE_TYPE_REV
-    assert c.ivl == 2
-    assert c.due == col.sched.today + c.ivl
-
+# def test_relearn():
+# # Implemented!
 
 def test_relearn_no_steps():
     col = getEmptyCol()

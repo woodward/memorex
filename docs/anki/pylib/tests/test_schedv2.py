@@ -233,6 +233,7 @@ def test_learn():
     assert col.db.scalar("select count() from revlog where type = 0") == 5
 
 
+# GSW Implemented in Memorex
 def test_relearn():
     col = getEmptyCol()
     note = col.newNote()

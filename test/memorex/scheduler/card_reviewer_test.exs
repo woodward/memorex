@@ -616,16 +616,7 @@ defmodule Memorex.Scheduler.CardReviewerTest do
     test "fail the card and then immediately graduate it back to :review" do
       config = %Config{
         ease_again: -0.2,
-        # ease_hard: -0.15,
-        # ease_good: 0.0,
-        # ease_easy: 0.15,
-        # #
-        # easy_multiplier: 1.3,
-        # hard_multiplier: 1.2,
         lapse_multiplier: 0.0,
-        # interval_multiplier: 1.0,
-        # #
-        # max_review_interval: Duration.parse!("P100Y"),
         min_review_interval: Duration.parse!("P1D")
       }
 
