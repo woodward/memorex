@@ -170,6 +170,7 @@ def test_newBoxes():
     col.sched.answerCard(c, 2)
 
 
+# GSW Implemented in Memorex
 def test_learn():
     col = getEmptyCol()
     # add a note
@@ -380,6 +381,7 @@ def test_learn_day():
     assert col.sched.counts() == (0, 0, 0)
 
 
+# GSW Implemented in Memorex
 def test_reviews():
     col = getEmptyCol()
     # add a note
