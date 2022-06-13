@@ -68,6 +68,7 @@ defmodule Memorex.Domain.CardTest do
         due: ~U[2022-05-30 15:44:00Z],
         ease_factor: 2.4,
         interval: Duration.parse!("PT47S"),
+        interval_prior_to_lapse: Duration.parse!("P100D"),
         lapses: 3,
         note_answer_index: 3,
         note_question_index: 4,
@@ -82,6 +83,7 @@ defmodule Memorex.Domain.CardTest do
     assert changes.due == ~U[2022-05-30 15:44:00Z]
     assert changes.ease_factor == 2.4
     assert changes.interval == Duration.parse!("PT47S")
+    assert changes.interval_prior_to_lapse == Duration.parse!("P100D")
     assert changes.lapses == 3
     assert changes.note_answer_index == 3
     assert changes.note_question_index == 4

@@ -29,6 +29,7 @@ defmodule Memorex.Domain.Card do
           due: DateTime.t(),
           ease_factor: float(),
           interval: Duration.t(),
+          interval_prior_to_lapse: Duration.t(),
           lapses: non_neg_integer(),
           note_answer_index: non_neg_integer(),
           note_question_index: non_neg_integer(),
@@ -47,6 +48,7 @@ defmodule Memorex.Domain.Card do
     field :due, :utc_datetime
     field :ease_factor, :float
     field :interval, TimexDuration
+    field :interval_prior_to_lapse, TimexDuration
     field :lapses, :integer
     field :note_answer_index, :integer
     field :note_question_index, :integer
@@ -75,6 +77,7 @@ defmodule Memorex.Domain.Card do
       :due,
       :ease_factor,
       :interval,
+      :interval_prior_to_lapse,
       :lapses,
       :note_answer_index,
       :note_question_index,

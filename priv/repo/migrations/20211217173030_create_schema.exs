@@ -27,6 +27,7 @@ defmodule Memorex.Ecto.Repo.Migrations.CreateSchema do
       add :due, :utc_datetime
       add :ease_factor, :float
       add :interval, :integer
+      add :interval_prior_to_lapse, :integer
       add :lapses, :integer
       add :note_answer_index, :integer
       add :note_question_index, :integer
