@@ -72,7 +72,7 @@
     </table>
 
     <%= if @prior_card_log do %>
-      <.live_component module={MemorexWeb.CardLive.CardComponent} id={@prior_card_log.card.id} card={@prior_card_log.card} card_log={@prior_card_log} />
+      <.live_component module={MemorexWeb.CardLive.CardComponent} id={@prior_card_log.card.id} card={@prior_card_log.card} card_log={@prior_card_log} show_drill_link?={!@card_id} />
     <% end %>
   </div>
 </div>

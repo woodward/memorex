@@ -4,7 +4,9 @@
   <%= if show_card_history_link?(@socket) do %>
     <h4 class="title is-4"> <%= live_patch "Show Card History", to: Routes.card_show_path(@socket, :show, @card.id) %> </h4>
   <% end %>
-  <h4 class="title is-4"> <%= live_patch "Drill Card in Isolation", to: Routes.review_path(@socket, :home, %{deck: @card.note.deck_id, card_id: @card.id}) %> </h4>
+  <%= if @show_drill_link? do %>
+    <h4 class="title is-4"> <%= live_patch "Drill Card in Isolation", to: Routes.review_path(@socket, :home, %{deck: @card.note.deck_id, card_id: @card.id}) %> </h4>
+  <% end %> 
 
   <table class="table">
     <tr>
