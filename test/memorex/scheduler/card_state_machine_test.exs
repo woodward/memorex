@@ -102,7 +102,14 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
 
       changes = CardStateMachine.answer_card(card, :again, config, unused_time_now)
 
-      assert changes == %{ease_factor: 2.2, card_type: :relearn, current_step: 0, interval: Duration.parse!("P1D"), lapses: 4}
+      assert changes == %{
+               ease_factor: 2.2,
+               card_type: :relearn,
+               current_step: 0,
+               interval: Duration.parse!("P1D"),
+               lapses: 4,
+               interval_prior_to_lapse: Duration.parse!("P4D")
+             }
     end
 
     test "answer: 'hard'" do
@@ -240,7 +247,7 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
 
       changes = CardStateMachine.answer_card(card, :good, config, unused_time_now)
 
-      assert changes == %{card_type: :review, interval: Duration.parse!("P3D"), current_step: nil}
+      assert changes == %{card_type: :review, interval: Duration.parse!("P3D"), current_step: nil, interval_prior_to_lapse: nil}
     end
 
     test "answer: 'good' - there are remaining steps" do
@@ -260,7 +267,7 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
 
       changes = CardStateMachine.answer_card(card, :easy, config, unused_time_now)
 
-      assert changes == %{card_type: :review, interval: Duration.parse!("P5D"), current_step: nil}
+      assert changes == %{card_type: :review, interval: Duration.parse!("P5D"), current_step: nil, interval_prior_to_lapse: nil}
     end
   end
 
