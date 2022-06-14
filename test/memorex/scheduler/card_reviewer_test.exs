@@ -694,6 +694,9 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       assert card.card_type == :review
       assert card.current_step == 0
+
+      # Note that the Anki tests makes no assertions about what the interval or due are supposed to be.
+      # So I'm assuming they are the same for a :review card being failed with :again (and there are relearn steps present).
       assert card.due == ~U[2022-01-02 12:00:00Z]
       assert card.ease_factor == 2.3
       assert card.interval == Duration.parse!("P1D")
