@@ -284,7 +284,8 @@ def test_relearn_no_steps():
     col.sched.answerCard(c, 1)
     assert c.queue == CARD_TYPE_REV and c.type == QUEUE_TYPE_REV
 
-
+# GSW I couldn't figure out the meaning of this test; it seems like the two cards are linked somehow
+# One card is marked :easy, the other is failed with :again, but the failed card does not show up as due
 def test_learn_collapsed():
     col = getEmptyCol()
     # add 2 notes
