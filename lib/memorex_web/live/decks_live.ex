@@ -53,6 +53,7 @@ defmodule MemorexWeb.DecksLive do
     decks =
       decks
       |> Enum.reduce(%{}, fn deck, acc ->
+        Phoenix.PubSub.subscribe(Memorex.PubSub, "deck:#{deck.id}")
         Map.put(acc, deck, DeckStats.new(deck.id, TimeUtils.now()))
       end)
 
@@ -69,6 +70,13 @@ defmodule MemorexWeb.DecksLive do
     deck = Repo.get!(Deck, deck_id)
     config = default_config |> Config.merge(deck.config)
     Cards.set_new_cards_in_deck_to_learn_cards(deck_id, config, time_now, limit: config.new_cards_per_day)
+    decks = Map.put(decks, Repo.get(Deck, deck_id), DeckStats.new(deck_id, time_now))
+    {:noreply, socket |> assign(decks: decks)}
+  end
+
+  @impl true
+  def handle_info({:updated_deck, deck_id}, %{assigns: %{decks: decks}} = socket) do
+    time_now = TimeUtils.now()
     decks = Map.put(decks, Repo.get(Deck, deck_id), DeckStats.new(deck_id, time_now))
     {:noreply, socket |> assign(decks: decks)}
   end

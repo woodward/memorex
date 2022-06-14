@@ -73,6 +73,7 @@ defmodule MemorexWeb.ReviewLive do
     num_of_reviewed_cards = CardLogs.reviews_count_for_day(deck.id, end_time, config.timezone)
 
     if next_card, do: Phoenix.PubSub.broadcast_from(Memorex.PubSub, self(), "card:#{next_card.id}", :updated_card)
+    Phoenix.PubSub.broadcast_from(Memorex.PubSub, self(), "deck:#{deck.id}", {:updated_deck, deck.id})
 
     {:noreply,
      socket
