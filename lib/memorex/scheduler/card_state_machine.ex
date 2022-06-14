@@ -137,8 +137,11 @@ defmodule Memorex.Scheduler.CardStateMachine do
     end
   end
 
-  def answer_card(%Card{card_type: :relearn} = _card, :easy, config, _time_now) do
-    interval = Duration.add(config.min_review_interval, config.relearn_easy_adj)
+  def answer_card(%Card{card_type: :relearn} = card, :easy, config, _time_now) do
+    # interval = Duration.add(config.min_review_interval, config.relearn_easy_adj)
+
+    # I think it should be this instead:
+    interval = Duration.add(card.interval, config.relearn_easy_adj)
     %{card_type: :review, interval: interval, current_step: nil, interval_prior_to_lapse: nil}
   end
 

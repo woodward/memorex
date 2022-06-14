@@ -284,12 +284,12 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
 
     test "answer: 'easy'" do
       config = %Config{min_review_interval: Duration.parse!("P3D"), relearn_easy_adj: Duration.parse!("P2D")}
-      card = %Card{card_type: :relearn, current_step: 1}
+      card = %Card{card_type: :relearn, current_step: 1, interval: Duration.parse!("P1D")}
       unused_time_now = ~U[2022-01-01 12:00:00Z]
 
       changes = CardStateMachine.answer_card(card, :easy, config, unused_time_now)
 
-      assert changes == %{card_type: :review, interval: Duration.parse!("P5D"), current_step: nil, interval_prior_to_lapse: nil}
+      assert changes == %{card_type: :review, interval: Duration.parse!("P3D"), current_step: nil, interval_prior_to_lapse: nil}
     end
   end
 

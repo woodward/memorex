@@ -448,9 +448,9 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       # assert card.card_queue == :review
       assert card.card_type == :review
-      assert card.due == ~U[2022-01-03 12:00:00Z]
+      assert card.due == ~U[2022-01-02 12:10:00Z]
       assert card.ease_factor == 2.5
-      assert card.interval == Duration.parse!("P2D")
+      assert card.interval == Duration.parse!("P1DT10M")
       assert card.lapses == 0
       assert card.current_step == nil
       assert card.reps == 4
@@ -617,7 +617,8 @@ defmodule Memorex.Scheduler.CardReviewerTest do
       config = %Config{
         ease_again: -0.2,
         lapse_multiplier: 0.0,
-        min_review_interval: Duration.parse!("P1D")
+        min_review_interval: Duration.parse!("P1D"),
+        relearn_easy_adj: Duration.parse!("P1D")
       }
 
       time_now = ~U[2022-01-01 12:00:00Z]
@@ -635,6 +636,7 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       [time_now: time_now, config: config, card: card]
 
+      # fail the card
       card = CardReviewer.answer_card(card, :again, time_now, config)
 
       assert card.card_type == :relearn
@@ -644,6 +646,17 @@ defmodule Memorex.Scheduler.CardReviewerTest do
       assert card.interval == Duration.parse!("P1D")
       assert card.lapses == 2
       assert card.reps == 4
+
+      # immediately graduate it
+      card = CardReviewer.answer_card(card, :easy, time_now, config)
+
+      assert card.card_type == :review
+      assert card.current_step == nil
+      assert card.due == ~U[2022-01-03 12:00:00Z]
+      assert card.ease_factor == 2.3
+      assert card.interval == Duration.parse!("P2D")
+      assert card.lapses == 2
+      assert card.reps == 5
     end
   end
 end
