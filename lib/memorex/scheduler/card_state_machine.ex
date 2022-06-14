@@ -49,6 +49,8 @@ defmodule Memorex.Scheduler.CardStateMachine do
   # --------------- Review Cards ---------------------------------------------------------------------------------------
 
   def answer_card(%Card{card_type: :review} = card, :again, config, _time_now) do
+    card_type = if Enum.empty?(config.relearn_steps), do: :review, else: :relearn
+
     interval_prior_to_lapse = card.interval
     scaled_interval = Duration.scale(card.interval, config.lapse_multiplier)
 
@@ -63,7 +65,7 @@ defmodule Memorex.Scheduler.CardStateMachine do
     lapses = card.lapses + 1
 
     %{
-      card_type: :relearn,
+      card_type: card_type,
       current_step: 0,
       ease_factor: ease_factor,
       interval_prior_to_lapse: interval_prior_to_lapse,

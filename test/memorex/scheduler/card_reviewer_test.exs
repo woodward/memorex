@@ -618,7 +618,8 @@ defmodule Memorex.Scheduler.CardReviewerTest do
         ease_again: -0.2,
         lapse_multiplier: 0.0,
         min_review_interval: Duration.parse!("P1D"),
-        relearn_easy_adj: Duration.parse!("P1D")
+        relearn_easy_adj: Duration.parse!("P1D"),
+        relearn_steps: [Duration.parse!("PT10M")]
       }
 
       time_now = ~U[2022-01-01 12:00:00Z]
@@ -657,6 +658,47 @@ defmodule Memorex.Scheduler.CardReviewerTest do
       assert card.interval == Duration.parse!("P2D")
       assert card.lapses == 2
       assert card.reps == 5
+    end
+  end
+
+  describe "tests from anki - relearn with no steps - 'test_relearn_no_steps' sequence (matches up with 'test_relearn_no_steps' in anki/pylib/tests/test_schedv2.py" do
+    # Based on:
+    # https://github.com/ankitects/anki/blob/4d51ee8a645fd1fd8b4116df25299139af07d518/pylib/tests/test_schedv2.py#L238
+
+    test "fail the card with no steps - the card stays as a review card" do
+      config = %Config{
+        ease_again: -0.2,
+        lapse_multiplier: 0.0,
+        min_review_interval: Duration.parse!("P1D"),
+        relearn_easy_adj: Duration.parse!("P1D"),
+        relearn_steps: []
+      }
+
+      time_now = ~U[2022-01-01 12:00:00Z]
+
+      card =
+        %Card{
+          card_type: :review,
+          due: time_now,
+          interval: Duration.parse!("P100D"),
+          reps: 3,
+          ease_factor: 2.5,
+          lapses: 1
+        }
+        |> Repo.insert!()
+
+      [time_now: time_now, config: config, card: card]
+
+      # fail the card
+      card = CardReviewer.answer_card(card, :again, time_now, config)
+
+      assert card.card_type == :review
+      assert card.current_step == 0
+      assert card.due == ~U[2022-01-02 12:00:00Z]
+      assert card.ease_factor == 2.3
+      assert card.interval == Duration.parse!("P1D")
+      assert card.lapses == 2
+      assert card.reps == 4
     end
   end
 end

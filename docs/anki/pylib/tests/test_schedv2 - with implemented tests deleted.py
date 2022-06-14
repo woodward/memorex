@@ -175,28 +175,8 @@ def test_newBoxes():
 # def test_relearn():
 # # Implemented!
 
-def test_relearn_no_steps():
-    col = getEmptyCol()
-    note = col.newNote()
-    note["Front"] = "one"
-    col.addNote(note)
-    c = note.cards()[0]
-    c.ivl = 100
-    c.due = col.sched.today
-    c.queue = CARD_TYPE_REV
-    c.type = QUEUE_TYPE_REV
-    c.flush()
-
-    conf = col.decks.config_dict_for_deck_id(1)
-    conf["lapse"]["delays"] = []
-    col.decks.save(conf)
-
-    # fail the card
-    col.reset()
-    c = col.sched.getCard()
-    col.sched.answerCard(c, 1)
-    assert c.queue == CARD_TYPE_REV and c.type == QUEUE_TYPE_REV
-
+# def test_relearn_no_steps():
+# # Implemented!
 
 def test_learn_collapsed():
     col = getEmptyCol()

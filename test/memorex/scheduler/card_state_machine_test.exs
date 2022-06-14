@@ -93,7 +93,8 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
       config = %Config{
         lapse_multiplier: 0.5,
         ease_again: -0.3,
-        min_review_interval: Duration.parse!("P1D")
+        min_review_interval: Duration.parse!("P1D"),
+        relearn_steps: [Duration.parse!("P10M")]
       }
 
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D"), current_step: 3, lapses: 3}
@@ -116,7 +117,8 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
         # note small lapse multiplier:
         lapse_multiplier: 0.1,
         ease_again: -0.3,
-        min_review_interval: Duration.parse!("P1D")
+        min_review_interval: Duration.parse!("P1D"),
+        relearn_steps: [Duration.parse!("P10M")]
       }
 
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D"), current_step: 3, lapses: 3}
@@ -129,6 +131,34 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
                card_type: :relearn,
                current_step: 0,
                interval: Duration.parse!("P1D"),
+               lapses: 4,
+               interval_prior_to_lapse: Duration.parse!("P4D")
+             }
+    end
+
+    test "answer: 'again' - no learn steps - the card stays as a :review card" do
+      # Based on:
+      # https://github.com/ankitects/anki/blob/4d51ee8a645fd1fd8b4116df25299139af07d518/pylib/tests/test_schedv2.py#L238
+      # Note that this test states that the card should stay as a :review card (rather than becoming a :relearn card)
+      # but it's not clear from this Anki test what the interval or card.due should be.
+
+      config = %Config{
+        lapse_multiplier: 0.5,
+        ease_again: -0.3,
+        min_review_interval: Duration.parse!("P1D"),
+        relearn_steps: []
+      }
+
+      card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D"), current_step: 3, lapses: 3}
+      unused_time_now = ~U[2022-01-01 12:00:00Z]
+
+      changes = CardStateMachine.answer_card(card, :again, config, unused_time_now)
+
+      assert changes == %{
+               ease_factor: 2.2,
+               card_type: :review,
+               current_step: 0,
+               interval: Duration.parse!("P2D"),
                lapses: 4,
                interval_prior_to_lapse: Duration.parse!("P4D")
              }

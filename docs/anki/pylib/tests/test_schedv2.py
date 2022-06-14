@@ -261,6 +261,7 @@ def test_relearn():
     assert c.due == col.sched.today + c.ivl
 
 
+# GSW Implemented in Memorex
 def test_relearn_no_steps():
     col = getEmptyCol()
     note = col.newNote()
