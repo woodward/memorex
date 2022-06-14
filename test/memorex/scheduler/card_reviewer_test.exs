@@ -697,6 +697,7 @@ defmodule Memorex.Scheduler.CardReviewerTest do
       assert card.due == ~U[2022-01-02 12:00:00Z]
       assert card.ease_factor == 2.3
       assert card.interval == Duration.parse!("P1D")
+      assert card.interval_prior_to_lapse == nil
       assert card.lapses == 2
       assert card.reps == 4
     end

@@ -160,7 +160,7 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
                current_step: 0,
                interval: Duration.parse!("P2D"),
                lapses: 4,
-               interval_prior_to_lapse: Duration.parse!("P4D")
+               interval_prior_to_lapse: nil
              }
     end
 
