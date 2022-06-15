@@ -21,6 +21,7 @@ defmodule MemorexWeb.DecksLive do
           <th> Learn </th>
           <th> Review </th>
           <th> Due </th>
+          <th> Suspended </th>
           <th>  </th>
           <th> Actions </th>
           <th>  </th>
@@ -34,6 +35,7 @@ defmodule MemorexWeb.DecksLive do
               <td> <%= deck_stats.learn %> </td>
               <td> <%= deck_stats.review %> </td>
               <td> <%= deck_stats.due %> </td>
+              <td> <%= deck_stats.suspended %> </td>
               <td> <%= live_patch "All Cards", to: Routes.card_index_path(@socket, :index, %{deck_id: deck.id}), class: "button" %> </td>
               <td> <%= live_patch "Review", to: Routes.review_path(@socket, :home, %{deck: deck}), class: "button"  %> </td>
               <td> <a phx-click="add-new-batch-of-learn-cards" phx-value-deck_id={ deck.id } class="button"> Add New Cards </a> </td>

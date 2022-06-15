@@ -94,12 +94,16 @@ defmodule Memorex.Cards do
     |> Repo.aggregate(:count, :id)
   end
 
-  @spec count(Schema.id(), Card.card_type()) :: non_neg_integer()
-  def count(deck_id, card_type) do
-    deck_id
-    |> cards_for_deck()
-    |> where(card_type: ^card_type)
-    |> Repo.aggregate(:count, :id)
+  @spec count(Schema.id(), Keyword.t()) :: non_neg_integer()
+  def count(deck_id, opts) do
+    card_type = Keyword.get(opts, :card_type)
+    card_status = Keyword.get(opts, :card_status)
+
+    query = deck_id |> cards_for_deck()
+    query = if card_type, do: query |> where(card_type: ^card_type), else: query
+    query = if card_status, do: query |> where(card_status: ^card_status), else: query
+
+    query |> Repo.aggregate(:count, :id)
   end
 
   @spec due_count(Schema.id(), DateTime.t()) :: non_neg_integer()

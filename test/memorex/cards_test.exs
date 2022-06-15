@@ -323,7 +323,20 @@ defmodule Memorex.CardsTest do
       note1_deck2 = Repo.insert!(%Note{deck: deck2})
       _card1_deck2 = Repo.insert!(%Card{note: note1_deck2})
 
-      assert Cards.count(deck1.id, :review) == 1
+      assert Cards.count(deck1.id, card_type: :review) == 1
+    end
+
+    test "returns the number of cards of a certain status for this deck" do
+      deck1 = Repo.insert!(%Deck{})
+      note1 = Repo.insert!(%Note{deck: deck1})
+      _card1 = Repo.insert!(%Card{note: note1, card_status: :active})
+      _card2 = Repo.insert!(%Card{note: note1, card_status: :suspended})
+
+      deck2 = Repo.insert!(%Deck{})
+      note1_deck2 = Repo.insert!(%Note{deck: deck2})
+      _card1_deck2 = Repo.insert!(%Card{note: note1_deck2, card_status: :buried})
+
+      assert Cards.count(deck1.id, card_status: :suspended) == 1
     end
   end
 
