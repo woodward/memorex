@@ -1,4 +1,5 @@
 defmodule MemorexWeb.Router do
+  @moduledoc false
   use MemorexWeb, :router
 
   pipeline :browser do

@@ -5,8 +5,7 @@ defmodule Memorex.Cards do
 
   alias Memorex.Domain.{Card, CardLog, Deck, Note}
   alias Memorex.Scheduler.{CardStateMachine, Config}
-  alias Memorex.Ecto.Repo
-  alias Memorex.Ecto.Schema
+  alias Memorex.Ecto.{Repo, Schema}
   alias Timex.Duration
 
   @spec update_card!(Card.t(), map(), DateTime.t()) :: Card.t()
