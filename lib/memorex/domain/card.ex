@@ -12,7 +12,6 @@ defmodule Memorex.Domain.Card do
   @type card_queue :: :new | :learn | :review | :day_learn | :suspended | :buried
   @type card_type :: :new | :learn | :review | :relearn
 
-  # Not used yet, but perhaps a replacement for card_queue?
   @type card_status :: :active | :suspended | :buried
 
   @type answer_choice :: :again | :hard | :good | :easy
@@ -24,6 +23,7 @@ defmodule Memorex.Domain.Card do
           id: Schema.id() | nil,
           #
           card_queue: card_queue(),
+          card_status: card_status(),
           card_type: card_type(),
           current_step: non_neg_integer(),
           due: DateTime.t(),
@@ -43,6 +43,7 @@ defmodule Memorex.Domain.Card do
 
   schema "cards" do
     field :card_queue, Ecto.Enum, values: [:new, :learn, :review, :day_learn, :suspended, :buried], default: :new
+    field :card_status, Ecto.Enum, values: [:active, :suspended, :buried]
     field :card_type, Ecto.Enum, values: [:new, :learn, :review, :relearn], default: :new
     field :current_step, :integer
     field :due, :utc_datetime
@@ -72,6 +73,7 @@ defmodule Memorex.Domain.Card do
     card
     |> cast(params, [
       :card_queue,
+      :card_status,
       :card_type,
       :current_step,
       :due,

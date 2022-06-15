@@ -54,6 +54,7 @@ defmodule Memorex.Domain.CardTest do
   test "changeset" do
     card = %Card{
       card_queue: :day_learn,
+      card_status: :active,
       card_type: :relearn,
       ease_factor: 2.5,
       interval: Duration.parse!("PT33S"),
@@ -64,6 +65,7 @@ defmodule Memorex.Domain.CardTest do
     card_changeset =
       Card.changeset(card, %{
         card_queue: :learn,
+        card_status: :suspended,
         card_type: :review,
         due: ~U[2022-05-30 15:44:00Z],
         ease_factor: 2.4,
@@ -79,6 +81,7 @@ defmodule Memorex.Domain.CardTest do
     changes = card_changeset.changes
 
     assert changes.card_queue == :learn
+    assert changes.card_status == :suspended
     assert changes.card_type == :review
     assert changes.due == ~U[2022-05-30 15:44:00Z]
     assert changes.ease_factor == 2.4
