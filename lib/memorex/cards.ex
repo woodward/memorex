@@ -42,6 +42,14 @@ defmodule Memorex.Cards do
     # |> where([c, n, d], d.id == ^deck_id)
   end
 
+  @spec create_bidirectional_from_note(Note.t()) :: Schema.id()
+  def(create_bidirectional_from_note(note)) do
+    card1 = %Card{note: note, note_question_index: 0, note_answer_index: 1}
+    card2 = %Card{note: note, note_question_index: 1, note_answer_index: 0}
+    Repo.insert!(card1)
+    Repo.insert!(card2)
+  end
+
   @spec set_new_cards_in_deck_to_learn_cards(Schema.id(), Config.t(), DateTime.t(), Keyword.t()) :: :ok
   def set_new_cards_in_deck_to_learn_cards(deck_id, config, time_now, opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)

@@ -5,7 +5,6 @@ defmodule Memorex.Domain.Card do
   import Ecto.Changeset
 
   alias Memorex.Domain.{CardLog, Note}
-  alias Memorex.Ecto.Repo
   alias Memorex.Ecto.{TimexDuration, Schema}
   alias Timex.Duration
 
@@ -43,7 +42,7 @@ defmodule Memorex.Domain.Card do
 
   schema "cards" do
     field :card_queue, Ecto.Enum, values: [:new, :learn, :review, :day_learn, :suspended, :buried], default: :new
-    field :card_status, Ecto.Enum, values: [:active, :suspended, :buried]
+    field :card_status, Ecto.Enum, values: [:active, :suspended, :buried], default: :active
     field :card_type, Ecto.Enum, values: [:new, :learn, :review, :relearn], default: :new
     field :current_step, :integer
     field :due, :utc_datetime
@@ -93,14 +92,6 @@ defmodule Memorex.Domain.Card do
 
     changeset
     |> cast(%{due: Timex.add(time, interval)}, [:due])
-  end
-
-  @spec create_bidirectional_from_note(Note.t()) :: Schema.id()
-  def(create_bidirectional_from_note(note)) do
-    card1 = %__MODULE__{note: note, note_question_index: 0, note_answer_index: 1}
-    card2 = %__MODULE__{note: note, note_question_index: 1, note_answer_index: 0}
-    Repo.insert!(card1)
-    Repo.insert!(card2)
   end
 
   @spec increment_reps(Ecto.Changeset.t()) :: Ecto.Changeset.t()

@@ -22,23 +22,6 @@ defmodule Memorex.Domain.CardTest do
     assert Repo.get(CardLog, card_log.id) == nil
   end
 
-  test "can create cards from a note" do
-    note = Note.new(content: ["one", "two"]) |> Repo.insert!()
-    Card.create_bidirectional_from_note(note)
-
-    assert Repo.all(Card) |> length() == 2
-
-    [card1, card2] = Repo.all(Card, order_by: :note_answer_index)
-
-    assert card1.note_question_index == 0
-    assert card1.note_answer_index == 1
-    assert card1.note_id == note.id
-
-    assert card2.note_question_index == 1
-    assert card2.note_answer_index == 0
-    assert card2.note_id == note.id
-  end
-
   test "enums work properly" do
     card = Repo.insert!(%Card{card_type: :relearn, card_queue: :review})
     assert card.card_type == :relearn

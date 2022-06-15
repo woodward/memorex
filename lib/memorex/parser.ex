@@ -1,10 +1,10 @@
 defmodule Memorex.Parser do
   @moduledoc false
 
-  alias Memorex.Decks
+  alias Memorex.{Cards, Decks}
   alias Memorex.Scheduler.ConfigFile
   alias Memorex.Ecto.Repo
-  alias Memorex.Domain.{Card, Deck, Note}
+  alias Memorex.Domain.{Deck, Note}
 
   @spec read_file(String.t(), Keyword.t()) :: :ok
   def read_file(filename, opts \\ []) do
@@ -81,7 +81,7 @@ defmodule Memorex.Parser do
         else
           %{note | deck: deck}
           |> Repo.insert!(on_conflict: :nothing)
-          |> Card.create_bidirectional_from_note()
+          |> Cards.create_bidirectional_from_note()
         end
       end
     end)
