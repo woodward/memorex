@@ -77,6 +77,12 @@ defmodule Memorex.Cards do
     |> where([c], c.due <= ^time_now)
   end
 
+  @spec where_card_status(Ecto.Query.t(), Card.card_status()) :: Ecto.Query.t()
+  def where_card_status(query, card_status) do
+    query
+    |> where([c], c.card_status <= ^card_status)
+  end
+
   @spec where_card_type(Ecto.Query.t(), Card.card_type()) :: Ecto.Query.t()
   def where_card_type(query, card_type) do
     query
@@ -87,6 +93,7 @@ defmodule Memorex.Cards do
   def get_one_random_due_card(deck_id, time_now) do
     cards_for_deck(deck_id, limit: 1)
     |> where_due(time_now)
+    |> where_card_status(:active)
     |> order_by(fragment("RANDOM()"))
     |> preload(:note)
     |> Repo.one()
