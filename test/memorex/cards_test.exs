@@ -253,43 +253,6 @@ defmodule Memorex.CardsTest do
     end
   end
 
-  describe "where_card_type/2" do
-    test "returns the cards of a certain type" do
-      deck1 = Repo.insert!(%Deck{})
-      note1 = Repo.insert!(%Note{deck: deck1, content: ["First", "Second"]})
-      _card1 = Repo.insert!(%Card{note: note1, card_type: :learn})
-      card2 = Repo.insert!(%Card{note: note1, card_type: :new})
-
-      deck2 = Repo.insert!(%Deck{})
-      note1_deck2 = Repo.insert!(%Note{deck: deck2})
-      _card3 = Repo.insert!(%Card{note: note1_deck2, card_type: :review})
-      _card4 = Repo.insert!(%Card{note: note1_deck2, card_type: :relearn})
-
-      new_cards = from(c in Card) |> Cards.where_card_type(:new) |> Repo.all()
-      assert length(new_cards) == 1
-      [new_card] = new_cards
-      assert new_card.id == card2.id
-    end
-  end
-
-  describe "where_card_status/2" do
-    test "returns the cards of a certain status" do
-      deck1 = Repo.insert!(%Deck{})
-      note1 = Repo.insert!(%Note{deck: deck1, content: ["First", "Second"]})
-      _card1 = Repo.insert!(%Card{note: note1, card_status: :suspended})
-      card2 = Repo.insert!(%Card{note: note1, card_status: :active})
-
-      deck2 = Repo.insert!(%Deck{})
-      note1_deck2 = Repo.insert!(%Note{deck: deck2})
-      _card3 = Repo.insert!(%Card{note: note1_deck2, card_status: :buried})
-
-      new_cards = from(c in Card) |> Cards.where_card_status(:active) |> Repo.all()
-      assert length(new_cards) == 1
-      [new_card] = new_cards
-      assert new_card.id == card2.id
-    end
-  end
-
   describe "get_one_random_due_card/2" do
     test "returns one random due card for a deck (only active cards)" do
       time_now = ~U[2022-02-01 12:00:00Z]
