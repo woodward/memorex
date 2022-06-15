@@ -227,7 +227,8 @@ defmodule Memorex.Scheduler.CardReviewerTest do
         ease_again: -0.2,
         relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")],
         lapse_multiplier: 0.0,
-        min_review_interval: Duration.parse!("P1D")
+        min_review_interval: Duration.parse!("P1D"),
+        ease_minimum: 1.3
       }
 
       card =
@@ -256,7 +257,13 @@ defmodule Memorex.Scheduler.CardReviewerTest do
     end
 
     test "review card - answer :hard" do
-      config = %Config{interval_multiplier: 1.1, ease_hard: -0.15, hard_multiplier: 1.2, max_review_interval: Duration.parse!("P100Y")}
+      config = %Config{
+        interval_multiplier: 1.1,
+        ease_hard: -0.15,
+        hard_multiplier: 1.2,
+        max_review_interval: Duration.parse!("P100Y"),
+        ease_minimum: 1.3
+      }
 
       card =
         %Card{
@@ -531,6 +538,7 @@ defmodule Memorex.Scheduler.CardReviewerTest do
         ease_hard: -0.15,
         ease_good: 0.0,
         ease_easy: 0.15,
+        ease_minimum: 1.3,
         #
         easy_multiplier: 1.3,
         hard_multiplier: 1.2,
@@ -619,7 +627,8 @@ defmodule Memorex.Scheduler.CardReviewerTest do
         lapse_multiplier: 0.0,
         min_review_interval: Duration.parse!("P1D"),
         relearn_easy_adj: Duration.parse!("P1D"),
-        relearn_steps: [Duration.parse!("PT10M")]
+        relearn_steps: [Duration.parse!("PT10M")],
+        ease_minimum: 1.3
       }
 
       time_now = ~U[2022-01-01 12:00:00Z]
@@ -671,7 +680,8 @@ defmodule Memorex.Scheduler.CardReviewerTest do
         lapse_multiplier: 0.0,
         min_review_interval: Duration.parse!("P1D"),
         relearn_easy_adj: Duration.parse!("P1D"),
-        relearn_steps: []
+        relearn_steps: [],
+        ease_minimum: 1.3
       }
 
       time_now = ~U[2022-01-01 12:00:00Z]

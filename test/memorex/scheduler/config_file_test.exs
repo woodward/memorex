@@ -21,6 +21,7 @@ defmodule Memorex.Scheduler.ConfigFileTest do
       assert config["learn_ahead_time_interval"] == "PT20M"
       assert config["learn_steps"] == ["PT1M", "PT10M"]
       assert config["relearn_steps"] == ["PT10M"]
+      assert config["ease_minimum"] == 1.3
     end
   end
 end

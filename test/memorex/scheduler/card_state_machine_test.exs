@@ -94,7 +94,8 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
         lapse_multiplier: 0.5,
         ease_again: -0.3,
         min_review_interval: Duration.parse!("P1D"),
-        relearn_steps: [Duration.parse!("P10M")]
+        relearn_steps: [Duration.parse!("P10M")],
+        ease_minimum: 1.3
       }
 
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D"), current_step: 3, lapses: 3}
@@ -118,7 +119,8 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
         lapse_multiplier: 0.1,
         ease_again: -0.3,
         min_review_interval: Duration.parse!("P1D"),
-        relearn_steps: [Duration.parse!("P10M")]
+        relearn_steps: [Duration.parse!("P10M")],
+        ease_minimum: 1.3
       }
 
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D"), current_step: 3, lapses: 3}
@@ -128,6 +130,31 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
 
       assert changes == %{
                ease_factor: 2.2,
+               card_type: :relearn,
+               current_step: 0,
+               interval: Duration.parse!("P1D"),
+               lapses: 4,
+               interval_prior_to_lapse: Duration.parse!("P4D")
+             }
+    end
+
+    test "answer: 'again' - min_ease_factor takes effect" do
+      config = %Config{
+        # note small lapse multiplier:
+        lapse_multiplier: 0.1,
+        ease_again: -0.3,
+        min_review_interval: Duration.parse!("P1D"),
+        relearn_steps: [Duration.parse!("P10M")],
+        ease_minimum: 1.3
+      }
+
+      card = %Card{card_type: :review, ease_factor: 1.35, interval: Duration.parse!("P4D"), current_step: 3, lapses: 3}
+      unused_time_now = ~U[2022-01-01 12:00:00Z]
+
+      changes = CardStateMachine.answer_card(card, :again, config, unused_time_now)
+
+      assert changes == %{
+               ease_factor: 1.3,
                card_type: :relearn,
                current_step: 0,
                interval: Duration.parse!("P1D"),
@@ -146,7 +173,8 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
         lapse_multiplier: 0.5,
         ease_again: -0.3,
         min_review_interval: Duration.parse!("P1D"),
-        relearn_steps: []
+        relearn_steps: [],
+        ease_minimum: 1.3
       }
 
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P4D"), current_step: 3, lapses: 3}
@@ -167,7 +195,14 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
     test "answer: 'hard'" do
       # Based on:
       # https://github.com/ankitects/anki/blob/fbb0d909354b53e602151206dab442e92969b3a8/pylib/tests/test_schedv2.py#L381
-      config = %Config{interval_multiplier: 1.0, hard_multiplier: 1.2, ease_hard: -0.15, max_review_interval: Duration.parse!("P100Y")}
+      config = %Config{
+        interval_multiplier: 1.0,
+        hard_multiplier: 1.2,
+        ease_hard: -0.15,
+        max_review_interval: Duration.parse!("P100Y"),
+        ease_minimum: 1.3
+      }
+
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P100D")}
       unused_time_now = ~U[2022-01-01 12:00:00Z]
 
@@ -176,7 +211,14 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
     end
 
     test "answer: 'hard' - interval_multiplier that's not 1.0" do
-      config = %Config{interval_multiplier: 1.1, hard_multiplier: 1.2, ease_hard: -0.15, max_review_interval: Duration.parse!("P100Y")}
+      config = %Config{
+        interval_multiplier: 1.1,
+        hard_multiplier: 1.2,
+        ease_hard: -0.15,
+        max_review_interval: Duration.parse!("P100Y"),
+        ease_minimum: 1.3
+      }
+
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P100D")}
       unused_time_now = ~U[2022-01-01 12:00:00Z]
 
@@ -185,12 +227,35 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
     end
 
     test "answer: 'hard' - interval is capped by max interval" do
-      config = %Config{interval_multiplier: 1.0, hard_multiplier: 1.2, ease_hard: -0.15, max_review_interval: Duration.parse!("P5D")}
+      config = %Config{
+        interval_multiplier: 1.0,
+        hard_multiplier: 1.2,
+        ease_hard: -0.15,
+        max_review_interval: Duration.parse!("P5D"),
+        ease_minimum: 1.3
+      }
+
       card = %Card{card_type: :review, ease_factor: 2.5, interval: Duration.parse!("P100D")}
       unused_time_now = ~U[2022-01-01 12:00:00Z]
 
       changes = CardStateMachine.answer_card(card, :hard, config, unused_time_now)
       assert changes == %{ease_factor: 2.35, interval: Duration.parse!("P5D")}
+    end
+
+    test "answer: 'hard' - minimum ease factor takes effect" do
+      config = %Config{
+        interval_multiplier: 1.0,
+        hard_multiplier: 1.2,
+        ease_hard: -0.15,
+        max_review_interval: Duration.parse!("P5D"),
+        ease_minimum: 1.3
+      }
+
+      card = %Card{card_type: :review, ease_factor: 1.35, interval: Duration.parse!("P100D")}
+      unused_time_now = ~U[2022-01-01 12:00:00Z]
+
+      changes = CardStateMachine.answer_card(card, :hard, config, unused_time_now)
+      assert changes == %{ease_factor: 1.3, interval: Duration.parse!("P5D")}
     end
 
     test "answer: 'good'" do

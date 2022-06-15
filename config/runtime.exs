@@ -49,6 +49,7 @@ config :memorex, Memorex.Scheduler.Config,
   ease_hard: System.get_env("MEMOREX_EASE_HARD", "-0.15") |> String.to_float(),
   ease_good: System.get_env("MEMOREX_EASE_GOOD", "0.0") |> String.to_float(),
   ease_easy: System.get_env("MEMOREX_EASE_EASY", "0.15") |> String.to_float(),
+  ease_minimum: System.get_env("MEMOREX_EASE_MINIMUM", "1.3") |> String.to_float(),
   #
   max_review_interval: System.get_env("MEMOREX_MAX_REVIEW_INTERVAL", "P100Y") |> Duration.parse!(),
   min_review_interval: System.get_env("MEMOREX_MIN_REVIEW_INTERVAL", "P1D") |> Duration.parse!(),

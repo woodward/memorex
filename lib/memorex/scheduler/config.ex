@@ -27,6 +27,7 @@ defmodule Memorex.Scheduler.Config do
   #    ease_hard                 | <not in settings>               |           -0.15
   #    ease_good                 | <not in settings>               |             0.0
   #    ease_easy                 | <not in settings>               |            0.15
+  #    ease_minimum              | <not in settings>               |             1.3
   #    -                         | -                               |               -
   #    max_review_interval       | maximum interval                |       100 years
   #    min_review_interval       | minimum interval                |           1 day
@@ -63,6 +64,7 @@ defmodule Memorex.Scheduler.Config do
           ease_hard: nil | float(),
           ease_good: nil | float(),
           ease_easy: nil | float(),
+          ease_minimum: nil | float(),
           #
           max_review_interval: nil | Duration.t(),
           min_review_interval: nil | Duration.t(),
@@ -101,6 +103,7 @@ defmodule Memorex.Scheduler.Config do
     :ease_hard,
     :ease_good,
     :ease_easy,
+    :ease_minimum,
     #
     :max_review_interval,
     :min_review_interval,

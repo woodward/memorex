@@ -20,3 +20,6 @@ AND add 15% to ease
 
 
 Anki algorithm only applies to graduated (review) cards, not cards in the learning phase
+
+
+The Anki scheduler is in `anki/pylib/anki/scheduler/v2.py`

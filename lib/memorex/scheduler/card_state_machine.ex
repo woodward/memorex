@@ -65,7 +65,7 @@ defmodule Memorex.Scheduler.CardStateMachine do
         scaled_interval
       end
 
-    ease_factor = card.ease_factor + config.ease_again
+    ease_factor = (card.ease_factor + config.ease_again) |> floor_for_ease_factor(config.ease_minimum)
     lapses = card.lapses + 1
 
     %{
@@ -81,7 +81,7 @@ defmodule Memorex.Scheduler.CardStateMachine do
   def answer_card(%Card{card_type: :review} = card, :hard, config, _time_now) do
     # Note that interval_scale doesn't multiply by ease_factor for this case
     interval_scale = config.hard_multiplier * config.interval_multiplier
-    ease_factor = card.ease_factor + config.ease_hard
+    ease_factor = (card.ease_factor + config.ease_hard) |> floor_for_ease_factor(config.ease_minimum)
     interval = Duration.scale(card.interval, interval_scale) |> cap_duration(config.max_review_interval)
     %{ease_factor: ease_factor, interval: interval}
   end
@@ -160,5 +160,10 @@ defmodule Memorex.Scheduler.CardStateMachine do
     else
       max_duration
     end
+  end
+
+  @spec floor_for_ease_factor(float(), float()) :: float()
+  defp floor_for_ease_factor(ease_factor, ease_minimum) do
+    if ease_factor < ease_minimum, do: ease_minimum, else: ease_factor
   end
 end
