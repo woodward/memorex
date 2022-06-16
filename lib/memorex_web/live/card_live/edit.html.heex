@@ -12,6 +12,9 @@
 
     <%= label f, :card_status %>
     <%= select f, :card_status, [:suspended, :active] %>
+
+    <%= label f, :due %>
+    <%= datetime_local_input f, :due %>
   
     <div>
      <%= link "Cancel", to: Routes.card_show_path(@socket, :show, @card.id), class: "button" %>
