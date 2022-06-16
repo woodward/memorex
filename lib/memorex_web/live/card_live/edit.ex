@@ -4,6 +4,7 @@ defmodule MemorexWeb.CardLive.Edit do
   use MemorexWeb, :live_view
 
   alias Memorex.Cards
+  alias Memorex.Ecto.Repo
   alias Memorex.Domain.Card
 
   @impl true
@@ -17,6 +18,29 @@ defmodule MemorexWeb.CardLive.Edit do
 
     {:noreply,
      socket
-     |> assign(card: card, changset: Card.changeset(card, %{}))}
+     |> assign(card: card, changeset: Card.changeset(card, %{}))}
+  end
+
+  @impl true
+  def handle_event("validate", %{"card" => card_params}, socket) do
+    changeset =
+      socket.assigns.card
+      |> Card.changeset(card_params)
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign(socket, :changeset, changeset)}
+  end
+
+  def handle_event("save", %{"card" => card_params}, %{assigns: %{card: card}} = socket) do
+    case card |> Card.changeset(card_params) |> Repo.update() do
+      {:ok, _card} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Card updated successfully")
+         |> push_redirect(to: Routes.card_show_path(socket, :show, card.id))}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, :changeset, changeset)}
+    end
   end
 end

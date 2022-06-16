@@ -1,3 +1,17 @@
 <div>
-  <h1> Hello! </h1>
+  <.form
+    let={f}
+    for={@changeset}
+    id="card-form"
+    phx-change="validate"
+    phx-submit="save">
+  
+    <%= label f, :ease_factor %>
+    <%= text_input f, :ease_factor %>
+    <%= error_tag f, :ease_factor %>
+  
+    <div>
+      <%= submit "Save", phx_disable_with: "Saving..." %>
+    </div>
+  </.form>
 </div>

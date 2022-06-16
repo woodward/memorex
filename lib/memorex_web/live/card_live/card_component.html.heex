@@ -60,44 +60,40 @@
 
   </table>
 
-  <%= if !@card_log do %>
-    <h2 class="title is-4"> This card has never been answered </h2>
-  <% else %>
-    <table class="table">
-      <thead>
-        <th> </th>
-        <th> Start </th>
-        <th> End </th>
-      </thead>
-      <tbody>
-        <tr>
-          <td> Card Type </td>
-          <td> :<%= @card_log.last_card_type %> </td>
-          <td> :<%= @card_log.card_type %> </td>
-        </tr>
-        <tr>
-          <td> Interval </td>
-          <td> <%= format(@card_log.last_interval) %> </td>
-          <td> <%= format(@card_log.interval) %> </td>
-        </tr>
-        <tr>
-          <td> Ease Factor </td>
-          <td> <%= ease_factor(@card_log.last_ease_factor) %> </td>
-          <td> <%= ease_factor(@card_log.ease_factor) %> </td>
-        </tr>
-        <tr>
-          <td> Due </td>
-          <td> <%= format_datetime(@card_log.last_due) %> </td>
-          <td> <%= format_datetime(@card_log.due) %> </td>
-        </tr>
-        <tr>
-          <td> Step </td>
-          <td> <%= step(@card_log.last_step) %> </td>
-          <td> <%= step(@card_log.current_step) %> </td>
-        </tr>
-      </tbody>
-    </table>
-  <% end %>
+  <table class="table">
+    <thead>
+      <th> </th>
+      <th> Start </th>
+      <th> End </th>
+    </thead>
 
+    <tbody>
+      <tr>
+        <td> Card Type </td>
+        <td> :<%= if @card_log, do: @card_log.last_card_type, else: "-" %> </td>
+        <td> :<%= @card.card_type %> </td>
+      </tr>
+      <tr>
+        <td> Interval </td>
+        <td> <%= if @card_log, do: format(@card_log.last_interval), else: "-" %> </td>
+        <td> <%= format(@card.interval) %> </td>
+      </tr>
+      <tr>
+        <td> Ease Factor </td>
+        <td> <%= if @card_log, do: ease_factor(@card_log.last_ease_factor), else: "-" %> </td>
+        <td> <%= ease_factor(@card.ease_factor) %> </td>
+      </tr>
+      <tr>
+        <td> Due </td>
+        <td> <%= if @card_log, do: format_datetime(@card_log.last_due), else: "-" %> </td>
+        <td> <%= format_datetime(@card.due) %> </td>
+      </tr>
+      <tr>
+        <td> Step </td>
+        <td> <%= if @card_log, do: step(@card_log.last_step), else: "-" %> </td>
+        <td> <%= step(@card.current_step) %> </td>
+      </tr>
+    </tbody>
+  </table>
 
 </div>
