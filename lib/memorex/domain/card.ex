@@ -121,21 +121,17 @@ defmodule Memorex.Domain.Card do
 
   @spec convert_duration_strings(map()) :: map()
   defp convert_duration_strings(params) do
-    params =
-      if Map.has_key?(params, "interval") do
-        Map.update!(params, "interval", fn value ->
+    duration_fields = ["interval", "interval_prior_to_lapse"]
+
+    duration_fields
+    |> Enum.reduce(params, fn duration_field, acc ->
+      if Map.has_key?(acc, duration_field) do
+        Map.update!(acc, duration_field, fn value ->
           if is_binary(value), do: Duration.parse!(value), else: value
         end)
       else
-        params
+        acc
       end
-
-    if Map.has_key?(params, "interval_prior_to_lapse") do
-      Map.update!(params, "interval_prior_to_lapse", fn value ->
-        if is_binary(value), do: Duration.parse!(value), else: value
-      end)
-    else
-      params
-    end
+    end)
   end
 end
