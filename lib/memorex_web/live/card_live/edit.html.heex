@@ -1,4 +1,6 @@
 <div>
+  <h1 class="title"> Edit Card </h1>
+
   <.form
     let={f}
     for={@changeset}
@@ -6,19 +8,35 @@
     phx-change="validate"
     phx-submit="save">
   
-    <%= label f, :ease_factor %>
-    <%= text_input f, :ease_factor %>
-    <%= error_tag f, :ease_factor %>
+    <div class="field">
+      <%= label f, :ease_factor, class: "label" %>
+      <div class="control">
+        <%= text_input f, :ease_factor, class: "input" %>
+      </div>
+      <%= error_tag f, :ease_factor %>
+    </div>
 
-    <%= label f, :card_status %>
-    <%= select f, :card_status, Card.card_statuses() %>
+    <div class="field">
+      <%= label f, :card_status, class: "label" %>
+      <div class="control">
+        <%= select f, :card_status, Card.card_statuses(), class: "input" %>
+      </div>
+    </div>
 
-    <%= label f, :due %>
-    <%= datetime_local_input f, :due %>
-  
-    <div>
-     <%= link "Cancel", to: Routes.card_show_path(@socket, :show, @card.id), class: "button" %>
-      <%= submit "Save", phx_disable_with: "Saving...", class: "button" %>
+    <div class="field">
+      <%= label f, :due, class: "label" %>
+      <div class="control">
+        <%= datetime_local_input f, :due, class: "select" %>
+      </div>
+    </div>
+
+    <div class="field is-grouped">
+      <div class="control">
+        <%= link "Cancel", to: Routes.card_show_path(@socket, :show, @card.id), class: "button" %>
+      </div>
+      <div class="control">
+        <%= submit "Save", phx_disable_with: "Saving...", class: "button" %>
+      </div>
     </div>
   </.form>
 </div>
