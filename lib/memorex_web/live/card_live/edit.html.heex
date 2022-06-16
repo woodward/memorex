@@ -11,7 +11,7 @@
     <%= error_tag f, :ease_factor %>
 
     <%= label f, :card_status %>
-    <%= select f, :card_status, [:suspended, :active] %>
+    <%= select f, :card_status, Card.card_statuses() %>
 
     <%= label f, :due %>
     <%= datetime_local_input f, :due %>

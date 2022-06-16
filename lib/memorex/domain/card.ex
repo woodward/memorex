@@ -12,6 +12,9 @@ defmodule Memorex.Domain.Card do
   @type card_type :: :new | :learn | :review | :relearn
 
   @type card_status :: :active | :suspended | :buried
+  @card_statuses [:active, :suspended, :buried]
+  @spec card_statuses() :: [card_status()]
+  def card_statuses(), do: @card_statuses
 
   @type answer_choice :: :again | :hard | :good | :easy
   @answer_choices [:again, :hard, :good, :easy]
