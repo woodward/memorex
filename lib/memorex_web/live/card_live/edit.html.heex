@@ -14,7 +14,8 @@
     <%= select f, :card_status, [:suspended, :active] %>
   
     <div>
-      <%= submit "Save", phx_disable_with: "Saving..." %>
+     <%= link "Cancel", to: Routes.card_show_path(@socket, :show, @card.id), class: "button" %>
+      <%= submit "Save", phx_disable_with: "Saving...", class: "button" %>
     </div>
   </.form>
 </div>
