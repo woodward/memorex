@@ -20,16 +20,17 @@ defmodule MemorexWeb.CardLive.Edit do
      |> assign(card: card, changeset: Card.changeset(card, %{}))}
   end
 
+  # @impl true
+  # def handle_event("validate", %{"card" => card_params}, socket) do
+  #   changeset =
+  #     socket.assigns.card
+  #     |> Card.changeset(card_params)
+  #     |> Map.put(:action, :validate)
+
+  #   {:noreply, assign(socket, :changeset, changeset)}
+  # end
+
   @impl true
-  def handle_event("validate", %{"card" => card_params}, socket) do
-    changeset =
-      socket.assigns.card
-      |> Card.changeset(card_params)
-      |> Map.put(:action, :validate)
-
-    {:noreply, assign(socket, :changeset, changeset)}
-  end
-
   def handle_event("save", %{"card" => card_params}, %{assigns: %{card: card}} = socket) do
     case Cards.update(card, card_params) do
       {:ok, _card} ->
