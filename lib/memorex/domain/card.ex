@@ -77,7 +77,7 @@ defmodule Memorex.Domain.Card do
   @spec changeset(Ecto.Changeset.t() | t(), map()) :: Ecto.Changeset.t()
   def changeset(card, params \\ %{}) do
     card
-    |> cast(params, [
+    |> cast(convert_duration_strings(params), [
       :card_queue,
       :card_status,
       :card_type,
@@ -117,5 +117,25 @@ defmodule Memorex.Domain.Card do
   @spec answer(t()) :: String.t()
   def answer(card) do
     card.note.content |> List.pop_at(card.note_answer_index) |> elem(0)
+  end
+
+  @spec convert_duration_strings(map()) :: map()
+  defp convert_duration_strings(params) do
+    params =
+      if Map.has_key?(params, "interval") do
+        Map.update!(params, "interval", fn value ->
+          if is_binary(value), do: Duration.parse!(value), else: value
+        end)
+      else
+        params
+      end
+
+    if Map.has_key?(params, "interval_prior_to_lapse") do
+      Map.update!(params, "interval_prior_to_lapse", fn value ->
+        if is_binary(value), do: Duration.parse!(value), else: value
+      end)
+    else
+      params
+    end
   end
 end

@@ -17,6 +17,14 @@
     </div>
 
     <div class="field">
+      <%= label f, :interval, class: "label" %>
+      <div class="control">
+        <%= text_input f, :interval, class: "input", value: input_value(f, :interval) |> Timex.Duration.to_string() %>
+      </div>
+      <%= error_tag f, :interval %>
+    </div>
+
+    <div class="field">
       <%= label f, :due, class: "label" %>
       <div class="control">
         <%= datetime_local_input f, :due, class: "select" %>
