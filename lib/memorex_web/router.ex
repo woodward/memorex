@@ -23,6 +23,7 @@ defmodule MemorexWeb.Router do
 
     live "/cards", CardLive.Index, :index
     live "/cards/:id", CardLive.Show, :show
+    live "/cards/:id/edit", CardLive.Edit, :edit
   end
 
   # Other scopes may use custom stacks.

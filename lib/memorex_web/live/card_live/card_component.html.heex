@@ -8,6 +8,8 @@
     <h4 class="title is-4"> <%= live_patch "Drill Card in Isolation", to: Routes.review_path(@socket, :home, %{deck: @card.note.deck_id, card_id: @card.id}) %> </h4>
   <% end %> 
 
+  <h5> <%= live_patch "Edit Card", to: Routes.card_edit_path(@socket, :edit, @card.id), class: "button" %> </h5>
+
   <table class="table">
     <tr>
       <td class="has-text-weight-bold"> Question </td>
