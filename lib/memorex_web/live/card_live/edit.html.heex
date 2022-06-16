@@ -17,16 +17,32 @@
     </div>
 
     <div class="field">
-      <%= label f, :card_status, class: "label" %>
+      <%= label f, :due, class: "label" %>
       <div class="control">
-        <%= select f, :card_status, Card.card_statuses(), class: "input" %>
+        <%= datetime_local_input f, :due, class: "select" %>
       </div>
     </div>
 
     <div class="field">
-      <%= label f, :due, class: "label" %>
+      <%= label f, :current_step, class: "label" %>
       <div class="control">
-        <%= datetime_local_input f, :due, class: "select" %>
+        <%= number_input f, :current_step, class: "input" %>
+      </div>
+      <%= error_tag f, :current_step %>
+    </div>
+
+
+    <div class="field">
+      <%= label f, :card_type, class: "label" %>
+      <div class="control">
+        <%= select f, :card_type, Card.card_types(), class: "input" %>
+      </div>
+    </div>
+
+    <div class="field">
+      <%= label f, :card_status, class: "label" %>
+      <div class="control">
+        <%= select f, :card_status, Card.card_statuses(), class: "input" %>
       </div>
     </div>
 

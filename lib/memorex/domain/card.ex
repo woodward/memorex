@@ -9,7 +9,11 @@ defmodule Memorex.Domain.Card do
   alias Timex.Duration
 
   @type card_queue :: :new | :learn | :review | :day_learn | :suspended | :buried
+
   @type card_type :: :new | :learn | :review | :relearn
+  @card_types [:new, :learn, :review, :relearn]
+  @spec card_types() :: [card_type()]
+  def card_types(), do: @card_types
 
   @type card_status :: :active | :suspended | :buried
   @card_statuses [:active, :suspended, :buried]
