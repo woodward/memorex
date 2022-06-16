@@ -32,10 +32,10 @@
 
     <div class="field is-grouped">
       <div class="control">
-        <%= link "Cancel", to: Routes.card_show_path(@socket, :show, @card.id), class: "button" %>
+        <%= submit "Save", phx_disable_with: "Saving...", class: "button" %>
       </div>
       <div class="control">
-        <%= submit "Save", phx_disable_with: "Saving...", class: "button" %>
+        <%= link "Cancel", to: Routes.card_show_path(@socket, :show, @card.id), class: "button" %>
       </div>
     </div>
   </.form>
