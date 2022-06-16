@@ -9,6 +9,9 @@
     <%= label f, :ease_factor %>
     <%= text_input f, :ease_factor %>
     <%= error_tag f, :ease_factor %>
+
+    <%= label f, :card_status %>
+    <%= select f, :card_status, [:suspended, :active] %>
   
     <div>
       <%= submit "Save", phx_disable_with: "Saving..." %>

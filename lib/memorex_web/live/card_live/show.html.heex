@@ -13,6 +13,7 @@
     <th> Ease Factor </th>
     <th> Current Step </th>
     <th> Reps </th>
+    <th> Card Status </th>
   </thead>
   <tbody>
     <%= for card_log <- @card.card_logs do %>
@@ -25,7 +26,7 @@
         <td> <%= format(card_log.interval) %> </td>
         <td> <%= ease_factor(card_log.ease_factor) %> </td>
         <td> <%= show_dash_if_nil(card_log.current_step) %> </td>
-        <td> <%= card_log.reps %> </td>
+        <td> <%= card_log.card_status %> </td>
       </tr>
     <% end %>
   </tbody>

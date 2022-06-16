@@ -93,6 +93,11 @@
         <td> <%= if @card_log, do: step(@card_log.last_step), else: "-" %> </td>
         <td> <%= step(@card.current_step) %> </td>
       </tr>
+      <tr>
+        <td> Card Status </td>
+        <td> <%= if @card_log, do: step(@card_log.card_status), else: "-" %> </td>
+        <td> <%= step(@card.card_status) %> </td>
+      </tr>
     </tbody>
   </table>
 

@@ -41,11 +41,13 @@ defmodule Memorex.Ecto.Repo.Migrations.CreateSchema do
 
     create table("card_logs") do
       add :answer_choice, :text
+      add :card_status, :text
       add :card_type, :text
       add :current_step, :integer
       add :due, :utc_datetime
       add :ease_factor, :float
       add :interval, :integer
+      add :last_card_status, :text
       add :last_card_type, :text
       add :last_due, :utc_datetime
       add :last_ease_factor, :float
