@@ -7,6 +7,7 @@
       <th> Due </th>
       <th> Interval </th>
       <th> Type </th>
+      <th> Status </th>
       <th> Question </th>
       <th> Answer </th>
     </thead>
@@ -21,6 +22,7 @@
           <td> <%= format_iso_datetime(card.due) %> </td>
           <td> <%= format(card.interval) %> </td>
           <td> :<%= card.card_type %> </td>
+          <td> :<%= card.card_status %> </td>
           <td> <%= truncate(Card.question(card), length: length_of_question_and_answer) %> </td>
           <td> <%= truncate(Card.answer(card), length: length_of_question_and_answer) %> </td>
         </tr>
