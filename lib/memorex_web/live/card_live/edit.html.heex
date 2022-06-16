@@ -38,7 +38,6 @@
       <%= error_tag f, :current_step %>
     </div>
 
-
     <div class="field">
       <%= label f, :card_type, class: "label" %>
       <div class="control">
@@ -51,6 +50,22 @@
       <div class="control">
         <%= select f, :card_status, Card.card_statuses(), class: "input" %>
       </div>
+    </div>
+
+    <div class="field">
+      <%= label f, :reps, class: "label" %>
+      <div class="control">
+        <%= number_input f, :reps, class: "input" %>
+      </div>
+      <%= error_tag f, :reps %>
+    </div>
+
+    <div class="field">
+      <%= label f, :lapses, class: "label" %>
+      <div class="control">
+        <%= number_input f, :lapses, class: "input" %>
+      </div>
+      <%= error_tag f, :lapses %>
     </div>
 
     <div class="field is-grouped">
