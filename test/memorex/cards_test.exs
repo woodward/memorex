@@ -23,6 +23,25 @@ defmodule Memorex.CardsTest do
     end
   end
 
+  describe "update" do
+    test "updates the card from params" do
+      card = %Card{
+        due: ~U[2022-01-01 12:00:00Z],
+        interval: Duration.parse!("P1D"),
+        reps: 3
+      }
+
+      card = Repo.insert!(card)
+
+      card_params = %{due: ~U[2022-02-11 12:00:00Z], interval: Duration.parse!("P10D"), reps: 4}
+      {:ok, updated_card} = Cards.update(card, card_params)
+
+      assert updated_card.due == ~U[2022-02-11 12:00:00Z]
+      assert updated_card.interval == Duration.parse!("P10D")
+      assert updated_card.reps == 4
+    end
+  end
+
   describe "cards_for_deck/1" do
     test "gets the cards associated with a particular deck" do
       deck1 = Repo.insert!(%Deck{})

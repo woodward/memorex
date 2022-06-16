@@ -22,6 +22,11 @@ defmodule Memorex.Cards do
     Repo.get!(Card, card_id) |> Repo.preload([:card_logs, :note])
   end
 
+  @spec update(Card.t(), map()) :: {:ok, Card.t()} | {:error, Ecto.Changeset.t()}
+  def update(card, card_params) do
+    card |> Card.changeset(card_params) |> Repo.update()
+  end
+
   @spec cards_for_deck(Schema.id(), Keyword.t()) :: Ecto.Query.t()
   def cards_for_deck(deck_id, opts \\ []) do
     query =

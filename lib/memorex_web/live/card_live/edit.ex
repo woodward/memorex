@@ -4,7 +4,6 @@ defmodule MemorexWeb.CardLive.Edit do
   use MemorexWeb, :live_view
 
   alias Memorex.Cards
-  alias Memorex.Ecto.Repo
   alias Memorex.Domain.Card
 
   @impl true
@@ -32,7 +31,7 @@ defmodule MemorexWeb.CardLive.Edit do
   end
 
   def handle_event("save", %{"card" => card_params}, %{assigns: %{card: card}} = socket) do
-    case card |> Card.changeset(card_params) |> Repo.update() do
+    case Cards.update(card, card_params) do
       {:ok, _card} ->
         {:noreply,
          socket
