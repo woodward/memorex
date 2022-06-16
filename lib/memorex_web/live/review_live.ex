@@ -29,7 +29,7 @@ defmodule MemorexWeb.ReviewLive do
     card = if card_id, do: Cards.get_card!(card_id), else: Cards.get_one_random_due_card(deck.id, learn_ahead_time)
 
     card =
-      case card.card_type do
+      case card && card.card_type do
         :new -> Cards.convert_new_card_to_learn_card(card, config, time_now)
         _ -> card
       end
