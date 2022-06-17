@@ -26,6 +26,8 @@ end
 
 alias Memorex.Scheduler.Config.Utils
 
+config :memorex, MemorexWeb.ReviewLive, debug_mode?: System.get_env("MEMOREX_DEBUG_MODE", "false") == "true"
+
 timezone =
   case Timex.Timezone.local() do
     # This case will never actually succeed - perhaps Timex is not up and running at this point?

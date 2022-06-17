@@ -1,6 +1,7 @@
 defmodule MemorexWeb.DecksLive do
   @moduledoc false
   use MemorexWeb, :live_view
+
   alias Memorex.{Cards, DeckStats, TimeUtils}
   alias Memorex.Scheduler.Config
   alias Memorex.Domain.Deck
