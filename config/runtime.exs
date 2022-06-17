@@ -26,6 +26,15 @@ end
 
 alias Memorex.Scheduler.Config.Utils
 
+timezone =
+  case Timex.Timezone.local() do
+    # This case will never actually succeed - perhaps Timex is not up and running at this point?
+    %Timex.TimezoneInfo{full_name: tz} -> tz
+    #
+    # This error case is the one which is actually used; tz is actually the correct value:
+    {:error, {:could_not_resolve_timezone, tz, _, :wall}} -> tz
+  end
+
 config :memorex, Memorex.Scheduler.Config,
   new_cards_per_day: System.get_env("MEMOREX_NEW_CARDS_PER_DAY", "20") |> String.to_integer(),
   max_reviews_per_day: System.get_env("MEMOREX_MAX_REVIEWS_PER_DAY", "200") |> String.to_integer(),
@@ -61,11 +70,9 @@ config :memorex, Memorex.Scheduler.Config,
   #
   relearn_easy_adj: System.get_env("MEMOREX_RELEARN_EASY_ADJ", "P1D") |> Duration.parse!(),
   #
-  timezone: System.get_env("MEMOREX_TIMEZONE", "America/Los_Angeles")
+  timezone: System.get_env("MEMOREX_TIMEZONE", timezone)
 
 if config_env() != :test do
-  config :memorex, timezone: System.get_env("MEMOREX_TIMEZONE") || raise("environment variable MEMOREX_TIMEZONE is missing")
-
   note_dirs = System.get_env("MEMOREX_NOTE_DIRS") || raise "Environment variable MEMOREX_NOTE_DIRS must be set!"
   note_dirs = note_dirs |> String.split(",") |> Enum.map(&String.trim(&1))
 

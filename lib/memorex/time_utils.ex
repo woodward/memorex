@@ -8,5 +8,5 @@ defmodule Memorex.TimeUtils do
   def now, do: timezone() |> Timex.now()
 
   @spec timezone() :: Calendar.time_zone()
-  def timezone, do: Application.get_env(:memorex, :timezone)
+  def timezone, do: Application.get_env(:memorex, Memorex.Scheduler.Config)[:timezone]
 end
