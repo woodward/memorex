@@ -17,7 +17,8 @@
     </div>
 
     <div class="field">
-      <%= label f, :interval, "Interval (in ISO-8601 format)", class: "label" %>
+      <% interval_label_text = link "Interval (in ISO-8601 format)", to: "https://en.wikipedia.org/wiki/ISO_8601#Times" %>
+      <%= label f, :interval, interval_label_text, class: "label" %>
       <div class="control">
         <%= text_input f, :interval, class: "input", value: input_value(f, :interval) |> duration_string() %>
       </div>

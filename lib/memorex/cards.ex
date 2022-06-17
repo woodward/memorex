@@ -8,8 +8,8 @@ defmodule Memorex.Cards do
   alias Memorex.Ecto.{Repo, Schema}
   alias Timex.Duration
 
-  @spec update_card!(Card.t(), map(), DateTime.t()) :: Card.t()
-  def update_card!(card, changes, time) do
+  @spec update_card_when_reviewing!(Card.t(), map(), DateTime.t()) :: Card.t()
+  def update_card_when_reviewing!(card, changes, time) do
     card
     |> Card.changeset(changes)
     |> Card.set_due_field_in_changeset(time)

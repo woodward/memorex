@@ -18,7 +18,7 @@ defmodule Memorex.Scheduler.CardReviewer do
   @spec answer_card(Card.t(), Card.answer_choice(), DateTime.t(), Config.t()) :: Card.t()
   def answer_card(card_before, answer, time_now, config) do
     changes = CardStateMachine.answer_card(card_before, answer, config, time_now)
-    Cards.update_card!(card_before, changes, time_now)
+    Cards.update_card_when_reviewing!(card_before, changes, time_now)
   end
 
   @spec time_to_answer(DateTime.t(), DateTime.t(), Config.t()) :: Duration.t()

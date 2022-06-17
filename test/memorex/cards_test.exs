@@ -8,14 +8,14 @@ defmodule Memorex.CardsTest do
   alias Memorex.Domain.{Card, CardLog, Deck, Note}
   alias Timex.Duration
 
-  describe "update_card!" do
+  describe "update_card_when_reviewing!" do
     test "updates the card and also the due field, and incrementes the reps field" do
       old_due = ~U[2022-01-01 12:00:00Z]
       card = %Card{due: old_due, interval: Duration.parse!("P1D"), reps: 3}
       card = Repo.insert!(card)
       time_now = ~U[2022-02-01 12:00:00Z]
 
-      updated_card = Cards.update_card!(card, %{interval: Duration.parse!("P10D")}, time_now)
+      updated_card = Cards.update_card_when_reviewing!(card, %{interval: Duration.parse!("P10D")}, time_now)
 
       assert updated_card.due == ~U[2022-02-11 12:00:00Z]
       assert updated_card.interval == Duration.parse!("P10D")
