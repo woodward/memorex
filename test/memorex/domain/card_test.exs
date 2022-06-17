@@ -45,18 +45,18 @@ defmodule Memorex.Domain.CardTest do
 
       card_changeset =
         Card.changeset(card, %{
-          card_queue: :learn,
-          card_status: :suspended,
-          card_type: :review,
-          due: ~U[2022-05-30 15:44:00Z],
-          ease_factor: 2.4,
-          interval: Duration.parse!("PT47S"),
-          interval_prior_to_lapse: Duration.parse!("P100D"),
-          lapses: 3,
-          note_answer_index: 3,
-          note_question_index: 4,
-          current_step: 2,
-          reps: 36
+          "card_queue" => :learn,
+          "card_status" => :suspended,
+          "card_type" => :review,
+          "due" => ~U[2022-05-30 15:44:00Z],
+          "ease_factor" => 2.4,
+          "interval" => Duration.parse!("PT47S"),
+          "interval_prior_to_lapse" => Duration.parse!("P100D"),
+          "lapses" => 3,
+          "note_answer_index" => 3,
+          "note_question_index" => 4,
+          "current_step" => 2,
+          "reps" => 36
         })
 
       changes = card_changeset.changes
@@ -88,7 +88,7 @@ defmodule Memorex.Domain.CardTest do
   describe "set_due_field_in_changeset" do
     test "sets the due field based on a time plus the current interval contained in the changeset" do
       card = %Card{interval: Duration.parse!("PT33S")}
-      changeset = Card.changeset(card, %{interval: Duration.parse!("P1D")})
+      changeset = Card.changeset(card, %{"interval" => Duration.parse!("P1D")})
       now = ~U[2022-05-30 15:44:00Z]
       changeset = Card.set_due_field_in_changeset(changeset, now)
       changes = changeset.changes

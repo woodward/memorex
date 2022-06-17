@@ -73,19 +73,19 @@ defmodule Memorex.Domain.Card do
   @spec changeset(Ecto.Changeset.t() | t(), map()) :: Ecto.Changeset.t()
   def changeset(card, params \\ %{}) do
     card
-    |> cast(convert_duration_strings(params), [
+    |> cast(params, [
       :card_status,
       :card_type,
       :current_step,
       :due,
       :ease_factor,
-      :interval,
-      :interval_prior_to_lapse,
       :lapses,
       :note_answer_index,
       :note_question_index,
       :reps
     ])
+    |> cast_duration_field(:interval, params)
+    |> cast_duration_field(:interval_prior_to_lapse, params)
   end
 
   @spec set_due_field_in_changeset(Ecto.Changeset.t() | t(), DateTime.t()) :: Ecto.Changeset.t()
@@ -114,19 +114,16 @@ defmodule Memorex.Domain.Card do
     card.note.content |> List.pop_at(card.note_answer_index) |> elem(0)
   end
 
-  @spec convert_duration_strings(map()) :: map()
-  defp convert_duration_strings(params) do
-    duration_fields = ["interval", "interval_prior_to_lapse"]
+  def cast_duration_field(changeset, field_name, params) do
+    string_field_name = field_name |> Atom.to_string()
 
-    duration_fields
-    |> Enum.reduce(params, fn duration_field, acc ->
-      if Map.has_key?(acc, duration_field) do
-        Map.update!(acc, duration_field, fn value ->
-          if is_binary(value), do: Duration.parse!(value), else: value
-        end)
-      else
-        acc
-      end
-    end)
+    if Map.has_key?(params, string_field_name) || Map.has_key?(params, field_name) do
+      value = Map.get(params, string_field_name)
+      value = value || Map.get(params, field_name)
+      updated_value = if is_binary(value), do: Duration.parse!(value), else: value
+      changeset |> cast(%{string_field_name => updated_value}, [field_name])
+    else
+      changeset
+    end
   end
 end
