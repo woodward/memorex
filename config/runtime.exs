@@ -67,15 +67,10 @@ if config_env() != :test do
   config :memorex, timezone: System.get_env("MEMOREX_TIMEZONE") || raise("environment variable MEMOREX_TIMEZONE is missing")
 
   note_dirs = System.get_env("MEMOREX_NOTE_DIRS") || raise "Environment variable MEMOREX_NOTE_DIRS must be set!"
-
   note_dirs = note_dirs |> String.split(",") |> Enum.map(&String.trim(&1))
 
-  bidirectional_note_delimitter =
-    System.get_env("MEMOREX_BIDIRECTIONAL_NOTE_DELIMITTER") ||
-      raise "Environment variable MEMOREX_BIDIRECTIONAL_NOTE_DELIMITTER must be set!"
-
   config :memorex, Memorex.Note,
-    bidirectional_note_delimitter: bidirectional_note_delimitter,
+    bidirectional_note_delimitter: System.get_env("MEMOREX_BIDIRECTIONAL_NOTE_DELIMITTER", "⮂"),
     note_dirs: note_dirs
 end
 
