@@ -15,6 +15,7 @@ config :memorex, Memorex.Ecto.Repo,
 
 config :memorex, Memorex.Note,
   bidirectional_note_delimitter: "⮂",
+  unidirectional_note_delimitter: "→",
   note_dirs: ["test/fixtures/contains_multiple_decks/dir1", "test/fixtures/contains_multiple_decks/dir2"]
 
 # We don't run a server during test. If one is required,

@@ -176,7 +176,7 @@ defmodule Memorex.ParserTest do
   end
 
   describe "is_note_line?/1" do
-    test "returns true if the line contains the note character" do
+    test "returns true if the line contains the bidirectional note character" do
       line = "Blah blah ⮂ foo foo"
       assert Parser.is_note_line?(line) == true
     end
@@ -184,6 +184,23 @@ defmodule Memorex.ParserTest do
     test "returns false if the line does not contain the note character" do
       line = "Blah blah foo foo"
       assert Parser.is_note_line?(line) == false
+    end
+
+    test "returns true if the line contains the unidirectional note character" do
+      line = "Blah blah → foo foo"
+      assert Parser.is_note_line?(line) == true
+    end
+  end
+
+  describe "is_bidirectional_note?/1" do
+    test "returns true if the line contains the bidirectional note character" do
+      line = "Blah blah ⮂ foo foo"
+      assert Parser.is_bidirectional_note?(line) == true
+    end
+
+    test "returns false if the line contains the unidirectional note character" do
+      line = "Blah blah → foo foo"
+      assert Parser.is_bidirectional_note?(line) == false
     end
   end
 

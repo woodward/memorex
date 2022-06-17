@@ -97,12 +97,15 @@ defmodule Memorex.Parser do
   end
 
   @spec is_note_line?(String.t()) :: boolean()
-  def is_note_line?(line), do: String.match?(line, ~r/#{bidirectional_note_delimitter()}/)
+  def is_note_line?(line), do: String.match?(line, note_regex())
+
+  @spec is_bidirectional_note?(String.t()) :: boolean()
+  def is_bidirectional_note?(line), do: String.match?(line, ~r/#{bidirectional_note_delimitter()}/)
 
   @spec parse_line(String.t(), String.t() | nil) :: Note.t()
   def parse_line(line, category) do
-    content = line |> String.split(bidirectional_note_delimitter()) |> Enum.map(&String.trim(&1))
-    Note.new(content: content, category: category, bidirectional?: true)
+    content = line |> String.split(note_regex()) |> Enum.map(&String.trim(&1))
+    Note.new(content: content, category: category, bidirectional?: is_bidirectional_note?(line))
   end
 
   @spec read_toml_deck_config(String.t()) :: map()
@@ -110,9 +113,12 @@ defmodule Memorex.Parser do
     filename |> File.read!() |> Toml.decode() |> elem(1)
   end
 
+  @spec note_regex() :: Regex.t()
+  defp note_regex(), do: ~r/#{bidirectional_note_delimitter()}|#{unidirectional_note_delimitter()}/
+
   @spec bidirectional_note_delimitter() :: String.t()
-  def bidirectional_note_delimitter, do: Application.get_env(:memorex, Memorex.Note)[:bidirectional_note_delimitter]
+  defp bidirectional_note_delimitter, do: Application.get_env(:memorex, Memorex.Note)[:bidirectional_note_delimitter]
 
   @spec unidirectional_note_delimitter() :: String.t()
-  def unidirectional_note_delimitter, do: Application.get_env(:memorex, Memorex.Note)[:unidirectional_note_delimitter]
+  defp unidirectional_note_delimitter, do: Application.get_env(:memorex, Memorex.Note)[:unidirectional_note_delimitter]
 end

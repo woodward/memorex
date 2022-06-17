@@ -50,9 +50,12 @@ defmodule Memorex.Cards do
   @spec create_from_note(Note.t()) :: Schema.id()
   def(create_from_note(note)) do
     card1 = %Card{note: note, note_question_index: 0, note_answer_index: 1}
-    card2 = %Card{note: note, note_question_index: 1, note_answer_index: 0}
     Repo.insert!(card1)
-    Repo.insert!(card2)
+
+    if note.bidirectional? do
+      card2 = %Card{note: note, note_question_index: 1, note_answer_index: 0}
+      Repo.insert!(card2)
+    end
   end
 
   @spec set_new_cards_in_deck_to_learn_cards(Schema.id(), Config.t(), DateTime.t(), Keyword.t()) :: :ok

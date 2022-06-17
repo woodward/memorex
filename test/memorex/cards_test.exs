@@ -128,7 +128,7 @@ defmodule Memorex.CardsTest do
   end
 
   describe "create_from_note/1" do
-    test "can create cards from a note" do
+    test "can create bidirectional cards from a note" do
       note = Note.new(content: ["one", "two"], bidirectional?: true) |> Repo.insert!()
       Cards.create_from_note(note)
 
@@ -149,6 +149,22 @@ defmodule Memorex.CardsTest do
       assert card2.card_type == :new
       assert card2.card_status == :active
       assert card2.card_queue == :new
+    end
+
+    test "can create unidirectional cards from a note" do
+      note = Note.new(content: ["one", "two"], bidirectional?: false) |> Repo.insert!()
+
+      Cards.create_from_note(note)
+
+      assert Repo.all(Card) |> length() == 1
+      [card] = Repo.all(Card)
+
+      assert card.note_question_index == 0
+      assert card.note_answer_index == 1
+      assert card.note_id == note.id
+      assert card.card_type == :new
+      assert card.card_status == :active
+      assert card.card_queue == :new
     end
   end
 
