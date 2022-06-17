@@ -5,6 +5,7 @@ defmodule MemorexWeb.CardLive.Edit do
 
   alias Memorex.Cards
   alias Memorex.Domain.Card
+  alias Timex.Duration
 
   @impl true
   def mount(%{"id" => _card_id} = _params, _session, socket) do
@@ -20,15 +21,15 @@ defmodule MemorexWeb.CardLive.Edit do
      |> assign(card: card, changeset: Card.changeset(card, %{}))}
   end
 
-  # @impl true
-  # def handle_event("validate", %{"card" => card_params}, socket) do
-  #   changeset =
-  #     socket.assigns.card
-  #     |> Card.changeset(card_params)
-  #     |> Map.put(:action, :validate)
+  @impl true
+  def handle_event("validate", %{"card" => card_params}, socket) do
+    changeset =
+      socket.assigns.card
+      |> Card.changeset(card_params)
+      |> Map.put(:action, :validate)
 
-  #   {:noreply, assign(socket, :changeset, changeset)}
-  # end
+    {:noreply, assign(socket, :changeset, changeset)}
+  end
 
   @impl true
   def handle_event("save", %{"card" => card_params}, %{assigns: %{card: card}} = socket) do
@@ -43,4 +44,9 @@ defmodule MemorexWeb.CardLive.Edit do
         {:noreply, assign(socket, :changeset, changeset)}
     end
   end
+
+  @spec duration_string(nil | String.t() | Duration.t()) :: nil | String.t()
+  def duration_string(nil), do: nil
+  def duration_string(duration) when is_binary(duration), do: duration
+  def duration_string(%Duration{} = duration), do: Duration.to_string(duration)
 end

@@ -114,14 +114,23 @@ defmodule Memorex.Domain.Card do
     card.note.content |> List.pop_at(card.note_answer_index) |> elem(0)
   end
 
-  def cast_duration_field(changeset, field_name, params) do
+  @spec cast_duration_field(Ecto.Changeset.t(), atom(), map()) :: Ecto.Changeset.t()
+  defp cast_duration_field(changeset, field_name, params) do
     string_field_name = field_name |> Atom.to_string()
 
     if Map.has_key?(params, string_field_name) || Map.has_key?(params, field_name) do
       value = Map.get(params, string_field_name)
       value = value || Map.get(params, field_name)
-      updated_value = if is_binary(value), do: Duration.parse!(value), else: value
-      changeset |> cast(%{string_field_name => updated_value}, [field_name])
+      add_to_changeset = &cast(changeset, %{string_field_name => &1}, [field_name])
+
+      if is_binary(value) do
+        case Duration.parse(value) do
+          {:ok, duration} -> add_to_changeset.(duration)
+          {:error, _reason} -> changeset |> add_error(field_name, "invalid duration")
+        end
+      else
+        add_to_changeset.(value)
+      end
     else
       changeset
     end

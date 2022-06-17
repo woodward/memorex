@@ -11,7 +11,7 @@ defmodule MemorexWeb.ErrorHelpers do
   def error_tag(form, field) do
     Enum.map(Keyword.get_values(form.errors, field), fn error ->
       content_tag(:span, translate_error(error),
-        class: "invalid-feedback",
+        class: "invalid-feedback help is-danger",
         phx_feedback_for: input_name(form, field)
       )
     end)

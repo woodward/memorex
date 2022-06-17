@@ -83,6 +83,17 @@ defmodule Memorex.Domain.CardTest do
       assert changes.interval == Duration.parse!("PT10M")
       assert changes.interval_prior_to_lapse == Duration.parse!("PT20M")
     end
+
+    test "shows an error if unable to convert interval strings to Timex.Duration" do
+      card = %Card{interval: Duration.parse!("PT1M"), interval_prior_to_lapse: Duration.parse!("PT2M")}
+
+      changeset = Card.changeset(card, %{"interval" => "invalid-duration", "interval_prior_to_lapse" => "another-invalid-duration"})
+
+      assert changeset.valid? == false
+
+      assert "invalid duration" in errors_on(changeset).interval
+      assert "invalid duration" in errors_on(changeset).interval_prior_to_lapse
+    end
   end
 
   describe "set_due_field_in_changeset" do

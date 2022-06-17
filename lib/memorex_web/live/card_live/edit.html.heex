@@ -5,6 +5,7 @@
     let={f}
     for={@changeset}
     id="card-form"
+    phx-change="validate"
     phx-submit="save">
   
     <div class="field">
@@ -16,9 +17,9 @@
     </div>
 
     <div class="field">
-      <%= label f, :interval, class: "label" %>
+      <%= label f, :interval, "Interval (in ISO-8601 format)", class: "label" %>
       <div class="control">
-        <%= text_input f, :interval, class: "input", value: input_value(f, :interval) |> Timex.Duration.to_string() %>
+        <%= text_input f, :interval, class: "input", value: input_value(f, :interval) |> duration_string() %>
       </div>
       <%= error_tag f, :interval %>
     </div>
