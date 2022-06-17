@@ -104,17 +104,19 @@ defmodule Memorex.ParserTest do
     end
   end
 
-  test "parse_line/1" do
-    line = " one ⮂   two  "
-    category = "my category"
-    note = Parser.parse_line(line, category)
+  describe "parse_line/1" do
+    test "parse_line/1 works for the bidirectional note" do
+      line = " one ⮂   two  "
+      category = "my category"
+      note = Parser.parse_line(line, category)
 
-    assert note == %Note{
-             content: ["one", "two"],
-             category: "my category",
-             id: "99f1f73a-69be-5588-a86b-de7b3163d575",
-             in_latest_parse?: true
-           }
+      assert note == %Note{
+               content: ["one", "two"],
+               category: "my category",
+               id: "99f1f73a-69be-5588-a86b-de7b3163d575",
+               in_latest_parse?: true
+             }
+    end
   end
 
   describe "parse_file_contents/1" do

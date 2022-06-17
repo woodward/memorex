@@ -112,4 +112,7 @@ defmodule Memorex.Parser do
 
   @spec bidirectional_note_delimitter() :: String.t()
   def bidirectional_note_delimitter, do: Application.get_env(:memorex, Memorex.Note)[:bidirectional_note_delimitter]
+
+  @spec unidirectional_note_delimitter() :: String.t()
+  def unidirectional_note_delimitter, do: Application.get_env(:memorex, Memorex.Note)[:unidirectional_note_delimitter]
 end

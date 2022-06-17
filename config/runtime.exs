@@ -78,6 +78,7 @@ if config_env() != :test do
 
   config :memorex, Memorex.Note,
     bidirectional_note_delimitter: System.get_env("MEMOREX_BIDIRECTIONAL_NOTE_DELIMITTER", "⮂"),
+    unidirectional_note_delimitter: System.get_env("MEMOREX_UNIDIRECTIONAL_NOTE_DELIMITTER", "→"),
     note_dirs: note_dirs
 end
 
