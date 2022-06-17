@@ -11,6 +11,7 @@ defmodule Memorex.Ecto.Repo.Migrations.CreateSchema do
     end
 
     create table("notes") do
+      add :bidirectional?, :boolean, default: false, null: false
       add :content, {:array, :text}
       add :in_latest_parse?, :boolean, default: false, null: false
       add :category, :text

@@ -114,7 +114,8 @@ defmodule Memorex.ParserTest do
                content: ["one", "two"],
                category: "my category",
                id: "99f1f73a-69be-5588-a86b-de7b3163d575",
-               in_latest_parse?: true
+               in_latest_parse?: true,
+               bidirectional?: true
              }
     end
   end

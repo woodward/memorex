@@ -11,6 +11,7 @@ defmodule Memorex.Domain.Note do
 
   @type t :: %__MODULE__{
           id: Schema.id() | nil,
+          bidirectional?: boolean(),
           category: String.t() | nil,
           content: [String.t()],
           in_latest_parse?: boolean(),
@@ -22,6 +23,7 @@ defmodule Memorex.Domain.Note do
         }
 
   schema "notes" do
+    field :bidirectional?, :boolean
     field :category, :binary
     field :content, {:array, :binary}
     field :in_latest_parse?, :boolean
@@ -39,13 +41,15 @@ defmodule Memorex.Domain.Note do
     deck = Keyword.get(opts, :deck)
     deck_id = if deck, do: deck.id, else: nil
     in_latest_parse? = Keyword.get(opts, :in_latest_parse?, true)
+    bidirectional? = Keyword.get(opts, :bidirectional?, false)
 
     %__MODULE__{
       id: content_to_uuid(content, category),
       category: category,
       content: content,
       in_latest_parse?: in_latest_parse?,
-      deck_id: deck_id
+      deck_id: deck_id,
+      bidirectional?: bidirectional?
     }
   end
 

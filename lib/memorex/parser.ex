@@ -80,7 +80,7 @@ defmodule Memorex.Parser do
         else
           %{note | deck: deck}
           |> Repo.insert!(on_conflict: :nothing)
-          |> Cards.create_bidirectional_from_note()
+          |> Cards.create_from_note()
         end
       end
     end)
@@ -102,7 +102,7 @@ defmodule Memorex.Parser do
   @spec parse_line(String.t(), String.t() | nil) :: Note.t()
   def parse_line(line, category) do
     content = line |> String.split(bidirectional_note_delimitter()) |> Enum.map(&String.trim(&1))
-    Note.new(content: content, category: category)
+    Note.new(content: content, category: category, bidirectional?: true)
   end
 
   @spec read_toml_deck_config(String.t()) :: map()

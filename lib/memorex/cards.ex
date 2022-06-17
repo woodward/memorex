@@ -47,8 +47,8 @@ defmodule Memorex.Cards do
     # |> where([c, n, d], d.id == ^deck_id)
   end
 
-  @spec create_bidirectional_from_note(Note.t()) :: Schema.id()
-  def(create_bidirectional_from_note(note)) do
+  @spec create_from_note(Note.t()) :: Schema.id()
+  def(create_from_note(note)) do
     card1 = %Card{note: note, note_question_index: 0, note_answer_index: 1}
     card2 = %Card{note: note, note_question_index: 1, note_answer_index: 0}
     Repo.insert!(card1)
