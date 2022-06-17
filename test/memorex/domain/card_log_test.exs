@@ -10,7 +10,6 @@ defmodule Memorex.Domain.CardLogTest do
     answer_choice = :hard
 
     card_before = %Card{
-      card_queue: :day_learn,
       card_status: :active,
       card_type: :relearn,
       id: Ecto.UUID.generate(),
@@ -21,7 +20,6 @@ defmodule Memorex.Domain.CardLogTest do
     }
 
     card_after = %Card{
-      card_queue: :learn,
       card_status: :suspended,
       card_type: :review,
       interval: Duration.parse!("PT47S"),

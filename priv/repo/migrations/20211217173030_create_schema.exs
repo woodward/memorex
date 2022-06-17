@@ -22,7 +22,6 @@ defmodule Memorex.Ecto.Repo.Migrations.CreateSchema do
     end
 
     create table("cards") do
-      add :card_queue, :text
       add :card_status, :text
       add :card_type, :text
       add :current_step, :integer

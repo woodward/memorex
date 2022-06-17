@@ -23,21 +23,18 @@ defmodule Memorex.Domain.CardTest do
   end
 
   test "enums work properly" do
-    card = Repo.insert!(%Card{card_type: :relearn, card_queue: :review})
+    card = Repo.insert!(%Card{card_type: :relearn})
     assert card.card_type == :relearn
-    assert card.card_queue == :review
   end
 
   test "default values" do
     card = %Card{}
-    assert card.card_queue == :new
     assert card.card_type == :new
   end
 
   describe "changeset" do
     test "changeset" do
       card = %Card{
-        card_queue: :day_learn,
         card_status: :active,
         card_type: :relearn,
         ease_factor: 2.5,
@@ -64,7 +61,6 @@ defmodule Memorex.Domain.CardTest do
 
       changes = card_changeset.changes
 
-      assert changes.card_queue == :learn
       assert changes.card_status == :suspended
       assert changes.card_type == :review
       assert changes.due == ~U[2022-05-30 15:44:00Z]

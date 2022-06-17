@@ -93,7 +93,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
       assert card_log.card.ease_factor == 2.5
       assert card_log.note.content == ["First", "Second"]
 
-      # assert card.card_queue == :review
       assert card.card_type == :review
       assert card.due == ~U[2022-01-11 12:19:00Z]
       assert card.ease_factor == 2.5
@@ -110,7 +109,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card =
         %Card{
-          # card_queue: :review,
           card_type: :learn,
           due: ~U[2022-01-01 12:00:00Z],
           ease_factor: nil,
@@ -123,7 +121,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card = CardReviewer.answer_card(card, :again, ~U[2022-01-01 12:00:00Z], config)
 
-      # assert card.card_queue == :review
       assert card.card_type == :learn
       assert card.due == ~U[2022-01-01 12:01:00Z]
       assert card.ease_factor == nil
@@ -138,7 +135,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card =
         %Card{
-          # card_queue: :review,
           card_type: :learn,
           due: ~U[2022-01-01 12:00:00Z],
           ease_factor: nil,
@@ -151,7 +147,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card = CardReviewer.answer_card(card, :hard, ~U[2022-01-01 12:00:00Z], config)
 
-      # assert card.card_queue == :review
       assert card.card_type == :learn
       assert card.due == ~U[2022-01-01 12:01:00Z]
       assert card.ease_factor == nil
@@ -166,7 +161,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card =
         %Card{
-          # card_queue: :review,
           card_type: :learn,
           due: ~U[2022-01-01 12:00:00Z],
           ease_factor: nil,
@@ -179,7 +173,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card = CardReviewer.answer_card(card, :good, ~U[2022-01-01 12:00:00Z], config)
 
-      # assert card.card_queue == :review
       assert card.card_type == :learn
       assert card.due == ~U[2022-01-01 12:15:00Z]
       assert card.ease_factor == nil
@@ -198,7 +191,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card =
         %Card{
-          # card_queue: :review,
           card_type: :learn,
           due: ~U[2022-01-01 12:00:00Z],
           ease_factor: nil,
@@ -211,7 +203,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card = CardReviewer.answer_card(card, :good, ~U[2022-01-01 12:00:00Z], config)
 
-      # assert card.card_queue == :review
       assert card.card_type == :review
       assert card.due == ~U[2022-01-02 12:00:00Z]
       assert card.ease_factor == 2.5
@@ -233,7 +224,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card =
         %Card{
-          # card_queue: :review,
           card_type: :review,
           due: ~U[2022-01-01 12:00:00Z],
           ease_factor: 2.5,
@@ -246,7 +236,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card = CardReviewer.answer_card(card, :again, ~U[2022-01-01 12:00:00Z], config)
 
-      # assert card.card_queue == :review
       assert card.card_type == :relearn
       assert card.due == ~U[2022-01-02 12:00:00Z]
       assert card.ease_factor == 2.3
@@ -268,7 +257,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card =
         %Card{
-          # card_queue: :review,
           card_type: :review,
           due: ~U[2022-01-01 12:00:00Z],
           ease_factor: 2.5,
@@ -281,7 +269,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card = CardReviewer.answer_card(card, :again, ~U[2022-01-01 12:00:00Z], config)
 
-      # assert card.card_queue == :review
       assert card.card_type == :relearn
       assert card.card_status == :suspended
       assert card.due == ~U[2022-01-02 12:00:00Z]
@@ -303,7 +290,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card =
         %Card{
-          # card_queue: :review,
           card_type: :review,
           due: ~U[2022-01-01 12:00:00Z],
           ease_factor: 2.5,
@@ -316,7 +302,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card = CardReviewer.answer_card(card, :hard, ~U[2022-01-01 12:00:00Z], config)
 
-      # assert card.card_queue == :review
       assert card.card_type == :review
       assert card.due == ~U[2022-01-02 19:40:48Z]
       assert card.ease_factor == 2.35
@@ -331,7 +316,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card =
         %Card{
-          # card_queue: :review,
           card_type: :review,
           due: ~U[2022-01-01 12:00:00Z],
           ease_factor: 2.5,
@@ -344,7 +328,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card = CardReviewer.answer_card(card, :good, ~U[2022-01-01 12:00:00Z], config)
 
-      # assert card.card_queue == :review
       assert card.card_type == :review
       assert card.due == ~U[2022-01-04 06:00:00Z]
       assert card.ease_factor == 2.6
@@ -359,7 +342,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card =
         %Card{
-          # card_queue: :review,
           card_type: :review,
           due: ~U[2022-01-01 12:00:00Z],
           ease_factor: 2.5,
@@ -372,7 +354,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card = CardReviewer.answer_card(card, :easy, ~U[2022-01-01 12:00:00Z], config)
 
-      # assert card.card_queue == :review
       assert card.card_type == :review
       assert card.due == ~U[2022-01-05 01:48:00Z]
       assert card.ease_factor == 2.65
@@ -388,7 +369,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card =
         %Card{
-          # card_queue: :review,
           card_type: :relearn,
           due: ~U[2022-01-01 12:00:00Z],
           ease_factor: 2.5,
@@ -401,7 +381,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card = CardReviewer.answer_card(card, :again, ~U[2022-01-01 12:00:00Z], config)
 
-      # assert card.card_queue == :review
       assert card.card_type == :relearn
       assert card.due == ~U[2022-01-01 12:10:00Z]
       assert card.ease_factor == 2.5
@@ -416,7 +395,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card =
         %Card{
-          # card_queue: :review,
           card_type: :relearn,
           due: ~U[2022-01-01 12:00:00Z],
           ease_factor: 2.5,
@@ -429,7 +407,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card = CardReviewer.answer_card(card, :hard, ~U[2022-01-01 12:00:00Z], config)
 
-      # assert card.card_queue == :review
       assert card.card_type == :relearn
       assert card.due == ~U[2022-01-01 12:10:00Z]
       assert card.ease_factor == 2.5
@@ -444,7 +421,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card =
         %Card{
-          # card_queue: :review,
           card_type: :relearn,
           due: ~U[2022-01-01 12:00:00Z],
           ease_factor: 2.5,
@@ -457,7 +433,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card = CardReviewer.answer_card(card, :good, ~U[2022-01-01 12:00:00Z], config)
 
-      # assert card.card_queue == :review
       assert card.card_type == :review
       assert card.due == ~U[2022-01-02 12:00:00Z]
       assert card.ease_factor == 2.5
@@ -476,7 +451,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card =
         %Card{
-          # card_queue: :review,
           card_type: :relearn,
           due: ~U[2022-01-01 12:00:00Z],
           ease_factor: 2.5,
@@ -489,7 +463,6 @@ defmodule Memorex.Scheduler.CardReviewerTest do
 
       card = CardReviewer.answer_card(card, :easy, ~U[2022-01-01 12:00:00Z], config)
 
-      # assert card.card_queue == :review
       assert card.card_type == :review
       assert card.due == ~U[2022-01-02 12:10:00Z]
       assert card.ease_factor == 2.5

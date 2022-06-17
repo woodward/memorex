@@ -8,8 +8,6 @@ defmodule Memorex.Domain.Card do
   alias Memorex.Ecto.{TimexDuration, Schema}
   alias Timex.Duration
 
-  @type card_queue :: :new | :learn | :review | :day_learn | :suspended | :buried
-
   @type card_type :: :new | :learn | :review | :relearn
   @card_types [:new, :learn, :review, :relearn]
   @spec card_types() :: [card_type()]
@@ -28,7 +26,6 @@ defmodule Memorex.Domain.Card do
   @type t :: %__MODULE__{
           id: Schema.id() | nil,
           #
-          card_queue: card_queue(),
           card_status: card_status(),
           card_type: card_type(),
           current_step: non_neg_integer(),
@@ -48,7 +45,6 @@ defmodule Memorex.Domain.Card do
         }
 
   schema "cards" do
-    field :card_queue, Ecto.Enum, values: [:new, :learn, :review, :day_learn, :suspended, :buried], default: :new
     field :card_status, Ecto.Enum, values: [:active, :suspended, :buried], default: :active
     field :card_type, Ecto.Enum, values: [:new, :learn, :review, :relearn], default: :new
     field :current_step, :integer
@@ -78,7 +74,6 @@ defmodule Memorex.Domain.Card do
   def changeset(card, params \\ %{}) do
     card
     |> cast(convert_duration_strings(params), [
-      :card_queue,
       :card_status,
       :card_type,
       :current_step,

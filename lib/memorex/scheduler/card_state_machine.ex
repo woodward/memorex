@@ -11,7 +11,6 @@ defmodule Memorex.Scheduler.CardStateMachine do
 
   def convert_new_card_to_learn_card(%Card{card_type: :new} = _card, config, time_now) do
     %{
-      card_queue: :learn,
       card_type: :learn,
       current_step: 0,
       due: time_now,

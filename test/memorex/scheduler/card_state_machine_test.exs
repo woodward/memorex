@@ -14,14 +14,13 @@ defmodule Memorex.Scheduler.CardStateMachineTest do
         initial_ease: 2.25
       }
 
-      card = %Card{card_type: :new, ease_factor: 2.15, lapses: 2, reps: 33, card_queue: :review}
+      card = %Card{card_type: :new, ease_factor: 2.15, lapses: 2, reps: 33}
 
       time_now = ~U[2022-02-01 12:00:00Z]
       changes = CardStateMachine.convert_new_card_to_learn_card(card, config, time_now)
 
       assert changes.current_step == 0
       assert changes.card_type == :learn
-      assert changes.card_queue == :learn
       assert changes.lapses == 0
       assert changes.reps == 0
       assert changes.due == time_now

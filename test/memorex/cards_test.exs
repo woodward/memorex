@@ -141,14 +141,12 @@ defmodule Memorex.CardsTest do
       assert card1.note_id == note.id
       assert card1.card_type == :new
       assert card1.card_status == :active
-      assert card1.card_queue == :new
 
       assert card2.note_question_index == 1
       assert card2.note_answer_index == 0
       assert card2.note_id == note.id
       assert card2.card_type == :new
       assert card2.card_status == :active
-      assert card2.card_queue == :new
     end
 
     test "can create unidirectional cards from a note" do
@@ -164,7 +162,6 @@ defmodule Memorex.CardsTest do
       assert card.note_id == note.id
       assert card.card_type == :new
       assert card.card_status == :active
-      assert card.card_queue == :new
     end
   end
 
