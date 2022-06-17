@@ -256,6 +256,42 @@ defmodule Memorex.Scheduler.CardReviewerTest do
       assert card.reps == 4
     end
 
+    test "review card - answer :again - exceeds leech threshold" do
+      config = %Config{
+        ease_again: -0.2,
+        relearn_steps: [Duration.parse!("PT10M"), Duration.parse!("PT20M")],
+        lapse_multiplier: 0.0,
+        min_review_interval: Duration.parse!("P1D"),
+        ease_minimum: 1.3,
+        leech_threshold: 8
+      }
+
+      card =
+        %Card{
+          # card_queue: :review,
+          card_type: :review,
+          due: ~U[2022-01-01 12:00:00Z],
+          ease_factor: 2.5,
+          interval: Duration.parse!("PT10M"),
+          lapses: 7,
+          current_step: 1,
+          reps: 3
+        }
+        |> Repo.insert!()
+
+      card = CardReviewer.answer_card(card, :again, ~U[2022-01-01 12:00:00Z], config)
+
+      # assert card.card_queue == :review
+      assert card.card_type == :relearn
+      assert card.card_status == :suspended
+      assert card.due == ~U[2022-01-02 12:00:00Z]
+      assert card.ease_factor == 2.3
+      assert card.interval == Duration.parse!("P1D")
+      assert card.lapses == 8
+      assert card.current_step == 0
+      assert card.reps == 4
+    end
+
     test "review card - answer :hard" do
       config = %Config{
         interval_multiplier: 1.1,

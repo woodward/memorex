@@ -68,7 +68,7 @@ defmodule Memorex.Scheduler.CardStateMachine do
     ease_factor = (card.ease_factor + config.ease_again) |> floor_for_ease_factor(config.ease_minimum)
     lapses = card.lapses + 1
 
-    %{
+    changes = %{
       card_type: card_type,
       current_step: 0,
       ease_factor: ease_factor,
@@ -76,6 +76,8 @@ defmodule Memorex.Scheduler.CardStateMachine do
       interval: interval,
       lapses: lapses
     }
+
+    if lapses >= config.leech_threshold, do: Map.put(changes, :card_status, :suspended), else: changes
   end
 
   def answer_card(%Card{card_type: :review} = card, :hard, config, _time_now) do
