@@ -2,7 +2,6 @@ defmodule Memorex.Parser do
   @moduledoc false
 
   alias Memorex.{Cards, Decks}
-  alias Memorex.Scheduler.ConfigFile
   alias Memorex.Ecto.Repo
   alias Memorex.Domain.{Deck, Note}
 
@@ -90,7 +89,7 @@ defmodule Memorex.Parser do
   @spec load_config_file_if_it_exists(Deck.t(), String.t()) :: Deck.t()
   defp load_config_file_if_it_exists(deck, config_filename) do
     if File.exists?(config_filename) do
-      config_file = ConfigFile.read(config_filename)
+      config_file = read_toml_deck_config(config_filename)
       Decks.update_config(deck, config_file)
     else
       deck
@@ -104,6 +103,11 @@ defmodule Memorex.Parser do
   def parse_line(line, category) do
     content = line |> String.split(bidirectional_note_delimitter()) |> Enum.map(&String.trim(&1))
     Note.new(content: content, category: category)
+  end
+
+  @spec read_toml_deck_config(String.t()) :: map()
+  def read_toml_deck_config(filename) do
+    filename |> File.read!() |> Toml.decode() |> elem(1)
   end
 
   @spec bidirectional_note_delimitter() :: String.t()
