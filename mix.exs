@@ -99,7 +99,9 @@ defmodule Memorex.MixProject do
       maintainers: ["Greg Woodward"],
       licenses: ["MIT"],
       links: %{"GitHub" => @source_url},
-      files: ~w(.formatter.exs .credo.exs mix.exs README.md lib config assets notes priv)
+      files:
+        ~w(.formatter.exs .credo.exs mix.exs README.md lib config assets/js assets/vendor notes priv) ++
+          ~w(assets/css/app.scss assets/css/initial-variables.sass assets/css/derived-variables.sass )
     ]
   end
 
