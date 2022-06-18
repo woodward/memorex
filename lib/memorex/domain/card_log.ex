@@ -1,5 +1,8 @@
 defmodule Memorex.Domain.CardLog do
-  @moduledoc false
+  @moduledoc """
+  A `Memorex.Domain.Card` has one or more `Memorex.Domain.CardLog`s; every time you answer a card when reviewing/drilling
+  (via `MemorexWeb.ReviewLive`) a `Memorex.Domain.CardLog` entry is created.
+  """
 
   use Memorex.Ecto.Schema
 

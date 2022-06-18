@@ -1,5 +1,7 @@
 defmodule MemorexWeb.DecksLive do
-  @moduledoc false
+  @moduledoc """
+  A Phoenix LiveView which shows a list of all decks.  This is the main UI entry point to the application.
+  """
   use MemorexWeb, :live_view
 
   alias Memorex.{Cards, DeckStats, TimeUtils}

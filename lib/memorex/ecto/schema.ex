@@ -1,5 +1,7 @@
 defmodule Memorex.Ecto.Schema do
-  @moduledoc false
+  @moduledoc """
+  This schema enables the Ecto primary keys to be UUIDs by default.
+  """
 
   @type id :: Ecto.UUID.t()
 

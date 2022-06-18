@@ -1,5 +1,7 @@
 defmodule Memorex.Decks do
-  @moduledoc false
+  @moduledoc """
+  Functions for interacting with `Memorex.Domain.Deck`s.
+  """
 
   alias Memorex.Ecto.Repo
   alias Memorex.Domain.Deck

@@ -1,3 +1,9 @@
+# Anki Algorithm Mental Map
+
+A visual representation of the Anki algorithm:
+
+![Alt text](https://github.com/woodward/memorex/blob/main/notes/Anki%20algorithm%20mental%20map.jpeg?raw=true "Anki Algorithm Mental Map")
+
 https://forums.ankiweb.net/t/deck-options-in-a-mental-map/15757
 
 https://aws1.discourse-cdn.com/standard11/uploads/anki2/original/2X/8/852e362b5c6f1208feec3ac01047d6deab5e4a43.jpeg

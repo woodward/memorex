@@ -1,5 +1,7 @@
 defmodule Memorex.Cards do
-  @moduledoc false
+  @moduledoc """
+  Functions for interacting with `Memorex.Domain.Card`s.
+  """
 
   import Ecto.Query
 
@@ -8,6 +10,7 @@ defmodule Memorex.Cards do
   alias Memorex.Ecto.{Repo, Schema}
   alias Timex.Duration
 
+  @doc "Updates a card, and in the process sets the `:due` field, and also increments the rep count"
   @spec update_card_when_reviewing!(Card.t(), map(), DateTime.t()) :: Card.t()
   def update_card_when_reviewing!(card, changes, time) do
     card
@@ -71,6 +74,10 @@ defmodule Memorex.Cards do
     |> Enum.each(&convert_new_card_to_learn_card(&1, config, time_now))
   end
 
+  @doc """
+  Converts a `Memorex.Domain.Card` from a `:new` card to a `:learn` card (and in the process creates a
+  `Memorex.Domain.CardLog` entry).
+  """
   @spec convert_new_card_to_learn_card(Card.t(), Config.t(), DateTime.t()) :: Card.t()
   def convert_new_card_to_learn_card(card_before, config, time_now) do
     updates = CardStateMachine.convert_new_card_to_learn_card(card_before, config, time_now)

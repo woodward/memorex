@@ -1,5 +1,7 @@
 defmodule Memorex.Domain.Card do
-  @moduledoc false
+  @moduledoc """
+  A `Memorex.Domain.Card` is the entity in Memorex which is reviewed/drilled by `MemorexWeb.ReviewLive`.
+  """
 
   use Memorex.Ecto.Schema
   import Ecto.Changeset
@@ -64,12 +66,6 @@ defmodule Memorex.Domain.Card do
     timestamps()
   end
 
-  # Uncomment this typespec once we figure out the defaults for all of the values:
-  # @spec new(Config.t()) :: t()
-  def new(config) do
-    %__MODULE__{ease_factor: config.initial_ease}
-  end
-
   @spec changeset(Ecto.Changeset.t() | t(), map()) :: Ecto.Changeset.t()
   def changeset(card, params \\ %{}) do
     card
@@ -114,6 +110,8 @@ defmodule Memorex.Domain.Card do
     card.note.content |> List.pop_at(card.note_answer_index) |> elem(0)
   end
 
+  # Casts a duration field (i.e., `:interval` or `:interval_prior_to_lapse`.  If the field comes in as a string param
+  # (such as "PT30M") then it is converted to a `Time x.Duration`.
   @spec cast_duration_field(Ecto.Changeset.t(), atom(), map()) :: Ecto.Changeset.t()
   defp cast_duration_field(changeset, field_name, params) do
     string_field_name = field_name |> Atom.to_string()

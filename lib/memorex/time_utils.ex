@@ -1,5 +1,7 @@
 defmodule Memorex.TimeUtils do
-  @moduledoc false
+  @moduledoc """
+  Some convenience functions for interacting with date/times.
+  """
 
   @spec to_timezone(DateTime.t(), Calendar.time_zone()) :: DateTime.t()
   def to_timezone(datetime, tz \\ timezone()), do: Timex.Timezone.convert(datetime, tz)

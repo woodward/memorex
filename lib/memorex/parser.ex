@@ -1,31 +1,14 @@
 defmodule Memorex.Parser do
-  @moduledoc false
+  @moduledoc """
+  Parses Memorex Markdown `Memorex.Domain.Deck` files.  The `Memorex.Parser` is invoked from the mix task
+  `memorex.read_notes`.  This mix task invokes `read_note_dirs` which is the main entry point to
+  `Memorex.Parser`; the rest of the funtions are implementation details (which are public simply so they can be
+  tested in isolation).
+  """
 
   alias Memorex.{Cards, Decks}
   alias Memorex.Ecto.Repo
   alias Memorex.Domain.{Deck, Note}
-
-  @spec read_file(String.t(), Keyword.t()) :: :ok
-  def read_file(filename, opts \\ []) do
-    filename
-    |> File.read!()
-    |> parse_file_contents(opts)
-  end
-
-  @spec read_dir(String.t()) :: :ok
-  def read_dir(dirname) do
-    deck =
-      dirname
-      |> Path.basename()
-      |> Decks.find_or_create!()
-      |> load_config_file_if_it_exists(Path.join(dirname, "deck_config.toml"))
-
-    Path.wildcard(dirname <> "/*.md")
-    |> Enum.each(fn filename ->
-      category = Path.basename(filename, ".md")
-      read_file(filename, deck: deck, category: category)
-    end)
-  end
 
   @spec read_note_dirs([String.t()] | nil) :: :ok
   def read_note_dirs(note_dirs \\ Application.get_env(:memorex, Memorex.Note)[:note_dirs]) do
@@ -60,8 +43,27 @@ defmodule Memorex.Parser do
     Note.delete_notes_without_flag_set()
   end
 
-  @spec does_not_start_with_dot(String.t()) :: boolean()
-  defp does_not_start_with_dot(file_or_dir), do: !String.starts_with?(file_or_dir, ".")
+  @spec read_file(String.t(), Keyword.t()) :: :ok
+  def read_file(filename, opts \\ []) do
+    filename
+    |> File.read!()
+    |> parse_file_contents(opts)
+  end
+
+  @spec read_dir(String.t()) :: :ok
+  def read_dir(dirname) do
+    deck =
+      dirname
+      |> Path.basename()
+      |> Decks.find_or_create!()
+      |> load_config_file_if_it_exists(Path.join(dirname, "deck_config.toml"))
+
+    Path.wildcard(dirname <> "/*.md")
+    |> Enum.each(fn filename ->
+      category = Path.basename(filename, ".md")
+      read_file(filename, deck: deck, category: category)
+    end)
+  end
 
   @spec parse_file_contents(String.t(), Keyword.t()) :: :ok
   def parse_file_contents(contents, opts \\ []) do
@@ -112,6 +114,9 @@ defmodule Memorex.Parser do
   def read_toml_deck_config(filename) do
     filename |> File.read!() |> Toml.decode() |> elem(1)
   end
+
+  @spec does_not_start_with_dot(String.t()) :: boolean()
+  defp does_not_start_with_dot(file_or_dir), do: !String.starts_with?(file_or_dir, ".")
 
   @spec note_regex() :: Regex.t()
   defp note_regex(), do: ~r/#{bidirectional_note_delimitter()}|#{unidirectional_note_delimitter()}/

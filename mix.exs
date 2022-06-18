@@ -2,6 +2,9 @@ defmodule Memorex.MixProject do
   @moduledoc false
   use Mix.Project
 
+  @source_url "https://github.com/woodward/memorex"
+  @version "0.1.0"
+
   def project do
     [
       app: :memorex,
@@ -9,7 +12,7 @@ defmodule Memorex.MixProject do
         plt_add_apps: [:mix],
         plt_add_deps: [:mix]
       ],
-      version: "0.1.0",
+      version: @version,
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:gettext] ++ Mix.compilers(),
@@ -19,13 +22,7 @@ defmodule Memorex.MixProject do
       #
       # Docs
       name: "Memorex",
-      source_url: "https://github.com/woodward/memorex",
-      # homepage_url: "http://YOUR_PROJECT_HOMEPAGE",
-      docs: [
-        main: "readme",
-        # logo: "path/to/logo.png",
-        extras: ["README.md"]
-      ]
+      docs: docs()
     ]
   end
 
@@ -89,6 +86,69 @@ defmodule Memorex.MixProject do
         "esbuild default --minify",
         "sass default --no-source-map --style=compressed",
         "phx.digest"
+      ]
+    ]
+  end
+
+  defp docs() do
+    [
+      main: "readme",
+      source_url: @source_url,
+      extras: extras(),
+      groups_for_extras: groups_for_extras(),
+      groups_for_modules: groups_for_modules()
+    ]
+  end
+
+  defp extras() do
+    [
+      "README.md",
+      "notes/Anki Deck Settings.md",
+      "notes/Anki notes.md",
+      "notes/Anki algorithm for review cards.md",
+      "notes/Anki algorithm mental map.md"
+    ]
+  end
+
+  defp groups_for_extras do
+    [
+      Notes: ~r/notes\/.?/
+    ]
+  end
+
+  defp groups_for_modules() do
+    [
+      Domain: [
+        Memorex.Domain.Card,
+        Memorex.Domain.Note,
+        Memorex.Domain.Deck,
+        Memorex.Domain.CardLog
+      ],
+      Ecto: [
+        Memorex.Ecto.Repo,
+        Memorex.Ecto.Schema,
+        Memorex.Ecto.TimexDuration
+      ],
+      Scheduler: [
+        Memorex.Scheduler.CardStateMachine,
+        Memorex.Scheduler.CardReviewer,
+        Memorex.Scheduler.Config
+      ],
+      Contexts: [
+        Memorex.Cards,
+        Memorex.Decks,
+        Memorex.CardLogs
+      ],
+      MemorexWeb: [
+        MemorexWeb,
+        MemorexWeb.ErrorHelpers,
+        MemorexWeb.ErrorView,
+        MemorexWeb.Gettext,
+        MemorexWeb.LayoutView,
+        MemorexWeb.DecksLive,
+        MemorexWeb.ReviewLive,
+        MemorexWeb.Router.Helpers,
+        MemorexWeb.SharedViewHelpers
       ]
     ]
   end

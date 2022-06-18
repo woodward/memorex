@@ -1,5 +1,8 @@
 defmodule MemorexWeb.ReviewLive do
-  @moduledoc false
+  @moduledoc """
+  The main LiveView for drilling/reviewing `Memorex.Domain.Card`s
+  """
+
   use MemorexWeb, :live_view
 
   alias Memorex.{Cards, CardLogs, DeckStats, TimeUtils}

@@ -1,5 +1,7 @@
 defmodule Memorex.DeckStats do
-  @moduledoc false
+  @moduledoc """
+  A struct which contains various counts for a `Memorex.Domain.Deck`.
+  """
 
   alias Memorex.Cards
   alias Memorex.Ecto.Schema

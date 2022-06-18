@@ -1,14 +1,17 @@
 defmodule Memorex.Scheduler.CardStateMachine do
-  @moduledoc false
+  @moduledoc """
+  This is the heart of the Anki SM-2 algorithm.  Note that this file consists of pure functions; `Memorex.Domain.Card`
+  structs come into the `answer_card/4` function, and a map containing changes are returned.  There is no database
+  interaction in this file. Time is deterministic (i.e., there are no `Timex.now()` calls within this module), and the
+  specific value of the current time is fed into each function.
+  """
 
   alias Memorex.Domain.Card
   alias Memorex.Scheduler.Config
   alias Timex.Duration
 
-  @spec answer_card(Card.t(), Card.answer_choice(), Config.t(), DateTime.t()) :: map()
-
   # --------------- New Cards ------------------------------------------------------------------------------------------
-
+  @spec convert_new_card_to_learn_card(Card.t(), Config.t(), DateTime.t()) :: map()
   def convert_new_card_to_learn_card(%Card{card_type: :new} = _card, config, time_now) do
     %{
       card_type: :learn,
@@ -19,6 +22,24 @@ defmodule Memorex.Scheduler.CardStateMachine do
       reps: 0
     }
   end
+
+  @doc """
+  This is the main function used when drilling/reviewing `Memorex.Domain.Card`s.  Cards start out as `:new`, and then
+  progress to `:learn` and then `:review` based on the Anki algorithm.  If a `:review` card is failed (by answering
+  `:again`), then it becomes a `:relearn` card.
+
+  Note that a map containing the difference in the card state is returned by `answer_card/4`, not a new version of the
+  card.  Only values that actually modified by the answer are returned in this map.
+
+  Also note that `Memorex.Domain.Card` values such as `:reps` are incremented outside of
+  `Memorex.Scheduler.CardStateMachine` in `Memorex.Scheduler.CardReviewer` (otherwise every function in this file would
+  increment `:rep` by one, which seemed redundant).  The `:due` field on `Memorex.Domain.Card` is also computed outside
+  of `Memorex.Scheduler.CardStateMachine` based on the value of `:interval`; i.e., a new `:interval` is computed in
+  `Memorex.Scheduler.CardStateMachine` and its value is added to the old `:due` datetime to find a new `:due` in
+  `Memorex.Scheduler.CardReviewer`.
+
+  """
+  @spec answer_card(Card.t(), Card.answer_choice(), Config.t(), DateTime.t()) :: map()
 
   # --------------- Learn Cards ----------------------------------------------------------------------------------------
 

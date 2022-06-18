@@ -1,5 +1,13 @@
 defmodule Memorex.Domain.Note do
-  @moduledoc false
+  @moduledoc """
+  A `Memorex.Domain.Note` is a single line in a `Memorex.Domain.Deck` Markdown file which contains either the
+  bidirectional or unidirectional delimitter (which are by default "⮂" and "→", respectively).  The primary key of a
+  `Memorex.Domain.Note` is a UUID which is a hash of the note content (together with the note category, which is the
+  name of the Markdown file if this deck is a directory which contains multple Markdown files).  Notes are flagged when
+  the `Memorex.Deck` parsing starts (via `mix memorex.read_notes`), and any `Memorex.Domain.Note` which does not show
+  up in the current parsing of the `Memorex.Domain.Deck` is purged (so if the `Memorex.Domain.Note` has been edited in
+  the Markdown file, it will be deleted and re-created on the next reading/parsing of the `Memorex.Domain.Deck`).
+  """
 
   use Memorex.Ecto.Schema
   import Ecto.Changeset
@@ -82,6 +90,10 @@ defmodule Memorex.Domain.Note do
   @spec clear_parse_flags() :: :ok
   def clear_parse_flags, do: Repo.update_all(Note, set: [in_latest_parse?: false])
 
+  @doc """
+  Used to purge notes which are "orphaned" when reading in the Markdown file; that is, they have either been deleted
+  from the Markdown file, or else their content has been edited (which causes their UUID to change).
+  """
   @spec delete_notes_without_flag_set() :: :ok
   def delete_notes_without_flag_set do
     Ecto.Query.from(n in Note, where: n.in_latest_parse? == false) |> Repo.delete_all()

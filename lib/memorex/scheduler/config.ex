@@ -1,45 +1,54 @@
 defmodule Memorex.Scheduler.Config do
-  @moduledoc false
+  @moduledoc """
+  The configuration for the [Anki SM-2 algorithm](https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html).
+
+  See a detailed list of the Anki settings in this [Anki forum](https://forums.ankiweb.net/t/deck-options-explained/213)
+  The [Anki manual](https://docs.ankiweb.net/deck-options.html) also contains a lot of information.
+
+  These values are modified by deck config `toml` files, and also by environment variables (see `config/runtime.exs`).
+
+
+   | Memorex Setting           | Anki Setting                    |    Anki Default |
+   |:--------------------------|:--------------------------------|----------------:|
+   | new_cards_per_day         | new cards per day               |              20 |
+   | max_reviews_per_day       | maximum reviews per day         |             200 |
+   | -                         | -                               |               - |
+   | learn_ahead_time_interval | learn ahead time (in settings?) |      20 minutes |
+   | -                         | -                               |               - |
+   | learn_steps               | learning steps                  | [1 min, 10 min] |
+   | graduating_interval_good  | graduating interval             |           1 day |
+   | graduating_interval_easy  | easy interval                   |          4 days |
+   | -                         | -                               |               - |
+   | relearn_steps             | relearning steps                |        [10 min] |
+   | -                         | -                               |               - |
+   | initial_ease              | starting ease                   |             2.5 |
+   | -                         | -                               |               - |
+   | easy_multiplier           | easy bonus                      |             1.3 |
+   | hard_multiplier           | hard interval                   |             1.2 |
+   | lapse_multiplier          | new interval (? I think so)     |             0.0 |
+   | interval_multiplier       | interval modifier               |             1.0 |
+   | -                         | -                               |               - |
+   | ease_again                | <not in settings>               |            -0.2 |
+   | ease_hard                 | <not in settings>               |           -0.15 |
+   | ease_good                 | <not in settings>               |             0.0 |
+   | ease_easy                 | <not in settings>               |            0.15 |
+   | ease_minimum              | <not in settings>               |             1.3 |
+   | -                         | -                               |               - |
+   | max_review_interval       | maximum interval                |       100 years |
+   | min_review_interval       | minimum interval                |           1 day |
+   | -                         | -                               |               - |
+   | leech_threshold           | leech threshhold                |        8 lapses |
+   | -                         | -                               |               - |
+   | min_time_to_answer        | <not in settings>               |           1 sec |
+   | max_time_to_answer        | maximum answer seconds          |           1 min |
+   | -                         | -                               |               - |
+   | relearn_easy_adj          | NOT SURE WHERE THIS IS FROM     |           1 day |
+   | -                         | -                               |               - |
+   | timezone                  | timezone                        |           1 day |
+
+  """
 
   alias Timex.Duration
-
-  #    Memorex                   | Anki Setting                    |    Anki Default
-  #    :-------------------------|:--------------------------------|---------------:
-  #    new_cards_per_day         | new cards per day               |              20
-  #    max_reviews_per_day       | maximum reviews per day         |             200
-  #    -                         | -                               |               -
-  #    learn_ahead_time_interval | learn ahead time (in settings?) |      20 minutes
-  #    -                         | -                               |               -
-  #    learn_steps               | learning steps                  | [1 min, 10 min]
-  #    graduating_interval_good  | graduating interval             |           1 day
-  #    graduating_interval_easy  | easy interval                   |          4 days
-  #    -                         | -                               |               -
-  #    relearn_steps             | relearning steps                |        [10 min]
-  #    -                         | -                               |               -
-  #    initial_ease              | starting ease                   |             2.5
-  #    -                         | -                               |               -
-  #    easy_multiplier           | easy bonus                      |             1.3
-  #    hard_multiplier           | hard interval                   |             1.2
-  #    lapse_multiplier          | new interval (? I think so)     |             0.0
-  #    interval_multiplier       | interval modifier               |             1.0
-  #    -                         | -                               |               -
-  #    ease_again                | <not in settings>               |            -0.2
-  #    ease_hard                 | <not in settings>               |           -0.15
-  #    ease_good                 | <not in settings>               |             0.0
-  #    ease_easy                 | <not in settings>               |            0.15
-  #    ease_minimum              | <not in settings>               |             1.3
-  #    -                         | -                               |               -
-  #    max_review_interval       | maximum interval                |       100 years
-  #    min_review_interval       | minimum interval                |           1 day
-  #    -                         | -                               |               -
-  #    leech_threshold           | leech threshhold                |        8 lapses
-  #    -                         | -                               |               -
-  #    min_time_to_answer        | <not in settings>               |           1 sec
-  #    max_time_to_answer        | maximum answer seconds          |           1 min
-  #    -                         | -                               |               -
-  #    relearn_easy_adj          | NOT SURE WHERE THIS IS FROM     |           1 day
-  #    -                         | -                               |               -
-  #    timezone                  | timezone                        |           1 day
 
   @type t() :: %__MODULE__{
           new_cards_per_day: nil | non_neg_integer(),
@@ -135,6 +144,11 @@ defmodule Memorex.Scheduler.Config do
 
   @duration_array_fields [:learn_steps, :relearn_steps]
 
+  @doc """
+  Returns the default `Memorex.Schedler.Config` as returned from the application environment (e.g., environment
+  variables.  Converts from the application env map to an actual `Memorex.Scheduler.Config` struct.
+  """
+  @spec default() :: map()
   def default() do
     Application.get_env(:memorex, __MODULE__)
     |> Enum.reduce(%__MODULE__{}, fn {key, value}, acc ->
@@ -142,6 +156,10 @@ defmodule Memorex.Scheduler.Config do
     end)
   end
 
+  @doc """
+  Merges in a map into the `Memorex.Scheduler.Config`.  This is used to merge in deck-specific configuration from
+  toml config files.
+  """
   @spec merge(map(), t()) :: t()
   def merge(default_config, deck_config) do
     config = Map.merge(default_config, atomize_keys(deck_config))

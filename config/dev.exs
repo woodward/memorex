@@ -1,6 +1,5 @@
 import Config
 
-# Configure your database
 config :memorex, Memorex.Ecto.Repo,
   username: "postgres",
   password: "postgres",

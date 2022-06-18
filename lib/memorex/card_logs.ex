@@ -1,5 +1,7 @@
 defmodule Memorex.CardLogs do
-  @moduledoc false
+  @moduledoc """
+  Functions for interacting with `Memorex.Domain.CardLog`s.
+  """
 
   import Ecto.Query
 

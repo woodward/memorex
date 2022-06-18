@@ -1,9 +1,5 @@
 defmodule Memorex do
   @moduledoc """
-  Memorex keeps the contexts that define your domain
-  and business logic.
-
-  Contexts are also responsible for managing your data, regardless
-  if it comes from the database, an external API or others.
+  Memorex is a Phoenix LiveView application for drilling/reviewing flashcards via a spaced-repetition system.
   """
 end

@@ -1,7 +1,15 @@
 defmodule Memorex.Ecto.TimexDuration do
-  @moduledoc false
+  @moduledoc """
+  An Ecto type which lets [Timex.Duration](https://hexdocs.pm/timex/Timex.Duration.html) be stored in Postgres as an
+  integer (representing number of seconds). The `Timex.Duration` is converted to seconds when it is written to the
+  database, and is converted back to a `Timex.Duration` when it is read from the database.
 
-  # See: https://hexdocs.pm/ecto/Ecto.Type.html
+  To use, simply mark a field as type `TimexDuration` in the schema file.  For example, see field `:interval` on
+  `Memorex.Domain.Card`, e.g., `field :interval, TimexDuration`
+
+  See [here](https://hexdocs.pm/ecto/Ecto.Type.html) for more info on creating Ecto types.
+  """
+
   use Ecto.Type
 
   alias Timex.Duration

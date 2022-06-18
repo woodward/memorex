@@ -48,8 +48,10 @@
 <% end %>
 
 <div id="debug-info" class={"debug-info " <> initially_show_debug_info?()}>
-  <img class="caret caret-down" src="/images/caret-down.svg" phx-click={hide_debug_info()} />
-  <img class="caret caret-right" src="/images/caret-right.svg" phx-click={show_debug_info()} />
+  <div class="subtitle is-6"> Debug Info 
+    <img class="caret caret-down" src="/images/caret-down.svg" phx-click={hide_debug_info()} />
+    <img class="caret caret-right" src="/images/caret-right.svg" phx-click={show_debug_info()} />
+  </div>
 
   <div class="debug-contents">
     <hr>

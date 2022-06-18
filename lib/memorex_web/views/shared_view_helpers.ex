@@ -1,5 +1,7 @@
 defmodule MemorexWeb.SharedViewHelpers do
-  @moduledoc false
+  @moduledoc """
+  Helper functions used by various LiveViews.
+  """
 
   use Phoenix.HTML
 
