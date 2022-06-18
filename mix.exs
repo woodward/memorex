@@ -20,6 +20,10 @@ defmodule Memorex.MixProject do
       aliases: aliases(),
       deps: deps(),
       #
+      # Hex
+      description: "A spaced-repetition system based on Anki built in Phoenix LiveView which uses Markdown for flashcard content",
+      package: package(),
+      #
       # Docs
       name: "Memorex",
       docs: docs()
@@ -87,6 +91,15 @@ defmodule Memorex.MixProject do
         "sass default --no-source-map --style=compressed",
         "phx.digest"
       ]
+    ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Greg Woodward"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => @source_url},
+      files: ~w(.formatter.exs .credo.exs mix.exs README.md lib config assets notes priv)
     ]
   end
 

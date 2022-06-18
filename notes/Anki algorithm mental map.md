@@ -2,7 +2,7 @@
 
 A visual representation of the Anki algorithm:
 
-![Alt text](https://github.com/woodward/memorex/blob/main/notes/Anki%20algorithm%20mental%20map.jpeg?raw=true "Anki Algorithm Mental Map")
+![Anki Algorithm Mental Map](https://github.com/woodward/memorex/blob/main/notes/Anki%20algorithm%20mental%20map.jpeg?raw=true "Anki Algorithm Mental Map")
 
 https://forums.ankiweb.net/t/deck-options-in-a-mental-map/15757
 
