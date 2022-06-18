@@ -15,7 +15,17 @@ defmodule Memorex.MixProject do
       compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      #
+      # Docs
+      name: "Memorex",
+      source_url: "https://github.com/woodward/memorex",
+      # homepage_url: "http://YOUR_PROJECT_HOMEPAGE",
+      docs: [
+        main: "readme",
+        # logo: "path/to/logo.png",
+        extras: ["README.md"]
+      ]
     ]
   end
 
@@ -43,6 +53,7 @@ defmodule Memorex.MixProject do
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ecto_sql, "~> 3.8"},
       {:esbuild, "~> 0.5", runtime: Mix.env() == :dev},
+      {:ex_doc, "~> 0.27", only: :dev, runtime: false},
       {:floki, ">= 0.30.0", only: :test},
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
