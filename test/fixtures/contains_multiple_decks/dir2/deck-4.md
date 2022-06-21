@@ -1,3 +1,3 @@
 six ⮂ 6
-seven ⮂ 7
+seven   ===>   7
 

@@ -87,7 +87,7 @@ defmodule Memorex.Domain.NoteTest do
       two ⮂ two
       """
 
-      Parser.parse_file_contents(file_contents)
+      Parser.parse_file_contents(file_contents, Parser.default_opts())
 
       assert Repo.all(Note) |> length() == 2
       assert Repo.all(Card) |> length() == 4
@@ -98,7 +98,7 @@ defmodule Memorex.Domain.NoteTest do
       """
 
       Note.clear_parse_flags()
-      Parser.parse_file_contents(new_file_contents)
+      Parser.parse_file_contents(new_file_contents, Parser.default_opts())
       Note.delete_notes_without_flag_set()
 
       assert Repo.all(Note) |> length() == 2

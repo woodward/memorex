@@ -15,7 +15,8 @@ defmodule Memorex.ParserTest do
 
     test "can take an optional deck" do
       deck = Repo.insert!(%Deck{name: "My Deck"})
-      Parser.read_file("test/fixtures/deck1.md", deck: deck)
+      opts = [deck: deck] |> Keyword.merge(Parser.default_opts())
+      Parser.read_file("test/fixtures/deck1.md", opts)
 
       deck = Repo.all(Deck) |> Repo.preload(:notes) |> Repo.preload(:cards) |> List.first()
 
@@ -53,7 +54,7 @@ defmodule Memorex.ParserTest do
       assert deck_names == ["deck-1", "deck-2", "deck-3", "deck-4", "deck-5", "deck-6"]
 
       assert Repo.all(Note) |> length() == 13
-      assert Repo.all(Card) |> length() == 26
+      assert Repo.all(Card) |> length() == 25
 
       decks_without_configs = ["deck-1", "deck-2", "deck-3", "deck-5"]
 
@@ -108,7 +109,7 @@ defmodule Memorex.ParserTest do
     test "parse_line/1 works for the bidirectional note" do
       line = " one ⮂   two  "
       category = "my category"
-      note = Parser.parse_line(line, category)
+      note = Parser.parse_line(line, category, Parser.default_opts())
 
       assert note == %Note{
                content: ["one", "two"],
@@ -135,7 +136,7 @@ defmodule Memorex.ParserTest do
 
       """
 
-      Parser.parse_file_contents(file_contents)
+      Parser.parse_file_contents(file_contents, Parser.default_opts())
 
       assert Repo.all(Note) |> length() == 3
       assert Repo.all(Card) |> length() == 6
@@ -148,12 +149,12 @@ defmodule Memorex.ParserTest do
       one ⮂  one
       """
 
-      Parser.parse_file_contents(file_contents)
+      Parser.parse_file_contents(file_contents, Parser.default_opts())
 
       all_notes = Repo.all(Note)
       assert length(all_notes) == 1
 
-      Parser.parse_file_contents(file_contents)
+      Parser.parse_file_contents(file_contents, Parser.default_opts())
 
       assert Repo.all(Note) |> length() == 1
       assert Repo.all(Card) |> length() == 2
@@ -167,7 +168,8 @@ defmodule Memorex.ParserTest do
       one ⮂ one
       """
 
-      Parser.parse_file_contents(file_contents, deck: deck)
+      opts = [deck: deck] |> Keyword.merge(Parser.default_opts())
+      Parser.parse_file_contents(file_contents, opts)
 
       note = Repo.all(Note) |> Repo.preload(:deck) |> List.first()
       assert note.deck.id == deck.id
@@ -178,29 +180,29 @@ defmodule Memorex.ParserTest do
   describe "is_note_line?/1" do
     test "returns true if the line contains the bidirectional note character" do
       line = "Blah blah ⮂ foo foo"
-      assert Parser.is_note_line?(line) == true
+      assert Parser.is_note_line?(line, Parser.default_opts()) == true
     end
 
     test "returns false if the line does not contain the note character" do
       line = "Blah blah foo foo"
-      assert Parser.is_note_line?(line) == false
+      assert Parser.is_note_line?(line, Parser.default_opts()) == false
     end
 
     test "returns true if the line contains the unidirectional note character" do
       line = "Blah blah → foo foo"
-      assert Parser.is_note_line?(line) == true
+      assert Parser.is_note_line?(line, Parser.default_opts()) == true
     end
   end
 
   describe "is_bidirectional_note?/1" do
     test "returns true if the line contains the bidirectional note character" do
       line = "Blah blah ⮂ foo foo"
-      assert Parser.is_bidirectional_note?(line) == true
+      assert Parser.is_bidirectional_note?(line, bidirectional_note_delimitter: "⮂") == true
     end
 
     test "returns false if the line contains the unidirectional note character" do
       line = "Blah blah → foo foo"
-      assert Parser.is_bidirectional_note?(line) == false
+      assert Parser.is_bidirectional_note?(line, bidirectional_note_delimitter: "⮂") == false
     end
   end
 

@@ -28,9 +28,9 @@ defmodule Memorex.Parser do
             :regular ->
               if Path.extname(file_or_dir) == ".md" do
                 deck = Decks.find_or_create!(Path.rootname(file_or_dir))
-                read_file(pathname, deck: deck)
                 config_filename = Path.rootname(pathname) <> ".deck_config.toml"
-                load_config_file_if_it_exists(deck, config_filename)
+                opts = load_config_file_if_it_exists(deck, config_filename)
+                read_file(pathname, opts)
               end
 
             :directory ->
@@ -44,7 +44,7 @@ defmodule Memorex.Parser do
   end
 
   @spec read_file(String.t(), Keyword.t()) :: :ok
-  def read_file(filename, opts \\ []) do
+  def read_file(filename, opts \\ default_opts()) do
     filename
     |> File.read!()
     |> parse_file_contents(opts)
@@ -52,7 +52,7 @@ defmodule Memorex.Parser do
 
   @spec read_dir(String.t()) :: :ok
   def read_dir(dirname) do
-    deck =
+    opts =
       dirname
       |> Path.basename()
       |> Decks.find_or_create!()
@@ -61,20 +61,21 @@ defmodule Memorex.Parser do
     Path.wildcard(dirname <> "/*.md")
     |> Enum.each(fn filename ->
       category = Path.basename(filename, ".md")
-      read_file(filename, deck: deck, category: category)
+      opts = Keyword.merge(opts, category: category)
+      read_file(filename, opts)
     end)
   end
 
   @spec parse_file_contents(String.t(), Keyword.t()) :: :ok
-  def parse_file_contents(contents, opts \\ []) do
+  def parse_file_contents(contents, opts) do
     deck = Keyword.get(opts, :deck)
     category = Keyword.get(opts, :category)
 
     contents
     |> String.split("\n")
     |> Enum.each(fn line ->
-      if is_note_line?(line) do
-        note = parse_line(line, category)
+      if is_note_line?(line, opts) do
+        note = parse_line(line, category, opts)
         note_from_db = Repo.get(Note, note.id)
 
         if note_from_db do
@@ -88,26 +89,41 @@ defmodule Memorex.Parser do
     end)
   end
 
-  @spec load_config_file_if_it_exists(Deck.t(), String.t()) :: Deck.t()
+  @spec load_config_file_if_it_exists(Deck.t(), String.t()) :: Keyword.t()
   defp load_config_file_if_it_exists(deck, config_filename) do
     if File.exists?(config_filename) do
       config_file = read_toml_deck_config(config_filename)
-      Decks.update_config(deck, config_file)
+
+      {unidirectional_note_delimitter, config_file} =
+        Map.pop(config_file, "unidirectional_note_delimitter", unidirectional_note_delimitter())
+
+      {bidirectional_note_delimitter, config_file} = Map.pop(config_file, "bidirectional_note_delimitter", bidirectional_note_delimitter())
+
+      deck = Decks.update_config(deck, config_file)
+
+      [
+        deck: deck,
+        unidirectional_note_delimitter: unidirectional_note_delimitter,
+        bidirectional_note_delimitter: bidirectional_note_delimitter
+      ]
     else
-      deck
+      [deck: deck] |> Keyword.merge(default_opts())
     end
   end
 
-  @spec is_note_line?(String.t()) :: boolean()
-  def is_note_line?(line), do: String.match?(line, note_regex())
+  @spec is_note_line?(String.t(), Keyword.t()) :: boolean()
+  def is_note_line?(line, opts), do: String.match?(line, note_regex(opts))
 
-  @spec is_bidirectional_note?(String.t()) :: boolean()
-  def is_bidirectional_note?(line), do: String.match?(line, ~r/#{bidirectional_note_delimitter()}/)
+  @spec is_bidirectional_note?(String.t(), Keyword.t()) :: boolean()
+  def is_bidirectional_note?(line, opts) do
+    bidirectional_note_delimitter = Keyword.get(opts, :bidirectional_note_delimitter)
+    String.match?(line, ~r/#{bidirectional_note_delimitter}/)
+  end
 
-  @spec parse_line(String.t(), String.t() | nil) :: Note.t()
-  def parse_line(line, category) do
-    content = line |> String.split(note_regex()) |> Enum.map(&String.trim(&1))
-    Note.new(content: content, category: category, bidirectional?: is_bidirectional_note?(line))
+  @spec parse_line(String.t(), String.t() | nil, Keyword.t()) :: Note.t()
+  def parse_line(line, category, opts) do
+    content = line |> String.split(note_regex(opts)) |> Enum.map(&String.trim(&1))
+    Note.new(content: content, category: category, bidirectional?: is_bidirectional_note?(line, opts))
   end
 
   @spec read_toml_deck_config(String.t()) :: map()
@@ -118,8 +134,17 @@ defmodule Memorex.Parser do
   @spec does_not_start_with_dot(String.t()) :: boolean()
   defp does_not_start_with_dot(file_or_dir), do: !String.starts_with?(file_or_dir, ".")
 
-  @spec note_regex() :: Regex.t()
-  defp note_regex(), do: ~r/#{bidirectional_note_delimitter()}|#{unidirectional_note_delimitter()}/
+  @spec note_regex(Keyword.t()) :: Regex.t()
+  defp note_regex(opts) do
+    bidirectional_note_delimitter = Keyword.get(opts, :bidirectional_note_delimitter)
+    unidirectional_note_delimitter = Keyword.get(opts, :unidirectional_note_delimitter)
+    ~r/#{bidirectional_note_delimitter}|#{unidirectional_note_delimitter}/
+  end
+
+  @spec default_opts() :: Keyword.t()
+  def default_opts() do
+    [bidirectional_note_delimitter: bidirectional_note_delimitter(), unidirectional_note_delimitter: unidirectional_note_delimitter()]
+  end
 
   @spec bidirectional_note_delimitter() :: String.t()
   defp bidirectional_note_delimitter, do: Application.get_env(:memorex, Memorex.Note)[:bidirectional_note_delimitter]

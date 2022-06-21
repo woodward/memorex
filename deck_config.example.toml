@@ -14,6 +14,11 @@
 # (i.e., you do not need to specify all of these values). Your deck_config.toml file can contain only
 # a few lines (if you are only overriding a few values).
 
+bidirectional_note_delimitter = "⮂"
+unidirectional_note_delimitter =  "→"
+
+# --- Scheduler Config below here ----------------
+
 new_cards_per_day = 20
 max_reviews_per_day = 200
 
