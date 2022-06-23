@@ -39,6 +39,17 @@ defmodule Memorex.Domain.NoteTest do
     assert content1 == "one"
   end
 
+  test "the note's UUID is based on its the image file path and content and category" do
+    Note.new(image_file_content: "some-bytes", image_file_path: "/foo/bar", content: ["zero"], category: "some category") |> Repo.insert()
+    note = Repo.all(Note) |> List.first()
+
+    assert note.id == "ecf9a165-7cca-56f4-8b7b-0c079dd91653"
+
+    [content0] = note.content
+    assert content0 == "zero"
+    assert note.image_file_path == "/foo/bar"
+  end
+
   test "the note's UUID is does not blow up if the category is nil" do
     Note.new(content: ["zero", "one"]) |> Repo.insert()
     note = Repo.all(Note) |> List.first()
@@ -53,19 +64,25 @@ defmodule Memorex.Domain.NoteTest do
   describe "content_to_uuid/2" do
     test "content_to_uuid/2" do
       content1 = ["zero", "one", "two"]
-      uid1 = Note.content_to_uuid(content1, "category")
+      uid1 = Note.content_to_uuid(content1, "category", nil, nil)
       assert uid1 == "82208bd0-1c9f-5b0a-95f5-1330874e26f8"
 
       content2 = ["0", "one", "two"]
-      uid2 = Note.content_to_uuid(content2, "category")
+      uid2 = Note.content_to_uuid(content2, "category", nil, nil)
       assert uid2 == "be112558-ee18-54cb-beb7-2133a3d5f769"
       assert uid1 != uid2
     end
 
     test "does not blow up if the category is nil" do
       content1 = ["zero", "one", "two"]
-      uid1 = Note.content_to_uuid(content1, nil)
+      uid1 = Note.content_to_uuid(content1, nil, nil, nil)
       assert uid1 == "cd04855f-1ef3-54e0-9d1c-1e8ea24563c2"
+    end
+
+    test "uses the image file path and content if they are present" do
+      content1 = ["zero", "one", "two"]
+      uid1 = Note.content_to_uuid(content1, "category", "image-bytes", "/path/to/image-file.jpg")
+      assert uid1 == "fdfb1fa4-50f2-5cb6-b519-a72adc46ff90"
     end
   end
 

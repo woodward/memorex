@@ -20,6 +20,7 @@ defmodule Memorex.Domain.Note do
           id: Schema.id() | nil,
           bidirectional?: boolean(),
           category: String.t() | nil,
+          image_file_path: String.t() | nil,
           content: [String.t()],
           in_latest_parse?: boolean(),
           #
@@ -32,6 +33,7 @@ defmodule Memorex.Domain.Note do
   schema "notes" do
     field :bidirectional?, :boolean
     field :category, :binary
+    field :image_file_path, :binary
     field :content, {:array, :binary}
     field :in_latest_parse?, :boolean
 
@@ -44,6 +46,8 @@ defmodule Memorex.Domain.Note do
   @spec new(Keyword.t()) :: t()
   def new(opts \\ []) do
     category = Keyword.get(opts, :category)
+    image_file_path = Keyword.get(opts, :image_file_path)
+    image_file_content = Keyword.get(opts, :image_file_content)
     content = Keyword.get(opts, :content)
     deck = Keyword.get(opts, :deck)
     deck_id = if deck, do: deck.id, else: nil
@@ -51,8 +55,9 @@ defmodule Memorex.Domain.Note do
     bidirectional? = Keyword.get(opts, :bidirectional?, false)
 
     %__MODULE__{
-      id: content_to_uuid(content, category),
+      id: content_to_uuid(content, category, image_file_content, image_file_path),
       category: category,
+      image_file_path: image_file_path,
       content: content,
       in_latest_parse?: in_latest_parse?,
       deck_id: deck_id,
@@ -60,10 +65,15 @@ defmodule Memorex.Domain.Note do
     }
   end
 
-  @spec content_to_uuid([String.t()], String.t() | nil) :: String.t()
-  def content_to_uuid(content, category) do
+  @spec content_to_uuid([String.t()], String.t() | nil, binary() | nil, String.t() | nil) :: String.t()
+  def content_to_uuid(content, category, image_file_content, image_file_path) do
+    image_file_content = image_file_content || ""
+    image_file_path = image_file_path || ""
+
     content
     |> Enum.reduce("#{category}", fn content_line, acc -> content_line <> acc end)
+    |> Kernel.<>(image_file_content)
+    |> Kernel.<>(image_file_path)
     |> sha1()
     |> sha1_to_uuid()
   end

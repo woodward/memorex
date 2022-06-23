@@ -15,6 +15,7 @@ defmodule Memorex.Ecto.Repo.Migrations.CreateSchema do
       add :content, {:array, :text}
       add :in_latest_parse?, :boolean, default: false, null: false
       add :category, :text
+      add :image_file_path, :text
 
       add :deck_id, references(:decks, on_delete: :delete_all)
 
