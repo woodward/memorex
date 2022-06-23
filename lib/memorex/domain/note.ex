@@ -10,7 +10,6 @@ defmodule Memorex.Domain.Note do
   """
 
   use Memorex.Ecto.Schema
-  import Ecto.Changeset
   require Ecto.Query
 
   alias Memorex.Ecto.Repo
@@ -59,15 +58,6 @@ defmodule Memorex.Domain.Note do
       deck_id: deck_id,
       bidirectional?: bidirectional?
     }
-  end
-
-  @spec create_uuid_from_content(Ecto.Changeset.t()) :: Ecto.Changeset.t()
-  def create_uuid_from_content(changeset) do
-    content = changeset |> get_change(:content)
-    category = changeset |> get_change(:category)
-
-    changeset
-    |> put_change(:id, content_to_uuid(content, category))
   end
 
   @spec content_to_uuid([String.t()], String.t() | nil) :: String.t()
