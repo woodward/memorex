@@ -52,7 +52,13 @@ defmodule Memorex.Cards do
 
   @spec create_from_note(Note.t()) :: Schema.id()
   def(create_from_note(note)) do
-    card1 = %Card{note: note, note_question_index: 0, note_answer_index: 1}
+    card1 =
+      if note.image_file_path do
+        %Card{note: note, note_question_index: nil, note_answer_index: 0}
+      else
+        %Card{note: note, note_question_index: 0, note_answer_index: 1}
+      end
+
     Repo.insert!(card1)
 
     if note.bidirectional? do

@@ -100,6 +100,11 @@ defmodule Memorex.Domain.Card do
     |> cast(%{reps: reps + 1}, [:reps])
   end
 
+  @spec is_image_card?(t()) :: boolean()
+  def is_image_card?(card) do
+    card.note.image_file_path != nil
+  end
+
   @spec question(t()) :: String.t()
   def question(card) do
     card.note.content |> List.pop_at(card.note_question_index) |> elem(0)

@@ -163,6 +163,21 @@ defmodule Memorex.CardsTest do
       assert card.card_type == :new
       assert card.card_status == :active
     end
+
+    test "can create image cards from a note" do
+      note = Note.new(content: ["one"], bidirectional?: false, image_file_path: "/some/file/path.jpg") |> Repo.insert!()
+
+      Cards.create_from_note(note)
+
+      assert Repo.all(Card) |> length() == 1
+      [card] = Repo.all(Card)
+
+      assert card.note_question_index == nil
+      assert card.note_answer_index == 0
+      assert card.note_id == note.id
+      assert card.card_type == :new
+      assert card.card_status == :active
+    end
   end
 
   describe "set_new_cards_in_deck_to_learn_cards" do

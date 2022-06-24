@@ -57,7 +57,14 @@ defmodule Memorex.Parser do
     if File.exists?(text_filename) do
       image_file_contents = File.read!(filename)
       text_file_contents = File.read!(text_filename)
-      new_opts = [image_file_contents: image_file_contents, image_file_path: Path.absname(filename), content: [text_file_contents]]
+
+      new_opts = [
+        image_file_contents: image_file_contents,
+        image_file_path: Path.absname(filename),
+        content: [text_file_contents],
+        bidirectional?: false
+      ]
+
       note = Note.new(new_opts |> Keyword.merge(opts))
       create_or_update_note(note)
     end

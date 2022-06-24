@@ -128,6 +128,20 @@ defmodule Memorex.Domain.CardTest do
     end
   end
 
+  describe "is_image_card?/1" do
+    test "returns true if the note for this card has an image" do
+      note = %Note{image_file_path: "/some/file/path.jpg"}
+      card = %Card{note: note}
+      assert Card.is_image_card?(card) == true
+    end
+
+    test "returns false if the note for this card does not have an image" do
+      note = %Note{image_file_path: nil}
+      card = %Card{note: note}
+      assert Card.is_image_card?(card) == false
+    end
+  end
+
   describe "question/1" do
     test "returns the question from the note" do
       note = %Note{content: ["First", "Second"]}

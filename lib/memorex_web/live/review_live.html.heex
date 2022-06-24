@@ -8,7 +8,13 @@
   <h3 class="title is-4"> No cards to review </h3>
 <% else %>
 
-  <h4 class="title is-4"> Question: <%= Card.question(@card) %> </h4>
+  <%= if Card.is_image_card?(@card)  do %>
+    <h4 class="title is-4"> Question: </h4>
+    <img src="/images/decks/deck-7-images/manzanita.jpg">
+
+  <% else %>
+    <h4 class="title is-4"> Question: <%= Card.question(@card) %> </h4>
+  <% end %>
 
   <%= if @display == :show_question do %>
     <button class="button" phx-click="show-answer"> Answer </button>
