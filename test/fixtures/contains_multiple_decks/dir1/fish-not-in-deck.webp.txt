@@ -1,0 +1,1 @@
+This file card will not show up as a note because it is not within a deck directory

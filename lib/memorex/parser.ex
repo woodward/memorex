@@ -50,6 +50,19 @@ defmodule Memorex.Parser do
     |> parse_file_contents(opts)
   end
 
+  @spec read_image_note(String.t(), Keyword.t()) :: :ok
+  def read_image_note(filename, opts \\ default_opts()) do
+    text_filename = Path.rootname(filename) <> ".txt"
+
+    if File.exists?(text_filename) do
+      image_file_contents = File.read!(filename)
+      text_file_contents = File.read!(text_filename)
+      new_opts = [image_file_contents: image_file_contents, image_file_path: Path.absname(filename), content: [text_file_contents]]
+      note = Note.new(new_opts |> Keyword.merge(opts))
+      create_or_update_note(note)
+    end
+  end
+
   @spec read_dir(String.t()) :: :ok
   def read_dir(dirname) do
     opts =
@@ -64,27 +77,22 @@ defmodule Memorex.Parser do
       opts = Keyword.merge(opts, category: category)
       read_file(filename, opts)
     end)
+
+    Path.wildcard(dirname <> "/*.jpg")
+    |> Enum.each(fn filename ->
+      read_image_note(filename, opts)
+    end)
   end
 
   @spec parse_file_contents(String.t(), Keyword.t()) :: :ok
   def parse_file_contents(contents, opts) do
-    deck = Keyword.get(opts, :deck)
-    category = Keyword.get(opts, :category)
-
     contents
     |> String.split("\n")
     |> Enum.each(fn line ->
       if is_note_line?(line, opts) do
-        note = parse_line(line, category, opts)
-        note_from_db = Repo.get(Note, note.id)
-
-        if note_from_db do
-          note_from_db |> Note.set_parse_flag()
-        else
-          %{note | deck: deck}
-          |> Repo.insert!(on_conflict: :nothing)
-          |> Cards.create_from_note()
-        end
+        line
+        |> parse_line(opts)
+        |> create_or_update_note()
       end
     end)
   end
@@ -111,6 +119,19 @@ defmodule Memorex.Parser do
     end
   end
 
+  @spec create_or_update_note(Note.t()) :: any()
+  def create_or_update_note(note) do
+    note_from_db = Repo.get(Note, note.id)
+
+    if note_from_db do
+      note_from_db |> Note.set_parse_flag()
+    else
+      note
+      |> Repo.insert!(on_conflict: :nothing)
+      |> Cards.create_from_note()
+    end
+  end
+
   @spec is_note_line?(String.t(), Keyword.t()) :: boolean()
   def is_note_line?(line, opts), do: String.match?(line, note_regex(opts))
 
@@ -120,10 +141,11 @@ defmodule Memorex.Parser do
     String.match?(line, ~r/#{bidirectional_note_delimitter}/)
   end
 
-  @spec parse_line(String.t(), String.t() | nil, Keyword.t()) :: Note.t()
-  def parse_line(line, category, opts) do
+  @spec parse_line(String.t(), Keyword.t()) :: Note.t()
+  def parse_line(line, opts) do
     content = line |> String.split(note_regex(opts)) |> Enum.map(&String.trim(&1))
-    Note.new(content: content, category: category, bidirectional?: is_bidirectional_note?(line, opts))
+    new_opts = [content: content, bidirectional?: is_bidirectional_note?(line, opts)] |> Keyword.merge(opts)
+    Note.new(new_opts)
   end
 
   @spec read_toml_deck_config(String.t()) :: map()

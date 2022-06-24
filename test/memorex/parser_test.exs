@@ -3,7 +3,7 @@ defmodule Memorex.ParserTest do
   use Memorex.DataCase
 
   alias Memorex.Domain.{Card, Deck, Note}
-  alias Memorex.Parser
+  alias Memorex.{Cards, Parser}
 
   describe "read_file" do
     test "a file gets converted into notes" do
@@ -51,10 +51,10 @@ defmodule Memorex.ParserTest do
 
       decks = Repo.all(Deck)
       deck_names = decks |> Enum.map(& &1.name) |> Enum.sort()
-      assert deck_names == ["deck-1", "deck-2", "deck-3", "deck-4", "deck-5", "deck-6"]
+      assert deck_names == ["deck-1", "deck-2", "deck-3", "deck-4", "deck-5", "deck-6", "deck-7-images"]
 
-      assert Repo.all(Note) |> length() == 13
-      assert Repo.all(Card) |> length() == 25
+      assert Repo.all(Note) |> length() == 14
+      assert Repo.all(Card) |> length() == 26
 
       decks_without_configs = ["deck-1", "deck-2", "deck-3", "deck-5"]
 
@@ -69,14 +69,21 @@ defmodule Memorex.ParserTest do
 
       deck_6 = Repo.get_by(Deck, name: "deck-6")
       assert deck_6.config == %{"new_cards_per_day" => 33}
+
+      deck_7 = Repo.get_by(Deck, name: "deck-7-images")
+      cards_for_deck_7 = Cards.cards_for_deck(deck_7.id) |> Repo.all() |> Repo.preload([:note])
+      assert length(cards_for_deck_7) == 1
+      [card] = cards_for_deck_7
+      assert card.note.content == ["Bass"]
+      assert card.note.image_file_path == "#{File.cwd!()}/test/fixtures/contains_multiple_decks/dir1/deck-7-images/fish.jpg"
     end
 
     test "does not create decks again if the directory is read a 2nd time" do
       Parser.read_note_dirs()
-      assert Repo.all(Deck) |> length() == 6
+      assert Repo.all(Deck) |> length() == 7
 
       Parser.read_note_dirs()
-      assert Repo.all(Deck) |> length() == 6
+      assert Repo.all(Deck) |> length() == 7
     end
 
     test "deletes notes that are no longer present in the files" do
@@ -108,8 +115,8 @@ defmodule Memorex.ParserTest do
   describe "parse_line/1" do
     test "parse_line/1 works for the bidirectional note" do
       line = " one ⮂   two  "
-      category = "my category"
-      note = Parser.parse_line(line, category, Parser.default_opts())
+      opts = [category: "my category"] |> Keyword.merge(Parser.default_opts())
+      note = Parser.parse_line(line, opts)
 
       assert note == %Note{
                content: ["one", "two"],
