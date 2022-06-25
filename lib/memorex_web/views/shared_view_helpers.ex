@@ -6,7 +6,7 @@ defmodule MemorexWeb.SharedViewHelpers do
   use Phoenix.HTML
 
   alias Memorex.TimeUtils
-  alias Memorex.Domain.Card
+  alias Memorex.Domain.{Card, Note}
   alias Timex.Duration
 
   @spec format(Duration.t() | DateTime.t() | nil) :: String.t()
@@ -79,4 +79,7 @@ defmodule MemorexWeb.SharedViewHelpers do
   @spec img_alt(Card.t() | String.t()) :: String.t()
   def img_alt(image_file_path) when is_binary(image_file_path), do: image_file_path |> Path.basename() |> Path.rootname()
   def img_alt(%Card{} = card), do: img_alt(card.note.image_file_path)
+
+  @spec img_src(Card.t()) :: String.t()
+  def img_src(%Card{note: %Note{image_file_path: image_file_path}} = _card), do: image_file_path
 end

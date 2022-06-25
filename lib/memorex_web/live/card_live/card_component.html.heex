@@ -24,7 +24,7 @@
       <td class="has-text-weight-bold"> Question </td>
       <td> 
         <%= if Card.is_image_card?(@card) do %>
-          <img src={@card.note.image_file_path} alt={img_alt(@card)} width="50" height="50">
+          <img src={img_src(@card)} alt={img_alt(@card)} width="50" height="50">
         <% else %>
           <%= Card.question(@card) %> 
         <% end %>

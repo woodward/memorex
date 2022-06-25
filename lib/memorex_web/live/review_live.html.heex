@@ -10,14 +10,16 @@
 
   <%= if Card.is_image_card?(@card)  do %>
     <h4 class="title is-4"> Question: </h4>
-    <img src={@card.note.image_file_path} alt={img_alt(@card)}>
+    <img src={img_src(@card)} alt={img_alt(@card)} style="max-height: 500px;">
 
   <% else %>
     <h4 class="title is-4"> Question: <%= Card.question(@card) %> </h4>
   <% end %>
 
   <%= if @display == :show_question do %>
-    <button class="button" phx-click="show-answer"> Answer </button>
+    <div class="control">
+      <button class="button" phx-click="show-answer"> Answer </button>
+    </div>
   <% end %>
 
   <%= if @display == :show_question_and_answer do %>

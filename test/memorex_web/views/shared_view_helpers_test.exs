@@ -5,7 +5,7 @@ defmodule MemorexWeb.SharedViewHelpersTest do
   alias Memorex.Domain.{Card, Note}
   alias Timex.Duration
 
-  import MemorexWeb.SharedViewHelpers, only: [truncate: 1, truncate: 2, page_id: 1, format: 1, img_alt: 1]
+  import MemorexWeb.SharedViewHelpers, only: [truncate: 1, truncate: 2, page_id: 1, format: 1, img_alt: 1, img_src: 1]
 
   describe "truncate" do
     test "truncate" do
@@ -74,6 +74,14 @@ defmodule MemorexWeb.SharedViewHelpersTest do
       note = %Note{image_file_path: "/dir1/dir2/ship.jpg"}
       card = %Card{note: note}
       assert img_alt(card) == "ship"
+    end
+  end
+
+  describe "img_src/1" do
+    test "returns the note's image_file_path" do
+      note = %Note{image_file_path: "/dir1/dir2/ship.jpg"}
+      card = %Card{note: note}
+      assert img_src(card) == "/dir1/dir2/ship.jpg"
     end
   end
 end
