@@ -6,7 +6,7 @@ defmodule Memorex.Parser do
   tested in isolation).
   """
 
-  alias Memorex.{Cards, Decks}
+  alias Memorex.{Cards, Decks, Notes}
   alias Memorex.Ecto.Repo
   alias Memorex.Domain.{Deck, Note}
 
@@ -27,7 +27,7 @@ defmodule Memorex.Parser do
   """
   @spec read_note_dirs([String.t()] | nil) :: :ok
   def read_note_dirs(note_dirs \\ Application.get_env(:memorex, Memorex.Note)[:note_dirs]) do
-    Note.clear_parse_flags()
+    Notes.clear_parse_flags()
 
     note_dirs
     |> Enum.each(fn dir ->
@@ -55,7 +55,7 @@ defmodule Memorex.Parser do
       end)
     end)
 
-    Note.delete_notes_without_flag_set()
+    Notes.delete_notes_without_flag_set()
   end
 
   # --------------------------------------------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ defmodule Memorex.Parser do
     note_from_db = Repo.get(Note, note.id)
 
     if note_from_db do
-      note_from_db |> Note.set_parse_flag()
+      note_from_db |> Notes.set_parse_flag()
     else
       note
       |> Repo.insert!(on_conflict: :nothing)

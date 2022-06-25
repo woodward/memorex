@@ -2,7 +2,6 @@ defmodule Memorex.Domain.NoteTest do
   @moduledoc false
   use Memorex.DataCase
 
-  alias Memorex.Parser
   alias Memorex.Ecto.Repo
   alias Memorex.Domain.{Card, CardLog, Note}
   alias Timex.Duration
@@ -93,34 +92,6 @@ defmodule Memorex.Domain.NoteTest do
   test "sha1_to_uuid/1" do
     sha = "94e66df8cd09d410c62d9e0dc59d3a884e458e05"
     assert Note.sha1_to_uuid(sha) == "950db789-4f02-593f-a046-5fdc94d0cdaf"
-  end
-
-  describe ":in_latest_parse? flag operations" do
-    test "deletes notes that are no longer present and leaves existing notes" do
-      assert Repo.all(Note) |> length() == 0
-
-      file_contents = """
-      one ⮂ one
-      two ⮂ two
-      """
-
-      Parser.parse_file_contents(file_contents, Parser.default_opts())
-
-      assert Repo.all(Note) |> length() == 2
-      assert Repo.all(Card) |> length() == 4
-
-      new_file_contents = """
-      one ⮂ one
-      2 ⮂ 2
-      """
-
-      Note.clear_parse_flags()
-      Parser.parse_file_contents(new_file_contents, Parser.default_opts())
-      Note.delete_notes_without_flag_set()
-
-      assert Repo.all(Note) |> length() == 2
-      assert Repo.all(Card) |> length() == 4
-    end
   end
 
   test "deletes notes, cards, and card logs when deleted" do
