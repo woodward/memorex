@@ -6,6 +6,7 @@ defmodule MemorexWeb.SharedViewHelpers do
   use Phoenix.HTML
 
   alias Memorex.TimeUtils
+  alias Memorex.Domain.Card
   alias Timex.Duration
 
   @spec format(Duration.t() | DateTime.t() | nil) :: String.t()
@@ -74,4 +75,8 @@ defmodule MemorexWeb.SharedViewHelpers do
 
   @spec zero_microseconds_to_now(String.t()) :: String.t()
   defp zero_microseconds_to_now(formatted_time), do: String.replace(formatted_time, "0 microseconds", "Now")
+
+  @spec img_alt(Card.t() | String.t()) :: String.t()
+  def img_alt(image_file_path) when is_binary(image_file_path), do: image_file_path |> Path.basename() |> Path.rootname()
+  def img_alt(%Card{} = card), do: img_alt(card.note.image_file_path)
 end

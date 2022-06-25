@@ -2,9 +2,10 @@ defmodule MemorexWeb.SharedViewHelpersTest do
   @moduledoc false
 
   use MemorexWeb.ConnCase, async: true
+  alias Memorex.Domain.{Card, Note}
   alias Timex.Duration
 
-  import MemorexWeb.SharedViewHelpers, only: [truncate: 1, truncate: 2, page_id: 1, format: 1]
+  import MemorexWeb.SharedViewHelpers, only: [truncate: 1, truncate: 2, page_id: 1, format: 1, img_alt: 1]
 
   describe "truncate" do
     test "truncate" do
@@ -65,6 +66,14 @@ defmodule MemorexWeb.SharedViewHelpersTest do
 
     test "Converts 0 microseconds to now" do
       assert format(Duration.parse!("PT0S")) == "Now"
+    end
+  end
+
+  describe "img_alt/1" do
+    test "returns the basename of the file" do
+      note = %Note{image_file_path: "/dir1/dir2/ship.jpg"}
+      card = %Card{note: note}
+      assert img_alt(card) == "ship"
     end
   end
 end

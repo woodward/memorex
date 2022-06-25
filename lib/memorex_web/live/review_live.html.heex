@@ -10,7 +10,7 @@
 
   <%= if Card.is_image_card?(@card)  do %>
     <h4 class="title is-4"> Question: </h4>
-    <img src={@card.note.image_file_path}>
+    <img src={@card.note.image_file_path} alt={img_alt(@card)}>
 
   <% else %>
     <h4 class="title is-4"> Question: <%= Card.question(@card) %> </h4>

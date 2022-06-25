@@ -114,7 +114,8 @@ defmodule MemorexWeb.ReviewLive do
   @spec debug_mode?() :: boolean()
   def debug_mode?(), do: Application.get_env(:memorex, MemorexWeb.ReviewLive)[:debug_mode?]
 
-  def note_category(nil), do: nil
-  def note_category(%Card{note: %Note{category: nil}}), do: nil
-  def note_category(%Card{note: %Note{category: category}}), do: " - #{category}"
+  @spec note_category(Card.t() | nil) :: nil | String.t()
+  defp note_category(nil), do: nil
+  defp note_category(%Card{note: %Note{category: nil}}), do: nil
+  defp note_category(%Card{note: %Note{category: category}}), do: " - #{category}"
 end
