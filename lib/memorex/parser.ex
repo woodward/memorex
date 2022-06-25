@@ -10,6 +10,8 @@ defmodule Memorex.Parser do
   alias Memorex.Ecto.Repo
   alias Memorex.Domain.{Deck, Note}
 
+  @image_file_types ~w{gif jpg jpeg png svg webp}
+
   @spec read_note_dirs([String.t()] | nil) :: :ok
   def read_note_dirs(note_dirs \\ Application.get_env(:memorex, Memorex.Note)[:note_dirs]) do
     Note.clear_parse_flags()
@@ -65,7 +67,7 @@ defmodule Memorex.Parser do
       read_file(filename, opts)
     end)
 
-    Path.wildcard(dirname <> "/*.jpg")
+    Path.wildcard(dirname <> "/*.{#{@image_file_types |> Enum.join(",")}}")
     |> Enum.each(fn filename ->
       read_image_note(filename, opts)
     end)

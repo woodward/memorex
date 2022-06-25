@@ -43,6 +43,23 @@ defmodule Memorex.ParserTest do
 
       assert Repo.all(Card) |> length() == 4
     end
+
+    test "all of the image files in a directory get incorporated into the deck" do
+      Parser.read_dir("test/fixtures/deck-with-different-image-types")
+
+      deck = Repo.all(Deck) |> List.first()
+      assert deck.name == "deck-with-different-image-types"
+
+      assert Repo.all(Note) |> length() == 6
+
+      Repo.all(Note, order_by: :id)
+      |> Repo.preload(:deck)
+      |> Enum.each(fn note ->
+        assert note.deck.name == "deck-with-different-image-types"
+      end)
+
+      assert Repo.all(Card) |> length() == 6
+    end
   end
 
   describe "read_multiple_dirs" do
