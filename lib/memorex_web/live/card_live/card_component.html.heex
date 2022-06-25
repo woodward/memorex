@@ -22,7 +22,13 @@
   <table class="table">
     <tr>
       <td class="has-text-weight-bold"> Question </td>
-      <td> <%= Card.question(@card) %> </td>
+      <td> 
+        <%= if Card.is_image_card?(@card) do %>
+          <img src={@card.note.image_file_path} width="50" height="50">
+        <% else %>
+          <%= Card.question(@card) %> 
+        <% end %>
+      </td>
     </tr>
     <tr>
       <td class="has-text-weight-bold"> Answer </td>

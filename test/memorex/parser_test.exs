@@ -75,7 +75,9 @@ defmodule Memorex.ParserTest do
       assert length(cards_for_deck_7) == 1
       [card] = cards_for_deck_7
       assert card.note.content == ["Bass"]
-      assert card.note.image_file_path == "#{File.cwd!()}/test/fixtures/contains_multiple_decks/dir1/deck-7-images/fish.jpg"
+      assert card.note.image_file_path == "/images/decks/deck-7-images/fish.jpg"
+      lstat = File.lstat!(File.cwd!() <> "/priv/static" <> card.note.image_file_path)
+      assert lstat.type == :symlink
     end
 
     test "does not create decks again if the directory is read a 2nd time" do

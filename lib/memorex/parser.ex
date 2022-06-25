@@ -57,10 +57,17 @@ defmodule Memorex.Parser do
     if File.exists?(text_filename) do
       image_file_contents = File.read!(filename)
       text_file_contents = File.read!(text_filename)
+      deck_name = opts[:deck].name
+      image_file_path = "/images/decks/#{deck_name}/#{Path.basename(filename)}"
+      symlink = "priv/static#{image_file_path}"
+
+      File.mkdir_p!("priv/static/images/decks/#{deck_name}")
+      File.rm(symlink)
+      File.ln_s!(Path.absname(filename), symlink)
 
       new_opts = [
         image_file_contents: image_file_contents,
-        image_file_path: Path.absname(filename),
+        image_file_path: image_file_path,
         content: [text_file_contents],
         bidirectional?: false
       ]

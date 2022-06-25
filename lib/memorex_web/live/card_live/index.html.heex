@@ -23,7 +23,13 @@
           <td> <%= format(card.interval) %> </td>
           <td> :<%= card.card_type %> </td>
           <td> :<%= card.card_status %> </td>
-          <td> <%= truncate(Card.question(card), length: length_of_question_and_answer) %> </td>
+          <td> 
+            <%= if Card.is_image_card?(card) do %>
+              <img src={card.note.image_file_path} width="50" height="50">
+            <% else %>
+              <%= truncate(Card.question(card), length: length_of_question_and_answer) %> 
+            <% end %>
+          </td>
           <td> <%= truncate(Card.answer(card), length: length_of_question_and_answer) %> </td>
         </tr>
       <% end %>
