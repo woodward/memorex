@@ -1,12 +1,20 @@
 defmodule Memorex.Domain.Note do
   @moduledoc """
-  A `Memorex.Domain.Note` is a single line in a `Memorex.Domain.Deck` Markdown file which contains either the
-  bidirectional or unidirectional delimitter (which are by default "⮂" and "→", respectively).  The primary key of a
-  `Memorex.Domain.Note` is a UUID which is a hash of the note content (together with the note category, which is the
-  name of the Markdown file if this deck is a directory which contains multple Markdown files).  Notes are flagged when
-  the `Memorex.Deck` parsing starts (via `mix memorex.read_notes`), and any `Memorex.Domain.Note` which does not show
-  up in the current parsing of the `Memorex.Domain.Deck` is purged (so if the `Memorex.Domain.Note` has been edited in
-  the Markdown file, it will be deleted and re-created on the next reading/parsing of the `Memorex.Domain.Deck`).
+  There are two types of `Memorex.Domain.Note`s in `Memorex`.  The first type (called "text notes") consists of a single
+  line in a `Memorex.Domain.Deck` Markdown file which contains either the bidirectional or unidirectional delimitter
+  (which are by default "⮂" and "→", respectively).  The primary key of a text `Memorex.Domain.Note` is a UUID which is
+  a hash of the note content (together with the note category, which is the name of the Markdown file if this deck is a
+  directory which contains multple Markdown files).  Notes are flagged when the `Memorex.Deck` parsing starts (via
+  `mix memorex.read_notes`), and any `Memorex.Domain.Note` which does not show up in the current parsing of the
+  `Memorex.Domain.Deck` is purged (so if the `Memorex.Domain.Note` has been edited in the Markdown file, it will be
+  deleted and re-created on the next reading/parsing of the `Memorex.Domain.Deck`).
+
+  The second type of `Memorex.Domain.Note`s are "image notes".  An image file is placed in a `Memorex.Domain.Deck`
+  directory on the filesystem.  A text file with the same name as the image file (but with the extension ".txt") is
+  placed as a sibling to the image file.  The text file contains the answer to the image file.  The UUID for image notes
+  is a hash of the contents of the image, the image file path, and the contents of the text file, so the UUID will
+  change if the image file is changed, the file is moved, or the answer in the text file is changed.  Image notes can
+  have the extensions ".jpg", ".jpeg", ".png", ".webp", ".svg", or ".gif".
   """
 
   use Memorex.Ecto.Schema
