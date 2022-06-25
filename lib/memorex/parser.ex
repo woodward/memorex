@@ -50,6 +50,27 @@ defmodule Memorex.Parser do
     |> parse_file_contents(opts)
   end
 
+  @spec read_dir(String.t()) :: :ok
+  def read_dir(dirname) do
+    opts =
+      dirname
+      |> Path.basename()
+      |> Decks.find_or_create!()
+      |> load_config_file_if_it_exists(Path.join(dirname, "deck_config.toml"))
+
+    Path.wildcard(dirname <> "/*.md")
+    |> Enum.each(fn filename ->
+      category = Path.basename(filename, ".md")
+      opts = Keyword.merge(opts, category: category)
+      read_file(filename, opts)
+    end)
+
+    Path.wildcard(dirname <> "/*.jpg")
+    |> Enum.each(fn filename ->
+      read_image_note(filename, opts)
+    end)
+  end
+
   @spec read_image_note(String.t(), Keyword.t()) :: :ok
   def read_image_note(filename, opts \\ default_opts()) do
     text_filename = Path.rootname(filename) <> ".txt"
@@ -75,27 +96,6 @@ defmodule Memorex.Parser do
       note = Note.new(new_opts |> Keyword.merge(opts))
       create_or_update_note(note)
     end
-  end
-
-  @spec read_dir(String.t()) :: :ok
-  def read_dir(dirname) do
-    opts =
-      dirname
-      |> Path.basename()
-      |> Decks.find_or_create!()
-      |> load_config_file_if_it_exists(Path.join(dirname, "deck_config.toml"))
-
-    Path.wildcard(dirname <> "/*.md")
-    |> Enum.each(fn filename ->
-      category = Path.basename(filename, ".md")
-      opts = Keyword.merge(opts, category: category)
-      read_file(filename, opts)
-    end)
-
-    Path.wildcard(dirname <> "/*.jpg")
-    |> Enum.each(fn filename ->
-      read_image_note(filename, opts)
-    end)
   end
 
   @spec parse_file_contents(String.t(), Keyword.t()) :: :ok
