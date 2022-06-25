@@ -32,7 +32,7 @@ defmodule Memorex.Parser do
                 deck = Decks.find_or_create!(Path.rootname(file_or_dir))
                 config_filename = Path.rootname(pathname) <> ".deck_config.toml"
                 opts = load_config_file_if_it_exists(deck, config_filename)
-                read_file(pathname, opts)
+                read_notes_file(pathname, opts)
               end
 
             :directory ->
@@ -45,8 +45,8 @@ defmodule Memorex.Parser do
     Note.delete_notes_without_flag_set()
   end
 
-  @spec read_file(String.t(), Keyword.t()) :: :ok
-  def read_file(filename, opts \\ default_opts()) do
+  @spec read_notes_file(String.t(), Keyword.t()) :: :ok
+  def read_notes_file(filename, opts \\ default_opts()) do
     filename
     |> File.read!()
     |> parse_file_contents(opts)
@@ -64,7 +64,7 @@ defmodule Memorex.Parser do
     |> Enum.each(fn filename ->
       category = Path.basename(filename, ".md")
       opts = Keyword.merge(opts, category: category)
-      read_file(filename, opts)
+      read_notes_file(filename, opts)
     end)
 
     Path.wildcard(dirname <> "/*.{#{@image_file_types |> Enum.join(",")}}")

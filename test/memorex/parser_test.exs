@@ -5,9 +5,9 @@ defmodule Memorex.ParserTest do
   alias Memorex.Domain.{Card, Deck, Note}
   alias Memorex.{Cards, Parser}
 
-  describe "read_file" do
+  describe "read_notes_file" do
     test "a file gets converted into notes" do
-      Parser.read_file("test/fixtures/deck1.md")
+      Parser.read_notes_file("test/fixtures/deck1.md")
 
       assert Repo.all(Note) |> length() == 3
       assert Repo.all(Card) |> length() == 6
@@ -16,7 +16,7 @@ defmodule Memorex.ParserTest do
     test "can take an optional deck" do
       deck = Repo.insert!(%Deck{name: "My Deck"})
       opts = [deck: deck] |> Keyword.merge(Parser.default_opts())
-      Parser.read_file("test/fixtures/deck1.md", opts)
+      Parser.read_notes_file("test/fixtures/deck1.md", opts)
 
       deck = Repo.all(Deck) |> Repo.preload(:notes) |> Repo.preload(:cards) |> List.first()
 
