@@ -12,6 +12,19 @@ defmodule Memorex.Parser do
 
   @image_file_types ~w{gif jpg jpeg png svg webp}
 
+  @doc """
+  Reads in notes from directories, and in the process creates cards.  Takes an array of directory names;
+  e.g., `["/note_dir1", "/note_dir2"]`, etc.
+
+  The existing notes in the database are marked with a flag prior to reading (flag `:in_latest_parse?` on
+  `Memorex.Domain.Note`is set to false), and as the notes are read, existing notes have this flag toggled to true. New
+  notes also have this flag set to `true`.  At the end, notes in the database which have not had their flag set to `true`
+  are expunged.  These are notes which have either been deleted in the local content, or else their content has been
+  modified (so they have been read in again as a new note).
+
+  Note that this is the primary (and only) external API function to `Memorex.Parser`; the other functions are public
+  solely for purposes of testing.
+  """
   @spec read_note_dirs([String.t()] | nil) :: :ok
   def read_note_dirs(note_dirs \\ Application.get_env(:memorex, Memorex.Note)[:note_dirs]) do
     Note.clear_parse_flags()
@@ -44,6 +57,9 @@ defmodule Memorex.Parser do
 
     Note.delete_notes_without_flag_set()
   end
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # "private" functions below here (public for testing purposes)
 
   @spec read_notes_file(String.t(), Keyword.t()) :: :ok
   def read_notes_file(filename, opts \\ default_opts()) do
@@ -117,19 +133,11 @@ defmodule Memorex.Parser do
   defp load_config_file_if_it_exists(deck, config_filename) do
     if File.exists?(config_filename) do
       config_file = read_toml_deck_config(config_filename)
-
-      {unidirectional_note_delimitter, config_file} =
-        Map.pop(config_file, "unidirectional_note_delimitter", unidirectional_note_delimitter())
-
-      {bidirectional_note_delimitter, config_file} = Map.pop(config_file, "bidirectional_note_delimitter", bidirectional_note_delimitter())
-
+      {uni_delimitter, config_file} = Map.pop(config_file, "unidirectional_note_delimitter", unidirectional_note_delimitter())
+      {bi_delimitter, config_file} = Map.pop(config_file, "bidirectional_note_delimitter", bidirectional_note_delimitter())
       deck = Decks.update_config(deck, config_file)
 
-      [
-        deck: deck,
-        unidirectional_note_delimitter: unidirectional_note_delimitter,
-        bidirectional_note_delimitter: bidirectional_note_delimitter
-      ]
+      [deck: deck, unidirectional_note_delimitter: uni_delimitter, bidirectional_note_delimitter: bi_delimitter]
     else
       [deck: deck] |> Keyword.merge(default_opts())
     end

@@ -26,6 +26,32 @@ defmodule Memorex.ParserTest do
     end
   end
 
+  describe "read_image_note" do
+    test "a file gets converted into notes" do
+      deck = %Deck{name: "deck-with-image-note"} |> Repo.insert!()
+      Parser.read_image_note("test/fixtures/deck-with-image-note/goldfish.webp", deck: deck)
+
+      assert Repo.all(Note) |> length() == 1
+      assert Repo.all(Card) |> length() == 1
+
+      [note] = Repo.all(Note)
+
+      assert note.image_file_path == "/images/decks/deck-with-image-note/goldfish.webp"
+      assert note.id == "29c672ce-f123-5477-81d4-50b94766a086"
+      assert note.content == ["A goldfish"]
+      lstat = File.lstat!(File.cwd!() <> "/priv/static" <> note.image_file_path)
+      assert lstat.type == :symlink
+    end
+
+    test "does not do anything if there is no text file to go along with the image file" do
+      deck = %Deck{name: "deck-with-image-note"} |> Repo.insert!()
+      Parser.read_image_note("test/fixtures/deck-with-image-note/image-without-corresponding-text-file.jpeg", deck: deck)
+
+      assert Repo.all(Note) |> length() == 0
+      assert Repo.all(Card) |> length() == 0
+    end
+  end
+
   describe "read_dir" do
     test "all of the files in a directory get incorporated into the deck" do
       Parser.read_dir("test/fixtures/deck")
