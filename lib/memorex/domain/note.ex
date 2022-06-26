@@ -25,7 +25,9 @@ defmodule Memorex.Domain.Note do
   @type t :: %__MODULE__{
           id: Schema.id() | nil,
           bidirectional?: boolean(),
-          category: [String.t()],
+          category: any(),
+          # The typespec for category _should_ be the following, but for some unknown reason setting it causes all hell to break loose:
+          # category: [String.t()],
           image_file_path: String.t() | nil,
           content: [String.t()],
           in_latest_parse?: boolean(),

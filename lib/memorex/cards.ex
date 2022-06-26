@@ -50,7 +50,8 @@ defmodule Memorex.Cards do
     # |> where([c, n, d], d.id == ^deck_id)
   end
 
-  @spec create_from_note(Note.t()) :: Schema.id()
+  # @spec create_from_note(Note.t()) :: Note.t()
+  @spec create_from_note(Note.t()) :: Ecto.Schema.t()
   def(create_from_note(note)) do
     card1 =
       if note.image_file_path do

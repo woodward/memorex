@@ -25,7 +25,7 @@ defmodule Memorex.Parser do
   Note that this is the primary (and only) external API function to `Memorex.Parser`; the other functions are public
   solely for purposes of testing.
   """
-  @spec read_note_dirs([String.t()] | nil) :: :ok
+  @spec read_note_dirs([String.t()] | nil) :: {non_neg_integer(), nil | [any()]}
   def read_note_dirs(note_dirs \\ Application.get_env(:memorex, Memorex.Note)[:note_dirs]) do
     Notes.clear_parse_flags()
 
@@ -99,7 +99,7 @@ defmodule Memorex.Parser do
     |> Enum.each(&read_dir(&1, opts))
   end
 
-  @spec read_image_note(String.t(), Keyword.t()) :: :ok
+  @spec read_image_note(String.t(), Keyword.t()) :: nil | Ecto.Schema.t()
   def read_image_note(filename, opts \\ default_opts()) do
     text_filename = Path.rootname(filename) <> ".txt"
 
@@ -154,7 +154,8 @@ defmodule Memorex.Parser do
     end
   end
 
-  @spec create_or_update_note(Note.t()) :: any()
+  # @spec create_or_update_note(Note.t()) :: Note.t()
+  @spec create_or_update_note(Note.t()) :: Ecto.Schema.t()
   def create_or_update_note(note) do
     note_from_db = Repo.get(Note, note.id)
 
