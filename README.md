@@ -1,4 +1,4 @@
-#  Memorex
+# ![Memorex](https://github.com/woodward/memorex/blob/main/priv/static/images/memorex-logo.svg)
 
 Memorex is a [space repetition system](https://en.wikipedia.org/wiki/Spaced_repetition) written in Elixir and implemented as a [Phoenix LiveView](https://github.com/phoenixframework/phoenix_live_view) application.  You can read its [documentation here](https://hexdocs.pm/memorex/). Memorex utilizes [Anki's](https://apps.ankiweb.net/) spaced repetition algorithm, which is itself based on the [SuperMemo SM-2 algorithm](https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html).  Unlike Anki, Memorex stores the flashcard content (i.e., notes) in Markdown files on your local filesystem (or as image files, each with an associated text file which contains the description of the image file).  The database is only used to store information related to drilling/reviewing the flashcards, such as the due date for a card, its time interval, the number of repetitions, etc.
 
