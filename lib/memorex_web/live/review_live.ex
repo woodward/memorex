@@ -117,5 +117,5 @@ defmodule MemorexWeb.ReviewLive do
   @spec note_category(Card.t() | nil) :: nil | String.t()
   defp note_category(nil), do: nil
   defp note_category(%Card{note: %Note{category: nil}}), do: nil
-  defp note_category(%Card{note: %Note{category: category}}), do: " - #{category}"
+  defp note_category(%Card{note: %Note{category: category}}), do: " - #{category |> Enum.join(", ")}"
 end

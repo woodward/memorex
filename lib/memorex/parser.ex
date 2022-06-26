@@ -79,7 +79,7 @@ defmodule Memorex.Parser do
     Path.wildcard(dirname <> "/*.md")
     |> Enum.each(fn filename ->
       category = Path.basename(filename, ".md")
-      opts = Keyword.merge(opts, category: category)
+      opts = Keyword.merge(opts, category: [category])
       read_notes_file(filename, opts)
     end)
 
@@ -105,6 +105,7 @@ defmodule Memorex.Parser do
       File.ln_s!(Path.absname(filename), symlink)
 
       new_opts = [
+        category: [],
         image_file_contents: image_file_contents,
         image_file_path: image_file_path,
         content: [text_file_contents],

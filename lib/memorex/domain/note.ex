@@ -25,7 +25,7 @@ defmodule Memorex.Domain.Note do
   @type t :: %__MODULE__{
           id: Schema.id() | nil,
           bidirectional?: boolean(),
-          category: String.t() | nil,
+          category: [String.t()],
           image_file_path: String.t() | nil,
           content: [String.t()],
           in_latest_parse?: boolean(),
@@ -38,7 +38,7 @@ defmodule Memorex.Domain.Note do
 
   schema "notes" do
     field :bidirectional?, :boolean
-    field :category, :binary
+    field :category, {:array, :binary}
     field :image_file_path, :binary
     field :content, {:array, :binary}
     field :in_latest_parse?, :boolean
@@ -51,7 +51,7 @@ defmodule Memorex.Domain.Note do
 
   @spec new(Keyword.t()) :: t()
   def new(opts \\ []) do
-    category = Keyword.get(opts, :category)
+    category = Keyword.get(opts, :category, [])
     image_file_path = Keyword.get(opts, :image_file_path)
     image_file_content = Keyword.get(opts, :image_file_content)
     content = Keyword.get(opts, :content)
@@ -75,9 +75,10 @@ defmodule Memorex.Domain.Note do
   def content_to_uuid(content, category, image_file_content, image_file_path) do
     image_file_content = image_file_content || ""
     image_file_path = image_file_path || ""
+    categories = category |> Enum.join("")
 
     content
-    |> Enum.reduce("#{category}", fn content_line, acc -> content_line <> acc end)
+    |> Enum.reduce("#{categories}", fn content_line, acc -> content_line <> acc end)
     |> Kernel.<>(image_file_content)
     |> Kernel.<>(image_file_path)
     |> sha1()

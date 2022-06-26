@@ -64,8 +64,8 @@ defmodule Memorex.ParserTest do
       assert note1.deck.name == "deck"
       assert note2.deck.name == "deck"
 
-      assert note1.category == "file1"
-      assert note2.category == "file2"
+      assert note1.category == ["file1"]
+      assert note2.category == ["file2"]
 
       assert Repo.all(Card) |> length() == 4
     end
@@ -160,12 +160,12 @@ defmodule Memorex.ParserTest do
   describe "parse_line/1" do
     test "parse_line/1 works for the bidirectional note" do
       line = " one ⮂   two  "
-      opts = [category: "my category"] |> Keyword.merge(Parser.default_opts())
+      opts = [category: ["my category"]] |> Keyword.merge(Parser.default_opts())
       note = Parser.parse_line(line, opts)
 
       assert note == %Note{
                content: ["one", "two"],
-               category: "my category",
+               category: ["my category"],
                id: "99f1f73a-69be-5588-a86b-de7b3163d575",
                in_latest_parse?: true,
                bidirectional?: true
