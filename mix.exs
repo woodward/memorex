@@ -103,7 +103,7 @@ defmodule Memorex.MixProject do
         ~w(.formatter.exs .credo.exs mix.exs README.md lib config assets/js assets/vendor notes) ++
           ~w(assets/css/app.scss assets/css/initial-variables.sass assets/css/derived-variables.sass) ++
           ~w(priv/gettext priv/repo priv/static/assets priv/static/images/caret-down.svg priv/static/images/caret-right.svg ) ++
-          ~w(priv/static/favicon.ico priv/static/robots.txt)
+          ~w(priv/static/favicon.ico priv/static/robots.txt priv/static/images/memorex-logo.svg)
     ]
   end
 
