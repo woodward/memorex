@@ -178,7 +178,7 @@ defmodule Memorex.Scheduler.Config do
   end
 
   @spec atomize_keys(map()) :: map()
-  def atomize_keys(map), do: map |> Enum.into(%{}, fn {key, value} -> {String.to_atom(key), value} end)
+  defp atomize_keys(map), do: map |> Enum.into(%{}, fn {key, value} -> {String.to_atom(key), value} end)
 
   @spec convert_string_to_duration(String.t() | Duration.t()) :: Duration.t()
   defp convert_string_to_duration(duration) when is_binary(duration), do: Duration.parse!(duration)

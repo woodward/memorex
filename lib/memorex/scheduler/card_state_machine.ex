@@ -3,7 +3,8 @@ defmodule Memorex.Scheduler.CardStateMachine do
   This is the heart of the Anki SM-2 algorithm.  Note that this file consists of pure functions; `Memorex.Domain.Card`
   structs come into the `answer_card/4` function, and a map containing changes are returned.  There is no database
   interaction in this file. Time is deterministic (i.e., there are no `Timex.now()` calls within this module), and the
-  specific value of the current time is fed into each function.
+  specific value of the current time is fed into each function.  `Memorex.Scheduler.CardStateMachine` is not truly a
+  state machine per se (as it actually maintains no state), but is really a set of transforms on `Memorex.Domain.Card`s.
   """
 
   alias Memorex.Domain.Card

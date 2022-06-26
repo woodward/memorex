@@ -121,9 +121,10 @@ defmodule Memorex.MixProject do
     [
       "README.md",
       "notes/Anki Deck Settings.md",
-      "notes/Anki notes.md",
-      "notes/Anki algorithm for review cards.md",
-      "notes/Anki algorithm mental map.md"
+      "notes/Anki Notes.md",
+      "notes/Anki Build Notes.md",
+      "notes/Anki Algorithm for Review Cards.md",
+      "notes/Anki Algorithm Mental Map.md"
     ]
   end
 
@@ -154,7 +155,8 @@ defmodule Memorex.MixProject do
       Contexts: [
         Memorex.Cards,
         Memorex.Decks,
-        Memorex.CardLogs
+        Memorex.CardLogs,
+        Memorex.Notes
       ],
       MemorexWeb: [
         MemorexWeb,

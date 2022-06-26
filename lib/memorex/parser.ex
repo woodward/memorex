@@ -1,7 +1,7 @@
 defmodule Memorex.Parser do
   @moduledoc """
   Parses Memorex Markdown `Memorex.Domain.Deck` files.  The `Memorex.Parser` is invoked from the mix task
-  `memorex.read_notes`.  This mix task invokes `read_note_dirs` which is the main entry point to
+  `memorex.read_notes`.  This mix task invokes `read_note_dirs/1` which is the main entry point to
   `Memorex.Parser`; the rest of the funtions are implementation details (which are public simply so they can be
   tested in isolation).
   """
@@ -19,8 +19,8 @@ defmodule Memorex.Parser do
   The existing notes in the database are marked with a flag prior to reading (flag `:in_latest_parse?` on
   `Memorex.Domain.Note`is set to false), and as the notes are read, existing notes have this flag toggled to true. New
   notes also have this flag set to `true`.  At the end, notes in the database which have not had their flag set to `true`
-  are expunged.  These are notes which have either been deleted in the local content, or else their content has been
-  modified (so they have been read in again as a new note).
+  are expunged.  These are notes which have either been deleted in the local filesystem content, or else their content
+  has been modified (so they have been read in again as a new note; i.e., their drilling info is lost in the process).
 
   Note that this is the primary (and only) external API function to `Memorex.Parser`; the other functions are public
   solely for purposes of testing.

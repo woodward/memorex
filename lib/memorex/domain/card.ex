@@ -1,6 +1,8 @@
 defmodule Memorex.Domain.Card do
   @moduledoc """
   A `Memorex.Domain.Card` is the entity in Memorex which is reviewed/drilled by `MemorexWeb.ReviewLive`.
+  A `Memorex.Domain.Card` belongs to a `Memorex.Domain.Note`.  The `Memorex.Domain.Card` contains only drilling-related
+  info; the actual flashcard content is contained in the `Memorex.Domain.Note`.
   """
 
   use Memorex.Ecto.Schema
