@@ -69,7 +69,7 @@ defmodule Memorex.Parser do
   end
 
   @spec read_dir(String.t(), Keyword.t()) :: :ok
-  def read_dir(dirname, opts \\ [category: []]) do
+  def read_dir(dirname, opts \\ []) do
     opts =
       if Keyword.has_key?(opts, :deck) do
         opts |> Keyword.update!(:category, &(&1 ++ [Path.basename(dirname)]))
@@ -78,13 +78,13 @@ defmodule Memorex.Parser do
         |> Path.basename()
         |> Decks.find_or_create!()
         |> load_config_file_if_it_exists(Path.join(dirname, "deck_config.toml"))
-        |> Keyword.merge(opts)
+        |> Keyword.merge(category: [])
       end
 
     Path.wildcard(dirname <> "/*.md")
     |> Enum.each(fn filename ->
       category = Path.basename(filename, ".md")
-      opts = Keyword.merge(opts, category: opts[:category] ++ [category])
+      opts = opts |> Keyword.update!(:category, &(&1 ++ [category]))
       read_notes_file(filename, opts)
     end)
 
@@ -115,15 +115,13 @@ defmodule Memorex.Parser do
       File.ln_s!(Path.absname(filename), symlink)
 
       new_opts = [
-        category: [],
         image_file_contents: image_file_contents,
         image_file_path: image_file_path,
         content: [text_file_contents],
         bidirectional?: false
       ]
 
-      note = Note.new(new_opts |> Keyword.merge(opts))
-      create_or_update_note(note)
+      opts |> Keyword.merge(new_opts) |> Note.new() |> create_or_update_note()
     end
   end
 
@@ -157,10 +155,10 @@ defmodule Memorex.Parser do
   # @spec create_or_update_note(Note.t()) :: Note.t()
   @spec create_or_update_note(Note.t()) :: Ecto.Schema.t()
   def create_or_update_note(note) do
-    note_from_db = Repo.get(Note, note.id)
+    existing_note_in_db = Repo.get(Note, note.id)
 
-    if note_from_db do
-      note_from_db |> Notes.set_parse_flag()
+    if existing_note_in_db do
+      existing_note_in_db |> Notes.set_parse_flag()
     else
       note
       |> Repo.insert!(on_conflict: :nothing)
@@ -180,8 +178,13 @@ defmodule Memorex.Parser do
   @spec parse_line(String.t(), Keyword.t()) :: Note.t()
   def parse_line(line, opts) do
     content = line |> String.split(note_regex(opts)) |> Enum.map(&String.trim(&1))
-    new_opts = [content: content, bidirectional?: is_bidirectional_note?(line, opts)] |> Keyword.merge(opts)
-    Note.new(new_opts)
+
+    opts
+    |> Keyword.merge(
+      content: content,
+      bidirectional?: is_bidirectional_note?(line, opts)
+    )
+    |> Note.new()
   end
 
   @spec read_toml_deck_config(String.t()) :: map()
