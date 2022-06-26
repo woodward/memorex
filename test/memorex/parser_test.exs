@@ -86,6 +86,52 @@ defmodule Memorex.ParserTest do
 
       assert Repo.all(Card) |> length() == 6
     end
+
+    test "recursively reads directories, creating categories & subcategories for the notes" do
+      Parser.read_dir("test/fixtures/deck_with_nested_categories")
+
+      all_decks = Repo.all(Deck)
+      assert length(all_decks) == 1
+      [deck] = all_decks
+      assert deck.name == "deck_with_nested_categories"
+
+      assert Repo.all(Note) |> length() == 6
+
+      all_notes = Repo.all(Note, order_by: :id)
+
+      all_notes
+      |> Repo.preload(:deck)
+      |> Enum.each(fn note ->
+        assert note.deck.name == "deck_with_nested_categories"
+      end)
+
+      all_cards = Repo.all(Card) |> Repo.preload([:note])
+      assert length(all_cards) == 9
+
+      # ----------------
+      text_notes = all_notes |> Enum.reject(& &1.image_file_path)
+
+      [text_note_one_category] = text_notes |> Enum.filter(&(&1.content == ["A", "a"]))
+      assert text_note_one_category.category == ["category-1"]
+
+      [text_note_two_subcategories] = text_notes |> Enum.filter(&(&1.content == ["B", "b"]))
+      assert text_note_two_subcategories.category == ["subcategory-1", "subcategory-2"]
+
+      [text_note_three_subcategories] = text_notes |> Enum.filter(&(&1.content == ["C", "c"]))
+      assert text_note_three_subcategories.category == ["subcategory-1", "subcategory-2", "subcategory-3"]
+
+      # ----------------
+      image_notes = all_notes |> Enum.filter(& &1.image_file_path)
+
+      [image_note_no_category] = image_notes |> Enum.filter(&(&1.content == ["Fish - no category"]))
+      assert image_note_no_category.category == []
+
+      [image_note_one_category] = image_notes |> Enum.filter(&(&1.content == ["Fish with one subcategory"]))
+      assert image_note_one_category.category == ["subcategory-1"]
+
+      [image_note_two_categories] = image_notes |> Enum.filter(&(&1.content == ["Fish with two subcategories"]))
+      assert image_note_two_categories.category == ["subcategory-1", "subcategory-2"]
+    end
   end
 
   describe "read_multiple_dirs" do
