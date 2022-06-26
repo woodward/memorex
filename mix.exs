@@ -100,8 +100,10 @@ defmodule Memorex.MixProject do
       licenses: ["MIT"],
       links: %{"GitHub" => @source_url},
       files:
-        ~w(.formatter.exs .credo.exs mix.exs README.md lib config assets/js assets/vendor notes priv) ++
-          ~w(assets/css/app.scss assets/css/initial-variables.sass assets/css/derived-variables.sass )
+        ~w(.formatter.exs .credo.exs mix.exs README.md lib config assets/js assets/vendor notes) ++
+          ~w(assets/css/app.scss assets/css/initial-variables.sass assets/css/derived-variables.sass) ++
+          ~w(priv/gettext priv/repo priv/static/assets priv/static/images/caret-down.svg priv/static/images/caret-right.svg ) ++
+          ~w(priv/static/favicon.ico priv/static/robots.txt)
     ]
   end
 
