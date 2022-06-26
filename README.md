@@ -10,7 +10,7 @@ To use Memorex, first get it running on your local system.  First, you'll need t
   mix ecto.setup
 ```
 
-Then create one or more Markdown files with notes; see [`test/fixtures/contains_multiple_decks`](https://github.com/woodward/memorex/tree/main/test/fixtures/contains_multiple_decks) for some examples (using test data), or [vim-flashcards](https://github.com/woodward/vim-flashcards) for a real-life deck example.  Then read in the notes and start up the Phoenix app via the following:
+Then create one or more Markdown files with notes (or image files with similarly named text file which contains the "answer"); see [`test/fixtures/contains_multiple_decks`](https://github.com/woodward/memorex/tree/main/test/fixtures/contains_multiple_decks) for some examples (using test data), or [vim-flashcards](https://github.com/woodward/vim-flashcards) for a real-life deck example.  Then read in the notes and start up the Phoenix app via the following:
 
 ```
   mix memorex.read_notes
@@ -42,6 +42,10 @@ Image notes consist of a image files placed within a deck directory; each image 
 A `Memorex.Domain.Note` is a line from one of your decks which has either the unidirectional or bidirectional character in it (for text notes), OR an image file/text/file pair (for image notes).  `Memorex.Domain.Card`s are what are actually drilled; forward and reverse cards are created from a note if the bidirectional delimitter is present, and a single forward card is created from a note if the unidirectional delimitter is present (i.e., a note has one or two associated cards).  That is, a deck contains many notes, and each note has one (or two) cards.  When you answer a card, a `Memorex.Domain.CardLog` entry is created.
 
 If you update the content of the Markdown files which comprise your decks, the notes & cards will be updated the next time you run the mix task `mix memorex.read_notes`.  Any existing card whose parent note has been edited will be reset to start out as a `:new` card again (i.e., the drilling information associated with that card will be lost), although the note content will be updated within Memorex.  This is because Memorex creates a linkage from the note in the Markdown (for text notes) file to the note in its database via a UUID based on a hash of the note content (together with the filename if the Markdown file is within a directory).  Similary for image notes, the notes & cards will be updated if either the image file content is changed, the content of its sibling text file is changed, or if the image & text file are moved to a different location (for example, moving the image file/text file pair to a different deck directory).
+
+## Note Categories
+
+Multiple Markdown files within a deck directory will result in the notes for that deck each having a "category" which is the name of the Markdown file.  If Markdown note files (or image files with their corresponding text files) are in subdirectories within a deck directory, then the notes will have categories which are the names of the subdirectories (plus the name of the Markdown file if these are text notes).  For example, for a deck directory named "Spanish Vocabulary", a Markdown file within that directory called `Spanish Vocabulary/Nouns/Household.md` which contains the note line `lavavajillas ⮂ dishwasher` will result in a bidirectional note which has the category `Nouns => Household`.  Similarly for image notes, if there is a image file/text file pair `coast-live-oak.jpg` and `coast-live-oak.txt` within a subdirectory inside of deck directory named `California Native Plants`, such as `California Native Plants/Trees/Coastal/coast-live-oak.jpg` and `California Native Plants/Trees/Coastal/coast-live-oak.txt`, then the resulting note will have the category `Trees => Coastal`.
 
 ## Configuration
 
