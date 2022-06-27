@@ -43,6 +43,8 @@ Image notes consist of a image files placed within a deck directory; each image 
 
 If you update the content of the Markdown files which comprise your decks, the notes & cards will be updated the next time you run the mix task `mix memorex.read_notes`.  Any existing card whose parent note has been edited will be reset to start out as a `:new` card again (i.e., the drilling information associated with that card will be lost), although the note content will be updated within Memorex.  This is because Memorex creates a linkage from the note in the Markdown (for text notes) file to the note in its database via a UUID based on a hash of the note content (together with the filename if the Markdown file is within a directory).  Similary for image notes, the notes & cards will be updated if either the image file content is changed, the content of its sibling text file is changed, or if the image & text file are moved to a different location (for example, moving the image file/text file pair to a different deck directory).
 
+Notes can contain mathematical formulas (powered by [KaTeX](https://katex.org/)).  Simply insert formulas into your notes between matching pairs of single or double dollar signs; for example, $ \sum_{i=1}^\infty\frac{1}{n^2} =\frac{\pi^2}{6} $ or $$ S(x) = \frac{1}{1 + e^{-x}} = \frac{e^{x}}{e^{x} + 1} $$.
+
 ## Note Categories
 
 Multiple Markdown files within a deck directory will result in the notes for that deck each having a "category" which is the name of the Markdown file.  If Markdown note files (or image files with their corresponding text files) are in subdirectories within a deck directory, then the notes will have categories which are the names of the subdirectories (plus the name of the Markdown file if these are text notes).  For example, for a deck directory named "Spanish Vocabulary", a Markdown file within that directory called `Spanish Vocabulary/Nouns/Household.md` which contains the note line `lavavajillas ⮂ dishwasher` will result in a bidirectional note which has the category `Nouns => Household`.  Similarly for image notes, if there is a image file/text file pair `coast-live-oak.jpg` and `coast-live-oak.txt` within a subdirectory inside of deck directory named `California Native Plants`, such as `California Native Plants/Trees/Coastal/coast-live-oak.jpg` and `California Native Plants/Trees/Coastal/coast-live-oak.txt`, then the resulting note will have the category `Trees => Coastal`.
@@ -71,4 +73,4 @@ Memorex's domain code (e.g., in [`lib/memorex`](https://github.com/woodward/memo
 
 ## Future Features
 
-Support for mathematical formulas is on the roadmap (via [KaTeX](https://katex.org/)).  [Livebook](https://github.com/livebook-dev/livebook) integration is also a possibility (if I can figure out what that looks like!)
+[Livebook](https://github.com/livebook-dev/livebook) integration is a possibility (if I can figure out what that looks like!)
