@@ -3,7 +3,7 @@ defmodule Memorex.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/woodward/memorex"
-  @version "0.2.3"
+  @version "0.2.4"
 
   def project do
     [

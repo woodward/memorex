@@ -101,7 +101,8 @@ defmodule Memorex.Parser do
 
   @spec read_image_note(String.t(), Keyword.t()) :: nil | Ecto.Schema.t()
   def read_image_note(filename, opts \\ default_opts()) do
-    text_filename = Path.rootname(filename) <> ".txt"
+    filename_without_number = Regex.replace(~r/ - \d*$/, Path.rootname(filename), "")
+    text_filename = filename_without_number <> ".txt"
 
     if File.exists?(text_filename) do
       image_file_contents = File.read!(filename)

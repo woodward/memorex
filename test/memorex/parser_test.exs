@@ -50,6 +50,22 @@ defmodule Memorex.ParserTest do
       assert Repo.all(Note) |> length() == 0
       assert Repo.all(Card) |> length() == 0
     end
+
+    test "multiple images for one text file" do
+      deck = %Deck{name: "deck_with_multiple_images_for_one_text_file"} |> Repo.insert!()
+      Parser.read_image_note("test/fixtures/deck_with_multiple_images_for_one_text_file/goldfish - 27.jpeg", deck: deck)
+
+      assert Repo.all(Note) |> length() == 1
+      assert Repo.all(Card) |> length() == 1
+
+      [note] = Repo.all(Note)
+
+      assert note.image_file_path == "/images/decks/deck_with_multiple_images_for_one_text_file/goldfish - 27.jpeg"
+      assert note.id == "9f9c0f2b-f475-5b39-92b7-300aeb64a86c"
+      assert note.content == ["A goldfish"]
+      lstat = File.lstat!(File.cwd!() <> "/priv/static" <> note.image_file_path)
+      assert lstat.type == :symlink
+    end
   end
 
   describe "read_dir" do
