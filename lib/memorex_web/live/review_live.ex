@@ -26,6 +26,7 @@ defmodule MemorexWeb.ReviewLive do
   @impl true
   def handle_params(params, _uri, %{assigns: %{start_time: time_now}} = socket) do
     deck = Repo.get!(Deck, params["deck"])
+    show_category_when_reviewing? = Map.get(deck.config, "show_category_when_reviewing", true)
     config = Config.default() |> Config.merge(deck.config)
     card_id = params["card_id"]
     learn_ahead_time = Timex.add(time_now, config.learn_ahead_time_interval)
@@ -49,9 +50,10 @@ defmodule MemorexWeb.ReviewLive do
        daily_review_limit_reached?: num_of_reviewed_cards > config.max_reviews_per_day,
        deck_stats: DeckStats.new(deck.id, time_now),
        deck: deck,
-       num_of_reviewed_cards: num_of_reviewed_cards,
        interval_choices: interval_choices,
-       prior_card_log: nil
+       num_of_reviewed_cards: num_of_reviewed_cards,
+       prior_card_log: nil,
+       show_category_when_reviewing?: show_category_when_reviewing?
      )}
   end
 

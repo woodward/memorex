@@ -1,4 +1,4 @@
-<h1 class="title is-3"> Deck: <%= @deck.name %><%= note_category(@card) %> </h1>
+<h1 class="title is-3"> Deck: <%= @deck.name %><%= if @show_category_when_reviewing?, do: note_category(@card) %> </h1>
 
 <%= if @card_id do %>
   <h4 class="title is-4"> FOCUSED DRILLING MODE  <%= live_patch "Go Back to Drilling Entire Deck", to: Routes.review_path(@socket, :home, %{deck: @deck}) %> </h4>

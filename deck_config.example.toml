@@ -16,6 +16,7 @@
 
 bidirectional_note_delimitter = "⮂"
 unidirectional_note_delimitter =  "→"
+show_category_when_reviewing = false
 
 # --- Scheduler Config below here ----------------
 
