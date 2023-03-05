@@ -1,5 +1,5 @@
 <div>
-  <h1 class="title"> Edit Card </h1>
+  <h1> Edit Card </h1>
 
   <.form
     :let={f}
@@ -8,74 +8,74 @@
     phx-change="validate"
     phx-submit="save">
 
-    <div class="field">
+    <div>
       <%= label f, :ease_factor, class: "label" %>
-      <div class="control">
+      <div>
         <%= text_input f, :ease_factor, class: "input" %>
       </div>
       <%=#  error_tag f, :ease_factor %>
     </div>
 
-    <div class="field">
+    <div>
       <% # interval_label_text = link "Interval (in ISO-8601 format)", to: "https://en.wikipedia.org/wiki/ISO_8601#Times" %>
       <% interval_label_text = "Interval (in ISO-8601 format)" %>
       <%= label f, :interval, interval_label_text, class: "label" %>
-      <div class="control">
+      <div>
         <%= text_input f, :interval, class: "input", value: input_value(f, :interval) |> duration_string() %>
       </div>
       <%= # error_tag f, :interval %>
     </div>
 
-    <div class="field">
+    <div>
       <%= label f, :due, class: "label" %>
-      <div class="control">
+      <div>
         <%= datetime_local_input f, :due, class: "select" %>
       </div>
     </div>
 
-    <div class="field">
+    <div>
       <%= label f, :current_step, class: "label" %>
-      <div class="control">
+      <div>
         <%= number_input f, :current_step, class: "input" %>
       </div>
       <%=# error_tag f, :current_step %>
     </div>
 
-    <div class="field">
+    <div>
       <%= label f, :card_type, class: "label" %>
-      <div class="control">
+      <div>
         <%= select f, :card_type, Card.card_types(), class: "input" %>
       </div>
     </div>
 
-    <div class="field">
+    <div>
       <%= label f, :card_status, class: "label" %>
-      <div class="control">
+      <div>
         <%= select f, :card_status, Card.card_statuses(), class: "input" %>
       </div>
     </div>
 
-    <div class="field">
+    <div>
       <%= label f, :reps, class: "label" %>
-      <div class="control">
+      <div>
         <%= number_input f, :reps, class: "input" %>
       </div>
       <%=#  error_tag f, :reps %>
     </div>
 
-    <div class="field">
+    <div>
       <%= label f, :lapses, class: "label" %>
-      <div class="control">
+      <div>
         <%= number_input f, :lapses, class: "input" %>
       </div>
       <%=#  error_tag f, :lapses %>
     </div>
 
-    <div class="field is-grouped">
-      <div class="control">
+    <div>
+      <div>
         <%= submit "Save", phx_disable_with: "Saving...", class: "button" %>
       </div>
-      <div class="control">
+      <div>
         <.link href={~p"/cards/#{@card.id}"} class="btn">Cancel</.link>
       </div>
     </div>

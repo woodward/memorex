@@ -1,61 +1,61 @@
-<h1 class="title is-3"> Deck: <%= @deck.name %><%= if @show_category_when_reviewing?, do: note_category(@card) %> </h1>
+<h1> Deck: <%= @deck.name %><%= if @show_category_when_reviewing?, do: note_category(@card) %> </h1>
 
 <%= if @card_id do %>
-  <h4 class="title is-4">
+  <h4>
     FOCUSED DRILLING MODE
     <.link href={~p"/review?#{[deck: @deck]}"}>Go Back to Drilling Entire Deck</.link>
   </h4>
 <% end %>
 
 <%= if !@card || @daily_review_limit_reached? do %>
-  <h3 class="title is-4"> No cards to review </h3>
+  <h3> No cards to review </h3>
 <% else %>
 
   <%= if Card.is_image_card?(@card)  do %>
-    <h4 class="title is-4"> Question: </h4>
+    <h4> Question: </h4>
     <img src={img_src(@card)} alt={img_alt(@card)} style="max-height: 500px;">
 
   <% else %>
-    <h4 class="title is-4"> Question: </h4>
+    <h4> Question: </h4>
     <div id="math-question" phx-hook="Math">
       <%= Card.question(@card) %>
     </div>
   <% end %>
 
   <%= if @display == :show_question do %>
-    <div class="control">
-      <button class="button" phx-click="show-answer"> Answer </button>
+    <div>
+      <button class="btn" phx-click="show-answer"> Answer </button>
     </div>
   <% end %>
 
   <%= if @display == :show_question_and_answer do %>
-    <h4 class="title is-4"> Answer: </h4>
+    <h4> Answer: </h4>
     <div id="math-answer" phx-hook="Math">
       <%= Card.answer(@card) %>
     </div>
 
-    <button class="button is-medium is-danger" phx-click="rate-difficulty" phx-value-answer_choice="again">
+    <button class="btn" phx-click="rate-difficulty" phx-value-answer_choice="again">
       <div>
         <span class="answer"> Again </span>
         <span class="answer"> <%= format(@interval_choices[:again])  %> </span>
       </div>
     </button>
 
-    <button class="button is-medium is-warning" phx-click="rate-difficulty" phx-value-answer_choice="hard">
+    <button class="btn" phx-click="rate-difficulty" phx-value-answer_choice="hard">
       <div>
         <span class="answer"> Hard </span>
         <span class="answer"> <%= format(@interval_choices[:hard])  %> </span>
       </div>
     </button>
 
-    <button class="button is-medium is-info" phx-click="rate-difficulty" phx-value-answer_choice="good">
+    <button class="btn" phx-click="rate-difficulty" phx-value-answer_choice="good">
       <div>
         <span class="answer"> Good </span>
         <span class="answer"> <%= format(@interval_choices[:good])  %> </span>
       </div>
     </button>
 
-    <button class="button is-medium is-success" phx-click="rate-difficulty" phx-value-answer_choice="easy">
+    <button class="btn" phx-click="rate-difficulty" phx-value-answer_choice="easy">
       <div>
         <span class="answer"> Easy </span>
         <span class="answer"> <%= format(@interval_choices[:easy])  %> </span>
@@ -65,7 +65,7 @@
 <% end %>
 
 <div id="debug-info" class={"debug-info " <> initially_show_debug_info?()}>
-  <div class="subtitle is-6"> Debug Info
+  <div> Debug Info
     <img class="caret caret-down" src="/images/caret-down.svg" phx-click={hide_debug_info()} />
     <img class="caret caret-right" src="/images/caret-right.svg" phx-click={show_debug_info()} />
   </div>

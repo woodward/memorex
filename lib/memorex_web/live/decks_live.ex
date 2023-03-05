@@ -14,7 +14,7 @@ defmodule MemorexWeb.DecksLive do
     ~H"""
     <h1 class="title">Decks</h1>
 
-    <div class="content">
+    <div>
       <table class="table">
         <thead>
           <th>Deck</th>
