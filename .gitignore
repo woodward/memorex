@@ -39,3 +39,5 @@ npm-debug.log
 drop_all
 
 test/tmp
+
+.envrc
