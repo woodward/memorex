@@ -13,9 +13,8 @@ defmodule Memorex.MixProject do
         plt_add_deps: [:mix]
       ],
       version: @version,
-      elixir: "~> 1.12",
+      elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
@@ -52,24 +51,27 @@ defmodule Memorex.MixProject do
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:dart_sass, "~> 0.5", runtime: Mix.env() == :dev},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
-      {:ecto_sql, "~> 3.8"},
-      {:esbuild, "~> 0.5", runtime: Mix.env() == :dev},
-      {:ex_doc, "~> 0.27", only: :dev, runtime: false},
-      {:floki, ">= 0.30.0", only: :test},
-      {:gettext, "~> 0.18"},
+      {:ecto_sql, "~> 3.9"},
+      {:esbuild, "~> 0.6", runtime: Mix.env() == :dev},
+      {:ex_doc, "~> 0.29", only: :dev, runtime: false},
+      {:floki, "~> 0.34", only: :test},
+      {:gettext, "~> 0.22"},
       {:jason, "~> 1.2"},
       {:phoenix_ecto, "~> 4.4"},
       {:phoenix_html, "~> 3.0"},
-      {:phoenix_live_dashboard, "~> 0.6"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 0.17"},
-      {:phoenix, "~> 1.6"},
+      {:phoenix_live_dashboard, "~> 0.7"},
+      {:phoenix_live_reload, "~> 1.4", only: :dev},
+      {:phoenix_live_view, "~> 0.18"},
+      {:phoenix, "~> 1.7"},
+      # phoenix_view is only here for phoenix_live_dashboard - delete it later!
+      {:phoenix_view, "~> 2.0"},
       {:plug_cowboy, "~> 2.5"},
       {:postgrex, "~> 0.16"},
+      {:tailwind, "~> 0.1.8", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:timex, "~> 3.7"},
-      {:toml, "~> 0.6"},
+      {:toml, "~> 0.7"},
       {:uuid, "~> 1.1"}
     ]
   end
@@ -82,13 +84,16 @@ defmodule Memorex.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup"],
+      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
+      "assets.build": ["tailwind default", "sass default", "esbuild default"],
       "assets.deploy": [
         "esbuild default --minify",
-        "sass default --no-source-map --style=compressed",
+        "sass default",
+        "tailwind default --minify",
         "phx.digest"
       ]
     ]

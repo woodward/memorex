@@ -38,7 +38,7 @@ defmodule MemorexWeb.CardLive.Edit do
         {:noreply,
          socket
          |> put_flash(:info, "Card updated successfully")
-         |> push_redirect(to: Routes.card_show_path(socket, :show, card.id))}
+         |> push_redirect(to: ~p"/cards/#{card.id}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}

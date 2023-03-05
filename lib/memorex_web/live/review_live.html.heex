@@ -1,7 +1,10 @@
 <h1 class="title is-3"> Deck: <%= @deck.name %><%= if @show_category_when_reviewing?, do: note_category(@card) %> </h1>
 
 <%= if @card_id do %>
-  <h4 class="title is-4"> FOCUSED DRILLING MODE  <%= live_patch "Go Back to Drilling Entire Deck", to: Routes.review_path(@socket, :home, %{deck: @deck}) %> </h4>
+  <h4 class="title is-4">
+    FOCUSED DRILLING MODE
+    <.link href={~p"/review?#{[deck: @deck]}"}>Go Back to Drilling Entire Deck</.link>
+  </h4>
 <% end %>
 
 <%= if !@card || @daily_review_limit_reached? do %>
@@ -15,7 +18,7 @@
   <% else %>
     <h4 class="title is-4"> Question: </h4>
     <div id="math-question" phx-hook="Math">
-      <%= Card.question(@card) %> 
+      <%= Card.question(@card) %>
     </div>
   <% end %>
 
@@ -62,7 +65,7 @@
 <% end %>
 
 <div id="debug-info" class={"debug-info " <> initially_show_debug_info?()}>
-  <div class="subtitle is-6"> Debug Info 
+  <div class="subtitle is-6"> Debug Info
     <img class="caret caret-down" src="/images/caret-down.svg" phx-click={hide_debug_info()} />
     <img class="caret caret-right" src="/images/caret-right.svg" phx-click={show_debug_info()} />
   </div>

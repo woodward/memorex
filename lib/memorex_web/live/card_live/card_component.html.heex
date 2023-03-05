@@ -2,31 +2,31 @@
   <h1 class="title"> Card </h1>
 
   <%= if show_card_history_link?(@socket) do %>
-    <%= live_patch "Show Card History", to: Routes.card_show_path(@socket, :show, @card.id) %> 
+    <.link href={~p"/cards/#{@card.id}"}>Show Card History</.link>
   <% end %>
 
   <%= if @show_drill_link? do %>
-    <div class="field"> 
-      <div class="control"> 
-        <%= live_patch "Drill Card in Isolation", to: Routes.review_path(@socket, :home, %{deck: @card.note.deck_id, card_id: @card.id}), class: "button" %> 
+    <div class="field">
+      <div class="control">
+        <.link href={~p"/review?#{[deck: @card.note.deck_id, card_id: @card.id]}"} class="btn">Drill Card in Isolation</.link>
       </div>
     </div>
-  <% end %> 
-  
-  <div class="field"> 
-    <div class="control"> 
-      <%= live_patch "Edit Card", to: Routes.card_edit_path(@socket, :edit, @card.id), class: "button" %> 
+  <% end %>
+
+  <div class="field">
+    <div class="control">
+      <.link href={~p"/cards/#{@card.id}/edit"} class="btn">Edit Card</.link>
     </div>
   </div>
 
   <table class="table">
     <tr>
       <td class="has-text-weight-bold"> Question </td>
-      <td> 
+      <td>
         <%= if Card.is_image_card?(@card) do %>
           <img src={img_src(@card)} alt={img_alt(@card)} width="50" height="50">
         <% else %>
-          <%= Card.question(@card) %> 
+          <%= Card.question(@card) %>
         <% end %>
       </td>
     </tr>
@@ -45,7 +45,7 @@
         <td> <%= format(@card_log.time_to_answer) %> </td>
       </tr>
 
-    <% else %>  
+    <% else %>
       <tr>
         <td class="has-text-weight-bold"> Card Type </td>
         <td> :<%=@card.card_type %> </td>
@@ -67,7 +67,7 @@
         <td> <%=@card.current_step %> </td>
       </tr>
     <% end %>
-    
+
     <tr>
       <td class="has-text-weight-bold"> Lapses </td>
       <td> <%=@card.lapses %> </td>

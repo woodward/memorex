@@ -15,19 +15,24 @@
     <% length_of_question_and_answer = 50 %>
 
     <tbody>
-      <%= for card <- @cards do %> 
+      <%= for card <- @cards do %>
         <tr>
-          <td> <%= live_patch truncate(card.id, length: 12), to: Routes.card_show_path(@socket, :show, card.id) %>  </td>
+          <td>
+            <.link href={~p"/cards/#{card.id}"}><%= truncate(card.id, length: 12) %></.link>
+          </td>
+          <td>
+            <.link href={~p"/cards/card.id"}><%= truncate(card.id, length: 12) %></.link>
+          </td>
           <td> <%= truncate(card.note_id, length: 12) %> </td>
           <td> <%= format_iso_datetime(card.due) %> </td>
           <td> <%= format(card.interval) %> </td>
           <td> :<%= card.card_type %> </td>
           <td> :<%= card.card_status %> </td>
-          <td> 
+          <td>
             <%= if Card.is_image_card?(card) do %>
               <img src={img_src(card)} alt={img_alt(card)} width="50" height="50">
             <% else %>
-              <%= truncate(Card.question(card), length: length_of_question_and_answer) %> 
+              <%= truncate(Card.question(card), length: length_of_question_and_answer) %>
             <% end %>
           </td>
           <td> <%= truncate(Card.answer(card), length: length_of_question_and_answer) %> </td>

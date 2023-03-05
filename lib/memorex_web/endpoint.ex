@@ -8,7 +8,8 @@ defmodule MemorexWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_memorex_key",
-    signing_salt: "quCqbu1G"
+    signing_salt: "quCqbu1G",
+    same_site: "Lax"
   ]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]

@@ -17,26 +17,22 @@ defmodule MemorexWeb.ConnCase do
 
   use ExUnit.CaseTemplate
 
-  alias Ecto.Adapters.SQL.Sandbox
-  alias Phoenix.ConnTest
-
   using do
     quote do
+      # The default endpoint for testing
+      @endpoint MemorexWeb.Endpoint
+
+      use MemorexWeb, :verified_routes
+
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
       import MemorexWeb.ConnCase
-
-      alias MemorexWeb.Router.Helpers, as: Routes
-
-      # The default endpoint for testing
-      @endpoint MemorexWeb.Endpoint
     end
   end
 
   setup tags do
-    pid = Sandbox.start_owner!(Memorex.Ecto.Repo, shared: not tags[:async])
-    on_exit(fn -> Sandbox.stop_owner(pid) end)
-    {:ok, conn: ConnTest.build_conn()}
+    Memorex.DataCase.setup_sandbox(tags)
+    {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 end

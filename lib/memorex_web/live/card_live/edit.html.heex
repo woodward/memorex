@@ -2,27 +2,28 @@
   <h1 class="title"> Edit Card </h1>
 
   <.form
-    let={f}
+    :let={f}
     for={@changeset}
     id="card-form"
     phx-change="validate"
     phx-submit="save">
-  
+
     <div class="field">
       <%= label f, :ease_factor, class: "label" %>
       <div class="control">
         <%= text_input f, :ease_factor, class: "input" %>
       </div>
-      <%= error_tag f, :ease_factor %>
+      <%=#  error_tag f, :ease_factor %>
     </div>
 
     <div class="field">
-      <% interval_label_text = link "Interval (in ISO-8601 format)", to: "https://en.wikipedia.org/wiki/ISO_8601#Times" %>
+      <% # interval_label_text = link "Interval (in ISO-8601 format)", to: "https://en.wikipedia.org/wiki/ISO_8601#Times" %>
+      <% interval_label_text = "Interval (in ISO-8601 format)" %>
       <%= label f, :interval, interval_label_text, class: "label" %>
       <div class="control">
         <%= text_input f, :interval, class: "input", value: input_value(f, :interval) |> duration_string() %>
       </div>
-      <%= error_tag f, :interval %>
+      <%= # error_tag f, :interval %>
     </div>
 
     <div class="field">
@@ -37,7 +38,7 @@
       <div class="control">
         <%= number_input f, :current_step, class: "input" %>
       </div>
-      <%= error_tag f, :current_step %>
+      <%=# error_tag f, :current_step %>
     </div>
 
     <div class="field">
@@ -59,7 +60,7 @@
       <div class="control">
         <%= number_input f, :reps, class: "input" %>
       </div>
-      <%= error_tag f, :reps %>
+      <%=#  error_tag f, :reps %>
     </div>
 
     <div class="field">
@@ -67,7 +68,7 @@
       <div class="control">
         <%= number_input f, :lapses, class: "input" %>
       </div>
-      <%= error_tag f, :lapses %>
+      <%=#  error_tag f, :lapses %>
     </div>
 
     <div class="field is-grouped">
@@ -75,7 +76,7 @@
         <%= submit "Save", phx_disable_with: "Saving...", class: "button" %>
       </div>
       <div class="control">
-        <%= link "Cancel", to: Routes.card_show_path(@socket, :show, @card.id), class: "button" %>
+        <.link href={~p"/cards/#{@card.id}"} class="btn">Cancel</.link>
       </div>
     </div>
   </.form>

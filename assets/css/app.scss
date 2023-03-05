@@ -1,4 +1,10 @@
+// See 
+// https://pragmaticstudio.com/tutorials/using-tailwind-css-in-phoenix
+// to use Sass together with Tailwind
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .answer {
   display: block;

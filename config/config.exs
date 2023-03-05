@@ -13,25 +13,41 @@ config :memorex, Memorex.Ecto.Repo,
 
 config :memorex, MemorexWeb.Endpoint,
   url: [host: "localhost"],
-  render_errors: [view: MemorexWeb.ErrorView, accepts: ~w(html json), layout: false],
+  render_errors: [
+    formats: [html: MemorexWeb.ErrorHTML, json: MemorexWeb.ErrorJSON],
+    layout: false
+  ],
   pubsub_server: Memorex.PubSub,
   live_view: [signing_salt: "EgDTB8ge"]
 
-config :dart_sass,
-  version: "1.49.11",
+  config :dart_sass,
+  version: "1.54.5",
+  # See: https://pragmaticstudio.com/tutorials/using-tailwind-css-in-phoenix
   default: [
-    args: ~w(css/app.scss ../priv/static/assets/app.css),
+    args: ~w(css/app.scss ../priv/static/assets/app.css.tailwind),
     cd: Path.expand("../assets", __DIR__)
   ]
 
 config :esbuild,
-  version: "0.14.29",
-  default: [
+version: "0.14.41",
+default: [
     args: ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
+# Configure tailwind (the version is required)
+config :tailwind,
+  version: "3.2.4",
+  default: [
+    # See: https://pragmaticstudio.com/tutorials/using-tailwind-css-in-phoenix
+    args: ~w(
+      --config=tailwind.config.js
+      --input=../priv/static/assets/app.css.tailwind
+      --output=../priv/static/assets/app.css
+    ),
+    cd: Path.expand("../assets", __DIR__)
+  ]
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]

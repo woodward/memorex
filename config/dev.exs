@@ -25,6 +25,7 @@ config :memorex, MemorexWeb.Endpoint,
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]},
     sass: {
       DartSass,
       :install_and_run,
@@ -40,7 +41,6 @@ config :memorex, MemorexWeb.Endpoint,
 #
 #     mix phx.gen.cert
 #
-# Note that this task requires Erlang/OTP 20 or later.
 # Run `mix help phx.gen.cert` for more information.
 #
 # The `http:` config above can be replaced with:
@@ -62,10 +62,12 @@ config :memorex, MemorexWeb.Endpoint,
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/memorex_web/(live|views)/.*(ex)$",
-      ~r"lib/memorex_web/templates/.*(eex)$"
+      ~r"lib/memorex_web/(controllers|live|components)/.*(ex|heex)$"
     ]
   ]
+
+# Enable dev routes for dashboard and mailbox
+config :memorex, dev_routes: true
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

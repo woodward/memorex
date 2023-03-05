@@ -8,40 +8,45 @@ defmodule MemorexWeb.DecksLive do
   alias Memorex.Scheduler.Config
   alias Memorex.Domain.Deck
   alias Memorex.Ecto.Repo
-  alias MemorexWeb.Router.Helpers, as: Routes
 
   @impl true
   def render(assigns) do
     ~H"""
-    <h1 class="title"> Decks </h1>
+    <h1 class="title">Decks</h1>
 
     <div class="content">
       <table class="table">
         <thead>
-          <th> Deck </th>
-          <th> Total </th>
-          <th> New </th>
-          <th> Learn </th>
-          <th> Review </th>
-          <th> Due </th>
-          <th> Suspended </th>
-          <th>  </th>
-          <th> Actions </th>
-          <th>  </th>
+          <th>Deck</th>
+          <th>Total</th>
+          <th>New</th>
+          <th>Learn</th>
+          <th>Review</th>
+          <th>Due</th>
+          <th>Suspended</th>
+          <th></th>
+          <th>Actions</th>
+          <th></th>
         </thead>
         <tbody>
           <%= for {deck, deck_stats} <- @decks do %>
             <tr>
-              <td class="has-text-weight-bold"> <%= deck.name %> </td>
-              <td> <%= deck_stats.total %> </td>
-              <td> <%= deck_stats.new %> </td>
-              <td> <%= deck_stats.learn %> </td>
-              <td> <%= deck_stats.review %> </td>
-              <td> <%= deck_stats.due %> </td>
-              <td> <%= deck_stats.suspended %> </td>
-              <td> <%= live_patch "Review/Drill", to: Routes.review_path(@socket, :home, %{deck: deck}), class: "button"  %> </td>
-              <td> <a phx-click="add-new-batch-of-learn-cards" phx-value-deck_id={ deck.id } class="button"> Add New Learn Cards </a> </td>
-              <td> <%= live_patch "All Cards", to: Routes.card_index_path(@socket, :index, %{deck_id: deck.id}), class: "button" %> </td>
+              <td class="has-text-weight-bold"><%= deck.name %></td>
+              <td><%= deck_stats.total %></td>
+              <td><%= deck_stats.new %></td>
+              <td><%= deck_stats.learn %></td>
+              <td><%= deck_stats.review %></td>
+              <td><%= deck_stats.due %></td>
+              <td><%= deck_stats.suspended %></td>
+              <td>
+                <.link href={~p"/review?#{[deck: deck]}"} class="btn">Review/Drill</.link>
+              </td>
+              <td>
+                <a phx-click="add-new-batch-of-learn-cards" phx-value-deck_id={deck.id} class="btn"> Add New Learn Cards </a>
+              </td>
+              <td>
+                <.link href={~p"/cards?#{[deck_id: deck.id]}"} class="btn">All Cards</.link>
+              </td>
             </tr>
           <% end %>
         </tbody>

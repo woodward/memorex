@@ -6,8 +6,8 @@ defmodule Memorex.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      Memorex.Ecto.Repo,
       MemorexWeb.Telemetry,
+      Memorex.Ecto.Repo,
       {Phoenix.PubSub, name: Memorex.PubSub},
       MemorexWeb.Endpoint
     ]
