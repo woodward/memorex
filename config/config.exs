@@ -20,7 +20,7 @@ config :memorex, MemorexWeb.Endpoint,
   pubsub_server: Memorex.PubSub,
   live_view: [signing_salt: "EgDTB8ge"]
 
-  config :dart_sass,
+config :dart_sass,
   version: "1.54.5",
   # See: https://pragmaticstudio.com/tutorials/using-tailwind-css-in-phoenix
   default: [
@@ -29,8 +29,8 @@ config :memorex, MemorexWeb.Endpoint,
   ]
 
 config :esbuild,
-version: "0.14.41",
-default: [
+  version: "0.17.11",
+  default: [
     args: ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
@@ -38,7 +38,7 @@ default: [
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "3.2.4",
+  version: "3.2.7",
   default: [
     # See: https://pragmaticstudio.com/tutorials/using-tailwind-css-in-phoenix
     args: ~w(
@@ -48,6 +48,7 @@ config :tailwind,
     ),
     cd: Path.expand("../assets", __DIR__)
   ]
+
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]

@@ -48,11 +48,11 @@ defmodule Memorex.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dart_sass, "~> 0.5", runtime: Mix.env() == :dev},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ecto_sql, "~> 3.9"},
-      {:esbuild, "~> 0.6", runtime: Mix.env() == :dev},
+      {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       {:ex_doc, "~> 0.29", only: :dev, runtime: false},
       {:floki, "~> 0.34", only: :test},
       {:gettext, "~> 0.22"},
@@ -62,12 +62,12 @@ defmodule Memorex.MixProject do
       {:phoenix_live_dashboard, "~> 0.7"},
       {:phoenix_live_reload, "~> 1.4", only: :dev},
       {:phoenix_live_view, "~> 0.18"},
-      {:phoenix, "~> 1.7"},
+      {:phoenix, "~> 1.7.2"},
       # phoenix_view is only here for phoenix_live_dashboard - delete it later!
       {:phoenix_view, "~> 2.0"},
       {:plug_cowboy, "~> 2.5"},
       {:postgrex, "~> 0.16"},
-      {:tailwind, "~> 0.1.8", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:timex, "~> 3.7"},
