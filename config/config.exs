@@ -23,7 +23,7 @@ config :memorex, MemorexWeb.Endpoint,
   live_view: [signing_salt: "EgDTB8ge"]
 
 config :dart_sass,
-  version: "1.54.5",
+  version: "1.61.0",
   # See: https://pragmaticstudio.com/tutorials/using-tailwind-css-in-phoenix
   default: [
     args: ~w(css/app.scss ../priv/static/assets/app.css.tailwind),
