@@ -51,6 +51,7 @@ defmodule Memorex.MixProject do
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dart_sass, "~> 0.5", runtime: Mix.env() == :dev},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:dns_cluster, "~> 0.1.1"},
       {:ecto_sql, "~> 3.9"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       {:ex_doc, "~> 0.29", only: :dev, runtime: false},

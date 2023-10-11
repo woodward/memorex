@@ -12,7 +12,7 @@ config :memorex, Memorex.Ecto.Repo,
 # debugging and code reloading.
 #
 # The watchers configuration can be used to run external
-# watchers to your application. For example, we use it
+# watchers to your application. For example, we can use it
 # with esbuild to bundle .js and .css sources.
 config :memorex, MemorexWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.

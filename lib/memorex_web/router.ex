@@ -6,7 +6,7 @@ defmodule MemorexWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {MemorexWeb.Layouts, :root}
+    plug :put_root_layout, html: {MemorexWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end

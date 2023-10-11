@@ -8,7 +8,11 @@ defmodule Memorex.Application do
     children = [
       MemorexWeb.Telemetry,
       Memorex.Ecto.Repo,
+      {DNSCluster, query: Application.get_env(:memorex, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Memorex.PubSub},
+      # Start a worker by calling: Memorex.Worker.start_link(arg)
+      # {Memorex.Worker, arg},
+      # Start to serve requests, typically the last entry
       MemorexWeb.Endpoint
     ]
 

@@ -1,7 +1,8 @@
 import Config
 
 config :memorex,
-  ecto_repos: [Memorex.Ecto.Repo]
+  ecto_repos: [Memorex.Ecto.Repo],
+  generators: [timestamp_type: :utc_datetime]
 
 config :memorex, Memorex.Ecto.Repo,
   # See `:migration_primary_key` description here: https://hexdocs.pm/ecto_sql/Ecto.Migration.html#module-repo-configuration
@@ -13,6 +14,7 @@ config :memorex, Memorex.Ecto.Repo,
 
 config :memorex, MemorexWeb.Endpoint,
   url: [host: "localhost"],
+  adapter: Phoenix.Endpoint.Cowboy2Adapter,
   render_errors: [
     formats: [html: MemorexWeb.ErrorHTML, json: MemorexWeb.ErrorJSON],
     layout: false
@@ -38,7 +40,7 @@ config :esbuild,
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "3.2.7",
+  version: "3.3.2",
   default: [
     # See: https://pragmaticstudio.com/tutorials/using-tailwind-css-in-phoenix
     args: ~w(
