@@ -63,7 +63,7 @@ defmodule Memorex.MixProject do
       {:phoenix_live_dashboard, "~> 0.8"},
       {:phoenix_live_reload, "~> 1.4", only: :dev},
       {:phoenix_live_view, "~> 0.20"},
-      {:phoenix, "~> 1.7.8"},
+      {:phoenix, "~> 1.7.9"},
       # phoenix_view is only here for phoenix_live_dashboard - delete it later!
       {:phoenix_view, "~> 2.0"},
       {:plug_cowboy, "~> 2.5"},
