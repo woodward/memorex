@@ -40,7 +40,7 @@ config :esbuild,
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "3.3.2",
+  version: "3.3.5",
   default: [
     # See: https://pragmaticstudio.com/tutorials/using-tailwind-css-in-phoenix
     args: ~w(
